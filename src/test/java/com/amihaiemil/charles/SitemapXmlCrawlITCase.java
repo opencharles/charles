@@ -23,16 +23,29 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.util.List;
 
-/**
- * One web crawl.
- * Represents the entry point to the crawling logic.
- * @author Mihai Andronache (amihaiemil@gmail.com)
- */
-public interface  WebCrawl {
-    List<WebPage> crawl();
+import static org.junit.Assert.assertTrue;
+
+public class SitemapXmlCrawlITCase {
+    @Test
+    public void getsPageTitle() throws Exception {
+        String phantomJsExecPath = System.getProperty("phantomjsExec");
+        if(StringUtils.isEmpty(phantomJsExecPath)) {
+            phantomJsExecPath = "/usr/local/bin/phantomjs";
+        }
+
+        SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
+            phantomJsExecPath,
+            "src/test/resources/testsitemap.xml"
+        );
+        List<WebPage> pages = sitemapXmlCrawl.crawl();
+        assertTrue(pages.size() == 1);
+        assertTrue(pages.get(0).title().equals("EvA project"));
+    }
 }
