@@ -24,31 +24,39 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.amihaiemil.charles.sitemap;
+package com.amihaiemil.charles;
 
-import javax.xml.bind.annotation.*;
-import java.util.HashSet;
-import java.util.Set;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Set of urls from sitemap.xml.
+ * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "urlset", namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")
-public class UrlSet {
-
-    public UrlSet() {
-        this.urls = new HashSet<Url>();
+public class SitemapXmlCrawl implements WebCrawl {
+    private WebDriver driver;
+    /**
+     * Start a new sitemap.xml crawl using phantom js.
+     * @param phantomJsExecPath Path to the phantomJS executable.
+     */
+    public SitemapXmlCrawl(String phantomJsExecPath) {
+        DesiredCapabilities dc = new DesiredCapabilities();
+        dc.setJavascriptEnabled(true);
+        dc.setCapability(
+            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+            phantomJsExecPath
+        );
+        this.driver = new PhantomJSDriver(dc);
     }
 
-    @XmlElement(name="url")
-    private Set<Url> urls;
+    /**
+     * Start a new sitemap.xml crawl using the specified driver.
+     * @param drv Specified driver (e.g. chrome, firefox etc).
+     */
+    public SitemapXmlCrawl(WebDriver drv) {
+        this.driver = drv;
+    }
 
-    public Set<Url> getUrls() {
-        return urls;
-    }
-    public void setUrls(Set<Url> urls) {
-        this.urls = urls;
-    }
 }
