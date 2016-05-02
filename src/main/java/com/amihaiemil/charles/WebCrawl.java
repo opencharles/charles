@@ -24,31 +24,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.amihaiemil.charles.sitemap;
-
-import javax.xml.bind.annotation.*;
-import java.util.HashSet;
-import java.util.Set;
+package com.amihaiemil.charles;
 
 /**
- * Set of urls from sitemap.xml.
+ * One web crawl.
+ * Represents the entry point to the crawling logic.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "urlset", namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")
-public class UrlSet {
-
-    public UrlSet() {
-        this.urls = new HashSet<Url>();
-    }
-
-    @XmlElement(name="url")
-    private Set<Url> urls;
-
-    public Set<Url> getUrls() {
-        return urls;
-    }
-    public void setUrls(Set<Url> urls) {
-        this.urls = urls;
-    }
+public interface  WebCrawl {
 }
