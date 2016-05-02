@@ -27,8 +27,6 @@
 package com.amihaiemil.charles;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -50,8 +48,6 @@ public class SitemapXmlCrawl implements WebCrawl {
             PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
             phantomJsExecPath
         );
-        String s = ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY;
-        s = FirefoxDriver.BINARY;
         this.driver = new PhantomJSDriver(dc);
     }
 
