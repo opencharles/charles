@@ -23,16 +23,34 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
 
-import java.util.List;
+import com.amihaiemil.charles.sitemap.Url;
 
 /**
- * One web crawl.
- * Represents the entry point to the crawling logic.
+ * Crawled web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public interface  WebCrawl {
-    List<WebPage> crawl();
+public class SnapshotWebPage implements WebPage {
+    private Url url;
+    private String title;
+    private String content;
+
+    public SnapshotWebPage(LiveWebPage livePage) {
+        this.url = livePage.url();
+        this.title = livePage.title();
+        this.content = livePage.textContent();
+    }
+
+    public Url url() {
+        return this.url;
+    }
+
+    public String title() {
+        return this.title;
+    }
+
+    public String textContent() {
+        return content;
+    }
 }

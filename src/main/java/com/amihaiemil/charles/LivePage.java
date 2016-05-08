@@ -23,16 +23,12 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
 
-import java.util.List;
-
 /**
- * One web crawl.
- * Represents the entry point to the crawling logic.
- * @author Mihai Andronache (amihaiemil@gmail.com)
+ * Interface of a live page.
+ * @author Mihai Andronache (amihaiemil@gmail.com).
  */
-public interface  WebCrawl {
-    List<WebPage> crawl();
+public interface LivePage {
+    WebPage snapshot();
 }

@@ -26,22 +26,35 @@
 
 package com.amihaiemil.charles;
 
+import com.amihaiemil.charles.sitemap.SitemapXml;
+import com.amihaiemil.charles.sitemap.Url;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public class SitemapXmlCrawl implements WebCrawl {
+    private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
+
+
     private WebDriver driver;
+    private Set<Url> urlset;
     /**
      * Start a new sitemap.xml crawl using phantom js.
      * @param phantomJsExecPath Path to the phantomJS executable.
      */
-    public SitemapXmlCrawl(String phantomJsExecPath) {
+    public SitemapXmlCrawl(String phantomJsExecPath, String sitemapXmlPath) throws FileNotFoundException {
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
@@ -49,14 +62,30 @@ public class SitemapXmlCrawl implements WebCrawl {
             phantomJsExecPath
         );
         this.driver = new PhantomJSDriver(dc);
+        try {
+            this.urlset = new SitemapXml(sitemapXmlPath).read().getUrls();
+        } catch (FileNotFoundException ex) {
+            this.driver.quit();
+            throw ex;
+        }
     }
 
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
      */
-    public SitemapXmlCrawl(WebDriver drv) {
+    public SitemapXmlCrawl(WebDriver drv, String sitemapXmlPath) throws FileNotFoundException {
         this.driver = drv;
+        this.urlset = new SitemapXml(sitemapXmlPath).read().getUrls();
+    }
+
+    public List<WebPage> crawl() {
+        List<WebPage> pages = new ArrayList<WebPage>();
+        for(Url url : this.urlset) {
+            pages.add(new LiveWebPage(this.driver, url).snapshot());
+        }
+        driver.quit();
+        return pages;
     }
 
 }

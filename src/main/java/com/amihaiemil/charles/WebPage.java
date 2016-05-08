@@ -23,16 +23,16 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
 
-import java.util.List;
+import com.amihaiemil.charles.sitemap.Url;
 
 /**
- * One web crawl.
- * Represents the entry point to the crawling logic.
+ * Interface for a web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public interface  WebCrawl {
-    List<WebPage> crawl();
+public interface WebPage {
+    Url url();
+    String title();
+    String textContent();
 }

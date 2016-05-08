@@ -23,16 +23,37 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
 
-import java.util.List;
+import com.amihaiemil.charles.sitemap.Url;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 
 /**
- * One web crawl.
- * Represents the entry point to the crawling logic.
+ * A web page that is currently being crawled.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public interface  WebCrawl {
-    List<WebPage> crawl();
+public class LiveWebPage implements WebPage, LivePage {
+    private WebDriver driver;
+    private Url url;
+    public LiveWebPage(WebDriver driver, Url url) {
+        this.driver = driver;
+        this.url = url;
+        driver.get(url.getLoc());
+        PageFactory.initElements(this.driver, this);
+    }
+    public Url url() {
+        return this.url;
+    }
+    public String title() {
+       return this.driver.getTitle();
+    }
+
+    public String textContent() {
+        return "";
+    }
+
+    public WebPage snapshot() {
+        return new SnapshotWebPage(this);
+    }
 }
