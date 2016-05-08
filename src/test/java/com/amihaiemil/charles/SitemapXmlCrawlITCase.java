@@ -25,18 +25,15 @@
 */
 package com.amihaiemil.charles;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-
 import java.util.List;
-
 import static org.junit.Assert.assertTrue;
 
 public class SitemapXmlCrawlITCase {
     @Test
     public void getsPageTitle() throws Exception {
         String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if(StringUtils.isEmpty(phantomJsExecPath)) {
+        if("".equals(phantomJsExecPath)) {
             phantomJsExecPath = "/usr/local/bin/phantomjs";
         }
 
