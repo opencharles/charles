@@ -26,8 +26,6 @@
 
 package com.amihaiemil.charles.sitemap;
 
-import lombok.EqualsAndHashCode;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +35,6 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@EqualsAndHashCode(of = "loc")
 public class Url {
     /**
      * Address.<b>Required.</b>
@@ -85,5 +82,22 @@ public class Url {
     }
     public void setLastmod(String lastmod) {
         this.lastmod = lastmod;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Url url = (Url) o;
+        return loc.equals(url.loc);
+    }
+
+    @Override
+    public int hashCode() {
+        return loc.hashCode();
     }
 }
