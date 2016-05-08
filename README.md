@@ -5,7 +5,7 @@ Smart web crawler.
 
 ### v 1.0.0 (to be released)
 
-A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint) . 
+A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) . 
 
 2 options for crawling: 
 
@@ -15,7 +15,7 @@ A smart web crawler that fetches data from a website and stores it in some way (
 
 ### Under the hood
 
-Charles is powered by [Selenium WebDriver 2.41](http://www.seleniumhq.org/projects/webdriver/) and [PhantomJS](http://phantomjs.org/) through [GhostDriver](https://github.com/detro/ghostdriver). Crawling with other, graphical, drivers like ChromeDriver and FirefoxDriver will be implemented.
+Charles is powered by [Selenium WebDriver 2.41](http://www.seleniumhq.org/projects/webdriver/) and [PhantomJS](http://phantomjs.org/) through [GhostDriver](https://github.com/detro/ghostdriver). Crawling with other, graphical, drivers like ChromeDriver and FirefoxDriver will also be implemented.
 
 ### How to contribute
 
@@ -26,7 +26,7 @@ Charles is powered by [Selenium WebDriver 2.41](http://www.seleniumhq.org/projec
 
 Make sure the maven build
 
-''$mvn clean install -Pitcases''
+``$mvn clean install -Pitcases``
 
 passes before making a PR. 
 
