@@ -6,4 +6,5 @@ script:
   - set -e
   - #!/bin/bash
   - phantomjspath="$(whereis phantomjs)"
-  - mvn clean install -DphantomjsExec=${phantomjspath} -Pitcases
+  - echo ${phantomjspath}
+  - mvn clean install -DphantomjsExec="${phantomjspath}" -Pitcases
