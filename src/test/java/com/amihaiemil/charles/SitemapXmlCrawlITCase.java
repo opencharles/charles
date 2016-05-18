@@ -43,6 +43,6 @@ public class SitemapXmlCrawlITCase {
         );
         List<WebPage> pages = sitemapXmlCrawl.crawl();
         assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).title().equals("EvA project"));
+        assertTrue(pages.get(0).getTitle().equals("EvA project"));
     }
 }

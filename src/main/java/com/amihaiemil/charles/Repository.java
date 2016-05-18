@@ -32,5 +32,9 @@ package com.amihaiemil.charles;
  * 
  */
 public interface Repository {
+	/**
+	 * Export the pages.
+	 * @throws DataExportException If something goes wrong.
+	 */
     public void export() throws DataExportException;
 }

@@ -32,7 +32,10 @@ import com.amihaiemil.charles.sitemap.Url;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public interface WebPage {
-    Url url();
-    String title();
-    String textContent();
+    Url getUrl();
+    void setUrl(Url url);
+    String getTitle();
+    void setTitle(String title);
+    String getTextContent();
+    void setTextContent(String textContent);
 }

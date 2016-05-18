@@ -35,28 +35,47 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * Exports each page into the specified file, in json format.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
+ */
 public class JsonFilesRepository implements Repository {
-    private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);    
 	private Map<SnapshotWebPage, File> exports;
+
+	/**
+	 * Constructor.
+	 * @param exp Map of pages to be exported.
+	 */
+    public JsonFilesRepository(Map<SnapshotWebPage, File> exp) {
+    	this.exports = exp;
+    }
+
+	/**
+	 * Export.
+	 */
 	public void export() throws DataExportException {
         for(Map.Entry<SnapshotWebPage, File> exp : exports.entrySet()){
         	ObjectMapper jsonMapper = new ObjectMapper();
+        	jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         	try {
 				jsonMapper.writeValue(exp.getValue(), exp.getKey());
 			} catch (JsonGenerationException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
 			} catch (JsonMappingException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
 			} catch (IOException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
 			}
         }
 	}
