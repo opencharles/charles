@@ -25,24 +25,50 @@
 */
 package com.amihaiemil.charles;
 
-import org.junit.Test;
-import java.util.List;
 import static org.junit.Assert.assertTrue;
 
-public class SitemapXmlCrawlITCase {
-    @Test
-    public void getsPageTitle() throws Exception {
-        String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.Test;
+import org.mockito.Mockito;
+import com.amihaiemil.charles.sitemap.Url;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-        SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-            phantomJsExecPath,
-            "src/test/resources/testsitemap.xml"
-        );
-        List<WebPage> pages = sitemapXmlCrawl.crawl();
-        assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).getTitle().equals("EvA project"));
+/**
+ * Unit tests for {@link JsonFilesRepository}
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ */
+public class JsonFilesRepositoryTestCase {
+	
+    @Test
+    public void exportsPagesToFiles() throws Exception {
+    	SnapshotWebPage page = new SnapshotWebPage(Mockito.mock(LiveWebPage.class));
+    	page.setTextContent("text on page");
+    	page.setTitle("Title | Page");
+    	
+    	Url url = new Url();
+    	url.setLoc("http://amihaiemil.com");
+    	url.setChangefreq("monthly");
+    	url.setLastmod("15/03/1994");
+    	url.setPriority("0.8");
+    	
+    	page.setUrl(url);
+    	
+    	File jsonFile = new File("src/test/resources/testpageExport.json");
+    	if(!jsonFile.exists()) {
+    		jsonFile.createNewFile();
+    	}
+    	
+    	Map<SnapshotWebPage, File> pages = new HashMap<SnapshotWebPage, File>();
+    	pages.put(page, jsonFile);
+    	Repository testRepo = new JsonFilesRepository(pages);
+    	testRepo.export();
+    	SnapshotWebPage readPage = (new ObjectMapper()).readValue(jsonFile, SnapshotWebPage.class);
+    	
+    	assertTrue(readPage.getTitle().equals(page.getTitle()));
+    	assertTrue(readPage.getTextContent().equals(page.getTextContent()));
+    	assertTrue(readPage.getUrl().equals(page.getUrl()));
+    	
     }
 }

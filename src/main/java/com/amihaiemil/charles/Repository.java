@@ -23,26 +23,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
-import org.junit.Test;
-import java.util.List;
-import static org.junit.Assert.assertTrue;
-
-public class SitemapXmlCrawlITCase {
-    @Test
-    public void getsPageTitle() throws Exception {
-        String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
-
-        SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-            phantomJsExecPath,
-            "src/test/resources/testsitemap.xml"
-        );
-        List<WebPage> pages = sitemapXmlCrawl.crawl();
-        assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).getTitle().equals("EvA project"));
-    }
+/**
+ * Repository of crawled data. 
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ * 
+ */
+public interface Repository {
+	/**
+	 * Export the pages.
+	 * @throws DataExportException If something goes wrong.
+	 */
+    public void export() throws DataExportException;
 }

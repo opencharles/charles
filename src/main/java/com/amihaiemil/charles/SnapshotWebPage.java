@@ -34,23 +34,67 @@ import com.amihaiemil.charles.sitemap.Url;
 public class SnapshotWebPage implements WebPage {
     private Url url;
     private String title;
-    private String content;
+    private String textContent;
 
+    public SnapshotWebPage() {
+    	this.url = new Url();
+    	this.title = "";
+    	this.textContent = "";
+    }
+    
     public SnapshotWebPage(LiveWebPage livePage) {
-        this.url = livePage.url();
-        this.title = livePage.title();
-        this.content = livePage.textContent();
+        this.url = livePage.getUrl();
+        this.title = livePage.getTitle();
+        this.textContent = livePage.getTextContent();
     }
 
-    public Url url() {
+    public Url getUrl() {
         return this.url;
     }
+	public void setUrl(Url url) {
+		this.url = url;		
+	}
 
-    public String title() {
+    public String getTitle() {
         return this.title;
     }
-
-    public String textContent() {
-        return content;
+    
+    public void setTitle(String title) {
+        this.title = title;
     }
+
+    public String getTextContent() {
+        return textContent;
+    }
+
+	public void setTextContent(String textContent) {
+		this.textContent = textContent;
+	}
+    
+    
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SnapshotWebPage other = (SnapshotWebPage) obj;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
 }

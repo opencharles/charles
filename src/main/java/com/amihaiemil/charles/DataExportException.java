@@ -25,24 +25,20 @@
 */
 package com.amihaiemil.charles;
 
-import org.junit.Test;
-import java.util.List;
-import static org.junit.Assert.assertTrue;
+/**
+ * Exception thrown if a page cannot be exported properly.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
+ */
+public class DataExportException extends Exception {
 
-public class SitemapXmlCrawlITCase {
-    @Test
-    public void getsPageTitle() throws Exception {
-        String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
+	private static final long serialVersionUID = 1L;
 
-        SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-            phantomJsExecPath,
-            "src/test/resources/testsitemap.xml"
-        );
-        List<WebPage> pages = sitemapXmlCrawl.crawl();
-        assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).getTitle().equals("EvA project"));
-    }
+	/**
+	 * Constructor.
+	 * @param msg Exception message.
+	 */
+	public DataExportException(String msg) {
+		super(msg);
+	}
 }

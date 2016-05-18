@@ -26,6 +26,7 @@
 package com.amihaiemil.charles;
 
 import com.amihaiemil.charles.sitemap.Url;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
@@ -42,16 +43,27 @@ public class LiveWebPage implements WebPage, LivePage {
         driver.get(url.getLoc());
         PageFactory.initElements(this.driver, this);
     }
-    public Url url() {
+    public Url getUrl() {
         return this.url;
     }
-    public String title() {
+    public void setUrl(Url url) {
+    	this.url = url;
+	}
+    
+    public String getTitle() {
        return this.driver.getTitle();
     }
+	public void setTitle(String title) {
+		throw new UnsupportedOperationException("#setTitle");
+	}
 
-    public String textContent() {
+    public String getTextContent() {
         return "";
     }
+    
+    public void setTextContent(String textContent) {
+    	throw new UnsupportedOperationException("#setTextContent");
+	}
 
     public WebPage snapshot() {
         return new SnapshotWebPage(this);
