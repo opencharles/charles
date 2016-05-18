@@ -4,5 +4,6 @@ jdk:
   - openjdk7
 script:
   - set -e
-  - phantomjspath ="$(whereis phantomjs)"
+  - #!/bin/bash
+  - phantomjspath="$(whereis phantomjs)"
   - mvn clean install -DphantomjsExec=${phantomjspath} -Pitcases
