@@ -4,4 +4,5 @@ jdk:
   - openjdk7
 script:
   - set -e
-  - mvn clean install -DphantomjsExec="#!/bin/bash ${whereis phantomjs}" -Pitcases
+  - phantomjspath ="$(whereis phantomjs)"
+  - mvn clean install -DphantomjsExec=${phantomjspath} -Pitcases
