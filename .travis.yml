@@ -4,4 +4,5 @@ jdk:
   - openjdk7
 script:
   - set -e
+  - phantomjs --version
   - mvn clean install -Pitcases
