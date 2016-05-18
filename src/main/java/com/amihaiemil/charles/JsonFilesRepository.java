@@ -25,58 +25,40 @@
 */
 package com.amihaiemil.charles;
 
-import com.amihaiemil.charles.sitemap.Url;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
-/**
- * Crawled web page.
- * @author Mihai Andronache (amihaiemil@gmail.com)
- */
-public class SnapshotWebPage implements WebPage {
-    private Url url;
-    private String title;
-    private String content;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public SnapshotWebPage(LiveWebPage livePage) {
-        this.url = livePage.url();
-        this.title = livePage.title();
-        this.content = livePage.textContent();
-    }
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public Url url() {
-        return this.url;
-    }
+public class JsonFilesRepository implements Repository {
+    private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);
 
-    public String title() {
-        return this.title;
-    }
-
-    public String textContent() {
-        return content;
-    }
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
+	private Map<SnapshotWebPage, File> exports;
+	public void export() throws DataExportException {
+        for(Map.Entry<SnapshotWebPage, File> exp : exports.entrySet()){
+        	ObjectMapper jsonMapper = new ObjectMapper();
+        	try {
+				jsonMapper.writeValue(exp.getValue(), exp.getKey());
+			} catch (JsonGenerationException e) {
+				LOG.error(e.getMessage(), e);
+				throw new DataExportException(
+					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+			} catch (JsonMappingException e) {
+				LOG.error(e.getMessage(), e);
+				throw new DataExportException(
+					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+				throw new DataExportException(
+					"Page with url " + exp.getKey().url().getLoc() + " could not be exported! Check the logs for errors.");
+			}
+        }
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SnapshotWebPage other = (SnapshotWebPage) obj;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
-			return false;
-		return true;
-	}
-    
 }

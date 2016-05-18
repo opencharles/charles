@@ -23,60 +23,14 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
- * Crawled web page.
+ * Repository of crawled data. 
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ * 
  */
-public class SnapshotWebPage implements WebPage {
-    private Url url;
-    private String title;
-    private String content;
-
-    public SnapshotWebPage(LiveWebPage livePage) {
-        this.url = livePage.url();
-        this.title = livePage.title();
-        this.content = livePage.textContent();
-    }
-
-    public Url url() {
-        return this.url;
-    }
-
-    public String title() {
-        return this.title;
-    }
-
-    public String textContent() {
-        return content;
-    }
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SnapshotWebPage other = (SnapshotWebPage) obj;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
-			return false;
-		return true;
-	}
-    
+public interface Repository {
+    public void export() throws DataExportException;
 }
