@@ -25,70 +25,69 @@
 */
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
-
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
- * A web page that is currently being crawled.
+ * Represents an anchor on a WebPage.
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class LiveWebPage implements WebPage, LivePage {
-    private WebDriver driver;
-    private Url url;
+public class Link {
+	/**
+	 * Text of the anchor.
+	 */
+    private String text;
+    /**
+     * Href attribute of the anchor.
+     */
+    private String href;
     
-    @FindBys(@FindBy(tagName=("a")))
-    private List<WebElement> anchors;
-    
-    public LiveWebPage(WebDriver driver, Url url) {
-        this.driver = driver;
-        this.url = url;
-        driver.get(url.getLoc());
-        PageFactory.initElements(this.driver, this);
+    public Link() {
+    	this("", "");
     }
     
-    public Url getUrl() {
-        return this.url;
+    public Link(String text, String href) {
+    	this.text = text;
+    	this.href = href;
     }
-    public void setUrl(Url url) {
-    	throw new UnsupportedOperationException("#setUrl");
+	
+    public String getText() {
+		return text;
 	}
-    
-    public String getTitle() {
-       return this.driver.getTitle();
-    }
-	public void setTitle(String title) {
-		throw new UnsupportedOperationException("#setTitle");
+	
+    public void setText(String text) {
+		this.text = text;
 	}
-
-    public String getTextContent() {
-        return "";
-    }
-    
-    public void setTextContent(String textContent) {
-    	throw new UnsupportedOperationException("#setTextContent");
+	
+    public String getHref() {
+		return href;
 	}
-
-    public WebPage snapshot() {
-        return new SnapshotWebPage(this);
-    }
-
-	public List<Link> getLinks() {
-		List<Link> links = new ArrayList<Link>();
-		for(WebElement a : anchors) {
-			links.add(new Link(a.getText(), a.getAttribute("href")));
-		}
-		return links;
+	
+    public void setHref(String href) {
+		this.href = href;
 	}
 
-	public void setLinks(List<Link> links) {
-		throw new UnsupportedOperationException("#setLinks");	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((href == null) ? 0 : href.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Link other = (Link) obj;
+		if (href == null) {
+			if (other.href != null)
+				return false;
+		} else if (!href.equals(other.href))
+			return false;
+		return true;
+	}
+
 }

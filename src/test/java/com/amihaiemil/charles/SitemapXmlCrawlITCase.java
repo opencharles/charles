@@ -29,7 +29,16 @@ import org.junit.Test;
 import java.util.List;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Integration tests for {@link SitemapXmlCrawl}.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
+ */
 public class SitemapXmlCrawlITCase {
+	/**
+	 * A page's title can be retrieved.
+	 * @throws Exception - If something goes wrong.
+	 */
     @Test
     public void getsPageTitle() throws Exception {
         String phantomJsExecPath = System.getProperty("phantomjsExec");

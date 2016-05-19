@@ -23,72 +23,71 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.amihaiemil.charles.sitemap.Url;
 
 /**
- * A web page that is currently being crawled.
+ * Integration tests for {@link LiveWebPage}
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ * 
  */
-public class LiveWebPage implements WebPage, LivePage {
-    private WebDriver driver;
-    private Url url;
-    
-    @FindBys(@FindBy(tagName=("a")))
-    private List<WebElement> anchors;
-    
-    public LiveWebPage(WebDriver driver, Url url) {
-        this.driver = driver;
-        this.url = url;
-        driver.get(url.getLoc());
-        PageFactory.initElements(this.driver, this);
-    }
-    
-    public Url getUrl() {
-        return this.url;
-    }
-    public void setUrl(Url url) {
-    	throw new UnsupportedOperationException("#setUrl");
+public class LiveWebPageITCase {
+	
+	private WebDriver driver;
+	
+	/**
+	 * {@link LiveWebPage} can fetch all the links from a web page.
+	 */
+	@Test
+	public void retrievesLinksFromPage() {
+		Url url = new Url();
+		url.setLoc("http://www.amihaiemil.com");
+		LiveWebPage livePage = new LiveWebPage(this.driver, url);
+		List<Link> links = livePage.getLinks();
+		assertTrue(links.size() > 0);
+		assertTrue("Expected link not on web page!", links.contains(
+					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+				)
+		);
+		
 	}
-    
-    public String getTitle() {
-       return this.driver.getTitle();
-    }
-	public void setTitle(String title) {
-		throw new UnsupportedOperationException("#setTitle");
+	
+	@Before
+	public void initDriver() {
+		this.driver = this.phantomJsDriver();
 	}
+	
+	@After
+	public void quitDriver() {
+		this.driver.quit();
+	}
+	
+    private WebDriver phantomJsDriver() {
+    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+        if("".equals(phantomJsExecPath)) {
+            phantomJsExecPath = "/usr/local/bin/phantomjs";
+        }
 
-    public String getTextContent() {
-        return "";
+    	DesiredCapabilities dc = new DesiredCapabilities();
+        dc.setJavascriptEnabled(true);
+        dc.setCapability(
+            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+            phantomJsExecPath
+        );
+        return new PhantomJSDriver(dc);
     }
-    
-    public void setTextContent(String textContent) {
-    	throw new UnsupportedOperationException("#setTextContent");
-	}
-
-    public WebPage snapshot() {
-        return new SnapshotWebPage(this);
-    }
-
-	public List<Link> getLinks() {
-		List<Link> links = new ArrayList<Link>();
-		for(WebElement a : anchors) {
-			links.add(new Link(a.getText(), a.getAttribute("href")));
-		}
-		return links;
-	}
-
-	public void setLinks(List<Link> links) {
-		throw new UnsupportedOperationException("#setLinks");	
-	}
 }
