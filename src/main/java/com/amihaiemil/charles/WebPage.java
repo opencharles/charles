@@ -25,6 +25,8 @@
 */
 package com.amihaiemil.charles;
 
+import java.util.List;
+
 import com.amihaiemil.charles.sitemap.Url;
 
 /**
@@ -38,4 +40,6 @@ public interface WebPage {
     void setTitle(String title);
     String getTextContent();
     void setTextContent(String textContent);
+    List<Link> getLinks();
+    void setLinks(List<Link> links);
 }
