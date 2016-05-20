@@ -6,9 +6,34 @@
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>Charles is a smart web crawling library.</description>
+	<url>http://www.amihaiemil.com</url>
+
+	<licenses>
+		<license>
+			<name>The BSD 3-Clause Licence</name>
+			<url>https://opensource.org/licenses/BSD-3-Clause</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Mihai Emil Andronache</name>
+			<email>amihaiemil@gmail.com</email>
+			<url>https://github.com/amihaiemil</url>
+			<id>amihaiemil</id>
+		</developer>
+	</developers>
+	<scm>
+		<url>https://github.com/amihaiemil/charles</url>
+		<connection>scm:git:git://github.com/amihaiemil/charles.git</connection>
+		<developerConnection>scm:git:git@github.com:amihaiemil/charles.git</developerConnection>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
@@ -31,9 +56,9 @@
 			<version>${jacksonVersion}</version>
 		</dependency>
 		<dependency>
-  			<groupId>com.fasterxml.jackson.core</groupId>
-  			<artifactId>jackson-databind</artifactId>
-  			<version>${jacksonVersion}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jacksonVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -49,6 +74,19 @@
 		</dependency>
 
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
 	<profiles>
 		<profile>
 			<id>itcases</id>
@@ -63,6 +101,62 @@
 								<goals>
 									<goal>integration-test</goal>
 									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Maven Assembly Plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<finalName>charles-${project.version}</finalName>
+							<!-- get all project dependencies -->
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<!-- bind to the packaging phase -->
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.0.0</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.3</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
 								</goals>
 							</execution>
 						</executions>

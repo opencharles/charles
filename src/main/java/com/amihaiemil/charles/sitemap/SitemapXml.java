@@ -52,7 +52,7 @@ public class SitemapXml {
     }
 
     /**
-     * Reads (unmarshals the sitemap.xml). </br>
+     * Reads (unmarshals the sitemap.xml). <br>
      * This method closes the InputStream!
      * @return The unmarshaled UrlSet.
      */
