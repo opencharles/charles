@@ -54,16 +54,28 @@ public class LiveWebPageITCase {
 	 */
 	@Test
 	public void retrievesLinksFromPage() {
-		Url url = new Url();
-		url.setLoc("http://www.amihaiemil.com");
-		LiveWebPage livePage = new LiveWebPage(this.driver, url);
+		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com", "", "", ""));
 		List<Link> links = livePage.getLinks();
 		assertTrue(links.size() > 0);
 		assertTrue("Expected link not on web page!", links.contains(
 					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
 				)
 		);
-		
+	}
+	
+	/**
+	 * {@link LiveWebpage} can return a snapshot WebPage.
+	 */
+	@Test
+	public void snapshotsSelf() {
+		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com", "", "", ""));
+		WebPage snapshot = livePage.snapshot();
+		assertTrue(snapshot.getTitle().equals("amihaiemil.com | Programming blog"));
+		assertTrue(snapshot.getLinks().size() > 0);
+		assertTrue("Expected link not on web page!", snapshot.getLinks().contains(
+				new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+			)
+		);
 	}
 	
 	@Before

@@ -37,10 +37,13 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Url {
 	public Url() {
-		this.loc = "";
-		this.changefreq = "";
-		this.lastmod = "";
-		this.priority = "";
+		this("", "", "", "");
+	}
+	public Url(String loc, String changeFreq, String lastmod, String priority) {
+		this.loc = loc;
+		this.changefreq = changeFreq;
+		this.lastmod = lastmod;
+		this.priority = priority;
 	}
     /**
      * Address.<b>Required.</b>
