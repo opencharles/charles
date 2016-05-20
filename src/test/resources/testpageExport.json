@@ -6,5 +6,6 @@
     "priority" : "0.8"
   },
   "title" : "Title | Page",
-  "textContent" : "text on page"
+  "textContent" : "text on page",
+  "links" : [ ]
 }

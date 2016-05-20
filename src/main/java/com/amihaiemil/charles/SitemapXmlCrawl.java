@@ -53,6 +53,7 @@ public class SitemapXmlCrawl implements WebCrawl {
     /**
      * Start a new sitemap.xml crawl using phantom js.
      * @param phantomJsExecPath Path to the phantomJS executable.
+     * @param sitemapXmlPath Path to the sitemap.xml file.
      */
     public SitemapXmlCrawl(String phantomJsExecPath, String sitemapXmlPath) throws FileNotFoundException {
         DesiredCapabilities dc = new DesiredCapabilities();
@@ -73,6 +74,7 @@ public class SitemapXmlCrawl implements WebCrawl {
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
+     * @param sitemapXmlPath Path to the sitemap.xml file.
      */
     public SitemapXmlCrawl(WebDriver drv, String sitemapXmlPath) throws FileNotFoundException {
         this.driver = drv;
