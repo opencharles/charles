@@ -81,9 +81,13 @@ public class SitemapXmlCrawl implements WebCrawl {
 
     public List<WebPage> crawl() {
         List<WebPage> pages = new ArrayList<WebPage>();
+        LOG.info("Started crawling the sitemap.xml...");
         for(Url url : this.urlset) {
+        	LOG.info("Crawling page " + url.getLoc() + "... ");
             pages.add(new LiveWebPage(this.driver, url).snapshot());
+        	LOG.info("Done crawling page " + url.getLoc() + "!");
         }
+        LOG.info("Finished crawling the sitemap.xml!");
         driver.quit();
         return pages;
     }

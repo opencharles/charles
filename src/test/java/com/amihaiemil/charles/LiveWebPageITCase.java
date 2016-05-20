@@ -64,6 +64,18 @@ public class LiveWebPageITCase {
 	}
 	
 	/**
+	 * {@link LiveWebPage} can return the visible text from the page.
+	 */
+	@Test
+	public void retrievesTextFromPage() {
+		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html", "", "", ""));
+		String textContent = livePage.getTextContent();
+		assertTrue(textContent.contains("In his book Burke also describes HATEOAS"));
+		assertTrue(textContent.contains("\"lastmodified\": \"15/03/2016\""));
+		assertTrue(textContent.contains("JS client to work with it"));
+	}
+	
+	/**
 	 * {@link LiveWebpage} can return a snapshot WebPage.
 	 */
 	@Test
@@ -102,4 +114,5 @@ public class LiveWebPageITCase {
         );
         return new PhantomJSDriver(dc);
     }
+
 }

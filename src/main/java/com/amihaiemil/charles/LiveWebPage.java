@@ -47,6 +47,10 @@ public class LiveWebPage implements WebPage, LivePage {
     @FindBys(@FindBy(tagName=("a")))
     private List<WebElement> anchors;
     
+    @FindBy(tagName=("body"))
+    private WebElement body;
+    
+    
     public LiveWebPage(WebDriver driver, Url url) {
         this.driver = driver;
         this.url = url;
@@ -69,7 +73,7 @@ public class LiveWebPage implements WebPage, LivePage {
 	}
 
     public String getTextContent() {
-        return "";
+        return this.body.getText();
     }
     
     public void setTextContent(String textContent) {
