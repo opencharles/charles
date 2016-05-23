@@ -39,6 +39,9 @@ public class Url {
 	public Url() {
 		this("", "", "", "");
 	}
+	public Url(String loc) {
+		this(loc, "", "", "");
+	}
 	public Url(String loc, String changeFreq, String lastmod, String priority) {
 		this.loc = loc;
 		this.changefreq = changeFreq;

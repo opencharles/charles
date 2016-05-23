@@ -50,13 +50,13 @@ public class LiveWebPageTestCase {
 		Mockito.when(livePage.snapshot()).thenCallRealMethod();
 		Mockito.when(livePage.getTitle()).thenReturn("Test title");
 		Mockito.when(livePage.getTextContent()).thenReturn("content...");
-		Mockito.when(livePage.getUrl()).thenReturn(new Url("test.com", "", "", ""));
+		Mockito.when(livePage.getUrl()).thenReturn(new Url("test.com"));
 		Mockito.when(livePage.getLinks()).thenReturn(new ArrayList<Link>());
 		
 		WebPage snapshotPage = livePage.snapshot();
 		assertTrue(snapshotPage.getTitle().equals("Test title"));
 		assertTrue(snapshotPage.getTextContent().equals("content..."));
-		assertTrue(snapshotPage.getUrl().equals(new Url("test.com", "", "", "")));
+		assertTrue(snapshotPage.getUrl().equals(new Url("test.com")));
 		assertTrue(snapshotPage.getLinks().isEmpty());
 	}
 }
