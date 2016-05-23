@@ -36,9 +36,27 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Url {
+	/**
+	 * Default ctor.
+	 */
 	public Url() {
 		this("", "", "", "");
 	}
+	/**
+	 * Constructor which only takes the location.
+	 * @param loc Address of the page:<br> e.g. http://www.amihaiemil.com
+	 */
+	public Url(String loc) {
+		this(loc, "", "", "");
+	}
+	/**
+	 * Constructor.
+	 * @param loc Address of the page.
+	 * @param changeFreq Change frequency.
+	 * @param lastmod Last modified.
+	 * @param priority Priority.
+	 * @see http://www.sitemaps.org/protocol.html
+	 */
 	public Url(String loc, String changeFreq, String lastmod, String priority) {
 		this.loc = loc;
 		this.changefreq = changeFreq;
