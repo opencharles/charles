@@ -25,8 +25,8 @@
 */
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.amihaiemil.charles.sitemap.Url;
 
@@ -38,20 +38,20 @@ public class SnapshotWebPage implements WebPage {
     private Url url;
     private String title;
     private String textContent;
-    private List<Link> links;
+    private Set<Link> links;
 
     public SnapshotWebPage() {
     	this.url = new Url();
     	this.title = "";
     	this.textContent = "";
-    	this.links = new ArrayList<Link>();
+    	this.links = new HashSet<Link>();
     }
     
     public SnapshotWebPage(LiveWebPage livePage) {
         this.url = livePage.getUrl();
         this.title = livePage.getTitle();
         this.textContent = livePage.getTextContent();
-        links = new ArrayList<Link>();
+        links = new HashSet<Link>();
         for(Link link : livePage.getLinks()) {
         	links.add(link);
         }
@@ -79,12 +79,12 @@ public class SnapshotWebPage implements WebPage {
 	public void setTextContent(String textContent) {
 		this.textContent = textContent;
 	}
-	public List<Link> getLinks() {
+	public Set<Link> getLinks() {
 		return links;
 	}
 
-	public void setLinks(List<Link> links) {
-		this.links = new ArrayList<Link>();
+	public void setLinks(Set<Link> links) {
+		this.links = new HashSet<Link>();
 		for(Link l : links) {
 			this.links.add(l);
 		}

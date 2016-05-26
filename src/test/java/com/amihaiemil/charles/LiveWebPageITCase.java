@@ -28,7 +28,7 @@ package com.amihaiemil.charles;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,13 +54,17 @@ public class LiveWebPageITCase {
 	 */
 	@Test
 	public void retrievesLinksFromPage() {
-		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com"));
-		List<Link> links = livePage.getLinks();
+		String address = "http://www.amihaiemil.com/";
+		LiveWebPage livePage = new LiveWebPage(this.driver, new Url(address));
+		Set<Link> links = livePage.getLinks();
 		assertTrue(links.size() > 0);
 		assertTrue("Expected link not on web page!", links.contains(
 					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
 				)
 		);
+		for(Link l : links) {
+			assertTrue(l.getHref().startsWith(address));
+		}
 	}
 	
 	/**

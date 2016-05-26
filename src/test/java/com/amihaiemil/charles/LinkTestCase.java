@@ -25,21 +25,36 @@
 */
 package com.amihaiemil.charles;
 
-import java.util.Set;
-
-import com.amihaiemil.charles.sitemap.Url;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 /**
- * Interface for a web page.
+ * Test cases for {@link Link}
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public interface WebPage {
-    Url getUrl();
-    void setUrl(Url url);
-    String getTitle();
-    void setTitle(String title);
-    String getTextContent();
-    void setTextContent(String textContent);
-    Set<Link> getLinks();
-    void setLinks(Set<Link> links);
+public class LinkTestCase {
+	/**
+	 * A link can tell whether it's valid or not.
+	 */
+	@Test
+    public void validatesSelfFalse() {
+    	Link l = new Link("test", "www.amihaiemil.com/#");
+    	assertFalse(l.valid("www.amihaiemil.com"));
+    	Link l2 = new Link("test", "mailto:amihaiemil@gmail.com");
+    	assertFalse(l2.valid("www.amihaiemil.com"));
+    }
+	/**
+	 * A link can tell whether it's valid or not.
+	 */
+	@Test
+    public void validatesSelfTrue() { 
+		Link l = new Link("test", "www.amihaiemil.com/projects/2016/04/20/project-eva.html");
+    	assertTrue(l.valid("www.amihaiemil.com"));
+    	
+    	Link l2 = new Link("test", "http://www.amihaiemil.com/projects/2016/04/20/project-eva.html");
+    	assertTrue(l2.valid("http://www.amihaiemil.com"));
+    	
+    	Link l3 = new Link("test", "https://www.amihaiemil.com/projects/2016/04/20/project-eva.html");
+    	assertTrue(l3.valid("https://www.amihaiemil.com"));
+    }
 }

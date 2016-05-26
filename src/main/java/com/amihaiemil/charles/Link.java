@@ -90,4 +90,32 @@ public class Link {
 		return true;
 	}
 
+	public String toString() {
+		return this.href;
+	}
+	
+	/**
+	 * Checkes whether this link is valid (is not equivalent to its parent, has the right format
+	 * and points to a page on the same website).
+	 * @return ture if valid, false otherwise.
+	 */
+	public boolean valid(String parentLoc) {
+		if(!parentLoc.equalsIgnoreCase(href) && 
+	       !(parentLoc + "/").equalsIgnoreCase(href) &&
+		   !(parentLoc + "/#").equalsIgnoreCase(href) &&
+		   !(parentLoc + "#").equalsIgnoreCase(href))
+		{
+			if(!this.href.startsWith("mailto")) {
+				int slashIndex = parentLoc.indexOf("/", 8);//index of the first "/" after http:// or https://
+				String domain = parentLoc;
+				if(slashIndex != -1) {
+					domain = parentLoc.substring(0, slashIndex);
+				}
+				if(this.href.startsWith(domain)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
