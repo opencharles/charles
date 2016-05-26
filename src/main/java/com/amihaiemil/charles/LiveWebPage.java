@@ -25,8 +25,9 @@
 */
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -84,15 +85,21 @@ public class LiveWebPage implements WebPage, LivePage {
         return new SnapshotWebPage(this);
     }
 
-	public List<Link> getLinks() {
-		List<Link> links = new ArrayList<Link>();
+	public Set<Link> getLinks() {
+		Set<Link> links = new HashSet<Link>();
+		String currentLoc = this.url.getLoc();
 		for(WebElement a : anchors) {
-			links.add(new Link(a.getText(), a.getAttribute("href")));
+			if(a.isDisplayed()) {
+				Link l = new Link(a.getText(), a.getAttribute("href"));
+				if(l.valid(currentLoc)) {
+					links.add(l);
+				}
+			}
 		}
 		return links;
 	}
 
-	public void setLinks(List<Link> links) {
+	public void setLinks(Set<Link> links) {
 		throw new UnsupportedOperationException("#setLinks");	
 	}
 }

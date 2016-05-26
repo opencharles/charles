@@ -26,13 +26,14 @@
 
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.amihaiemil.charles.sitemap.Url;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link LiveWebPage}
@@ -51,7 +52,7 @@ public class LiveWebPageTestCase {
 		Mockito.when(livePage.getTitle()).thenReturn("Test title");
 		Mockito.when(livePage.getTextContent()).thenReturn("content...");
 		Mockito.when(livePage.getUrl()).thenReturn(new Url("test.com"));
-		Mockito.when(livePage.getLinks()).thenReturn(new ArrayList<Link>());
+		Mockito.when(livePage.getLinks()).thenReturn(new HashSet<Link>());
 		
 		WebPage snapshotPage = livePage.snapshot();
 		assertTrue(snapshotPage.getTitle().equals("Test title"));
