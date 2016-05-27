@@ -1,6 +1,6 @@
 /*
- All rights reserved.
  Copyright (c) 2016, Mihai Emil Andronache
+ All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -23,23 +23,64 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.amihaiemil.charles.sitemap.Url;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Interface for a web page.
+ * Integration tests for {@link GraphCrawl}
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public interface WebPage {
-    Url getUrl();
-    void setUrl(Url url);
-    String getTitle();
-    void setTitle(String title);
-    String getTextContent();
-    void setTextContent(String textContent);
-    Set<Link> getLinks();
-    void setLinks(Set<Link> links);
+public class GraphCrawlITCase {
+	private WebDriver driver;
+	
+	@Test
+	public void crawlsAllPages() {
+		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver);
+		List<WebPage> pages = graph.crawl();
+		Set<WebPage> uniquePages = new HashSet<WebPage>();
+		for(WebPage p : pages) {
+			System.out.println(p.getUrl().getLoc());
+			assertTrue("Page crawled 2 times!", uniquePages.add(p));
+		}
+	}
+	
+	@Before
+	public void initDriver() {
+		this.driver = this.phantomJsDriver();
+	}
+	
+	@After
+	public void quitDriver() {
+		this.driver.quit();
+	}
+	
+    private WebDriver phantomJsDriver() {
+    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+        if("".equals(phantomJsExecPath)) {
+            phantomJsExecPath = "/usr/local/bin/phantomjs";
+        }
+
+    	DesiredCapabilities dc = new DesiredCapabilities();
+        dc.setJavascriptEnabled(true);
+        dc.setCapability(
+            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+            phantomJsExecPath
+        );
+        return new PhantomJSDriver(dc);
+    }
 }

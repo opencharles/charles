@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import com.amihaiemil.charles.Link;
+
 /**
  * Url from sitemap.xml
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -112,19 +114,66 @@ public class Url {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Url url = (Url) o;
-        return loc.equals(url.loc);
+    public boolean equals(Object obj) {
+    	if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Url other = (Url) obj;
+		if (loc == null) {
+			if (other.loc != null)
+				return false;
+		} else {
+			//get rid of any # fragment
+			if(this.loc.contains("#") && other.loc.contains("#")) {
+				return new Url(this.loc.substring(0, loc.indexOf("#"))).equals(
+					       new  Url(other.loc.substring(0, other.loc.indexOf("#")))
+					   );
+			} else if (this.loc.contains("#")) {
+				return new  Url(this.loc.substring(0, loc.indexOf("#"))).equals(
+					       new  Url(other.loc)
+					   );
+			} else if (other.loc.contains("#")) {
+				return new  Url(this.loc).equals(
+					       new  Url(other.loc.substring(0, other.loc.indexOf("#")))
+					   );
+			}
+			
+			if(this.loc.endsWith("/") && other.loc.endsWith("/")) {
+				return this.loc.substring(0, loc.length()-1).equals(
+					       other.loc.substring(0, other.loc.length()-1)
+					   );
+			} else if (this.loc.endsWith("/")) {
+				return this.loc.substring(0, loc.length()-1).equals(other.loc);
+			} else if (other.loc.endsWith("/")) {
+				return this.loc.equals(other.loc.substring(0, other.loc.length()-1));
+			}
+		}
+		return this.loc.equals(other.loc);
     }
 
     @Override
     public int hashCode() {
-        return loc.hashCode();
+    	final int prime = 31;
+		int result = 1;
+		if(this.loc == null) {
+			result =  prime * result + 0;
+		} else {
+			if(this.loc.contains("#")) {
+				result = new Url(loc.substring(0, loc.indexOf("#"))).hashCode();
+			} else {
+				if(this.loc.endsWith("/")) {
+					result = prime * result + this.loc.substring(0, this.loc.length()-1).hashCode();
+				} else {
+					result = prime * result + this.loc.hashCode();
+				}
+			}
+ 		}
+		return result;
     }
 }

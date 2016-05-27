@@ -38,7 +38,7 @@ public class LinkTestCase {
 	 */
 	@Test
     public void validatesSelfFalse() {
-    	Link l = new Link("test", "www.amihaiemil.com/#");
+    	Link l = new Link("test", "www.github.com/amihaiemil");
     	assertFalse(l.valid("www.amihaiemil.com"));
     	Link l2 = new Link("test", "mailto:amihaiemil@gmail.com");
     	assertFalse(l2.valid("www.amihaiemil.com"));
@@ -57,4 +57,31 @@ public class LinkTestCase {
     	Link l3 = new Link("test", "https://www.amihaiemil.com/projects/2016/04/20/project-eva.html");
     	assertTrue(l3.valid("https://www.amihaiemil.com"));
     }
+	
+	/**
+	 * Methods equals() and hashcode() work fine for {@link Link}
+	 */
+	@Test
+	public void equalsAndHashcodeWork() {
+		Link link1 = new Link("l1", "http://www.amihaiemil.com/");
+		Link link2 = new Link("l2", "http://www.amihaiemil.com/");
+		
+		assertTrue(link1.equals(link2));
+		assertTrue(link1.hashCode() == link2.hashCode());
+		
+		Link link3 = new Link("l3", "http://www.amihaiemil.com");
+		Link link4 = new Link("l4", "http://www.amihaiemil.com#test");
+		
+		Link link5 = new Link("l4", "http://www.amihaiemil.com/test.html/");
+		assertTrue(link3.equals(link2));
+		assertTrue(link3.hashCode() == link2.hashCode());
+		
+		assertTrue(link3.equals(link4));
+		assertTrue(link3.hashCode() == link4.hashCode());
+
+		assertTrue(!link1.equals(link5));
+		assertTrue(!link2.equals(link5));
+		assertTrue(!link3.equals(link5));
+		assertTrue(!link4.equals(link5));
+	}
 }

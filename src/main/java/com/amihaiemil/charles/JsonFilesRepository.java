@@ -44,13 +44,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class JsonFilesRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);    
-	private Map<SnapshotWebPage, File> exports;
+	private Map<WebPage, File> exports;
 
 	/**
 	 * Constructor.
 	 * @param exp Map of pages to be exported.
 	 */
-    public JsonFilesRepository(Map<SnapshotWebPage, File> exp) {
+    public JsonFilesRepository(Map<WebPage, File> exp) {
     	this.exports = exp;
     }
 
@@ -58,7 +58,7 @@ public class JsonFilesRepository implements Repository {
 	 * Export.
 	 */
 	public void export() throws DataExportException {
-        for(Map.Entry<SnapshotWebPage, File> exp : exports.entrySet()){
+        for(Map.Entry<WebPage, File> exp : exports.entrySet()){
         	ObjectMapper jsonMapper = new ObjectMapper();
         	jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
