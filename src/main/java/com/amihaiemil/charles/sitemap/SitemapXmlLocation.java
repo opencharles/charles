@@ -23,43 +23,16 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles.sitemap;
 
-
-import org.slf4j.LoggerFactory;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import org.slf4j.Logger;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Represents a sitemap.xml file.
- * @author Mihai Andronache (amihaiemil@gmail.com).
+ * A sitemap.xml can be located on the fisk or online.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
-
-    private InputStream sitemap;
-
-    public SitemapXml(InputStream is) {
-        this.sitemap = is;
-    }
-
-    /**
-     * Reads (unmarshals the sitemap.xml). <br>
-     * This method closes the InputStream!
-     * @return The unmarshaled UrlSet.
-     */
-    public UrlSet read() {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
-        }
-    }
+public interface SitemapXmlLocation {
+    InputStream getStream() throws IOException;
 }

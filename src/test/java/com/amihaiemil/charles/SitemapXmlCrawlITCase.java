@@ -25,9 +25,13 @@
 */
 package com.amihaiemil.charles;
 
-import org.junit.Test;
-import java.util.List;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
 
 /**
  * Integration tests for {@link SitemapXmlCrawl}.
@@ -48,7 +52,7 @@ public class SitemapXmlCrawlITCase {
 
         SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
             phantomJsExecPath,
-            "src/test/resources/testsitemap.xml"
+            new SitemapXmlOnDisk("src/test/resources/testsitemap.xml")
         );
         List<WebPage> pages = sitemapXmlCrawl.crawl();
         assertTrue(pages.size() == 1);
