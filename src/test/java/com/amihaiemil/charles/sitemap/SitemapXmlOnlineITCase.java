@@ -26,40 +26,27 @@
 
 package com.amihaiemil.charles.sitemap;
 
+import static org.junit.Assert.*;
 
-import org.slf4j.LoggerFactory;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import org.slf4j.Logger;
+import java.util.Set;
+
+import org.junit.Test;
 
 /**
- * Represents a sitemap.xml file.
- * @author Mihai Andronache (amihaiemil@gmail.com).
+ * IT cases for {@link SitemapXmlOnline}
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
-
-    private InputStream sitemap;
-
-    public SitemapXml(InputStream is) {
-        this.sitemap = is;
-    }
-
-    /**
-     * Reads (unmarshals the sitemap.xml). <br>
-     * This method closes the InputStream!
-     * @return The unmarshaled UrlSet.
-     */
-    public UrlSet read() {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
-        }
+public class SitemapXmlOnlineITCase {
+	/**
+	 * Sitemap.xml can be downloaded and unmarshalled successfully.
+	 * @throws Exception - if something goes wrong.
+	 */
+	@Test
+    public void getsSitemapXml() throws Exception {
+    	SitemapXmlOnline online = new SitemapXmlOnline("http://eva.amihaiemil.com/sitemap.xml");
+    	Set<Url> urls = new SitemapXml(online.getStream()).read().getUrls();
+    	assertTrue(urls != null);
+    	assertTrue(urls.size() > 0);
     }
 }

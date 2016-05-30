@@ -26,40 +26,28 @@
 
 package com.amihaiemil.charles.sitemap;
 
-
-import org.slf4j.LoggerFactory;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import org.slf4j.Logger;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Represents a sitemap.xml file.
- * @author Mihai Andronache (amihaiemil@gmail.com).
+ * Sitemap.xml file located on disk.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
+public class SitemapXmlOnDisk implements SitemapXmlLocation {
+	/**
+	 * Path of the file on disk.
+	 */
+	private String filepath; 
+	
+	public SitemapXmlOnDisk(String path) {
+		this.filepath = path;
+	}
+	@Override
+	public InputStream getStream() throws IOException {
+		return new FileInputStream(new File(this.filepath));
+	}
 
-    private InputStream sitemap;
-
-    public SitemapXml(InputStream is) {
-        this.sitemap = is;
-    }
-
-    /**
-     * Reads (unmarshals the sitemap.xml). <br>
-     * This method closes the InputStream!
-     * @return The unmarshaled UrlSet.
-     */
-    public UrlSet read() {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
-        }
-    }
 }

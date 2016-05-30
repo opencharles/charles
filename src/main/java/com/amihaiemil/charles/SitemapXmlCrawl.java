@@ -26,8 +26,11 @@
 
 package com.amihaiemil.charles;
 
-import com.amihaiemil.charles.sitemap.SitemapXml;
-import com.amihaiemil.charles.sitemap.Url;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -35,10 +38,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.amihaiemil.charles.sitemap.SitemapXml;
+import com.amihaiemil.charles.sitemap.SitemapXmlLocation;
+import com.amihaiemil.charles.sitemap.Url;
 
 /**
  * Crawl a website based on the given sitemap xml.
@@ -55,7 +57,7 @@ public class SitemapXmlCrawl implements WebCrawl {
      * @param phantomJsExecPath Path to the phantomJS executable.
      * @param sitemapXmlPath Path to the sitemap.xml file.
      */
-    public SitemapXmlCrawl(String phantomJsExecPath, String sitemapXmlPath) throws FileNotFoundException {
+    public SitemapXmlCrawl(String phantomJsExecPath, SitemapXmlLocation sitemapLoc) throws IOException {
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
@@ -64,8 +66,8 @@ public class SitemapXmlCrawl implements WebCrawl {
         );
         this.driver = new PhantomJSDriver(dc);
         try {
-            this.urlset = new SitemapXml(sitemapXmlPath).read().getUrls();
-        } catch (FileNotFoundException ex) {
+            this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
+        } catch (IOException ex) {
             this.driver.quit();
             throw ex;
         }
@@ -76,9 +78,9 @@ public class SitemapXmlCrawl implements WebCrawl {
      * @param drv Specified driver (e.g. chrome, firefox etc).
      * @param sitemapXmlPath Path to the sitemap.xml file.
      */
-    public SitemapXmlCrawl(WebDriver drv, String sitemapXmlPath) throws FileNotFoundException {
+    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc) throws IOException {
         this.driver = drv;
-        this.urlset = new SitemapXml(sitemapXmlPath).read().getUrls();
+        this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
     }
 
     public List<WebPage> crawl() {

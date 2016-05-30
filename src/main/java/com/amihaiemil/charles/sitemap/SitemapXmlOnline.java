@@ -23,43 +23,54 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles.sitemap;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.slf4j.LoggerFactory;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import org.slf4j.Logger;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
- * Represents a sitemap.xml file.
- * @author Mihai Andronache (amihaiemil@gmail.com).
+ * sitemap.xml file located online at a given address.
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
+public class SitemapXmlOnline implements SitemapXmlLocation {
+	private String xmlAddress;
+	
+	/**
+	 * Constructor.
+	 * @param address Url of the online sitemap.
+	 */
+	public SitemapXmlOnline(String address) {
+		this.xmlAddress = address;
+	}
+	
+	@Override
+	public InputStream getStream() throws IOException {
+		HttpGet getRequest = new HttpGet(xmlAddress);
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-    private InputStream sitemap;
+		try {
+			CloseableHttpResponse response = httpClient.execute(getRequest);
+			try {
+				return new ByteArrayInputStream(
+					IOUtils.toByteArray(response.getEntity().getContent())
+				);
+			} finally {
+				response.close();
+			}
+		} catch (ClientProtocolException e) {
+			throw e;
+		} finally {
+			httpClient.close();
+		}
+	}
 
-    public SitemapXml(InputStream is) {
-        this.sitemap = is;
-    }
-
-    /**
-     * Reads (unmarshals the sitemap.xml). <br>
-     * This method closes the InputStream!
-     * @return The unmarshaled UrlSet.
-     */
-    public UrlSet read() {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
-        }
-    }
 }
