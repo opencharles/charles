@@ -73,7 +73,6 @@ public class GraphCrawlITCase {
         if("".equals(phantomJsExecPath)) {
             phantomJsExecPath = "/usr/local/bin/phantomjs";
         }
-
     	DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
