@@ -60,7 +60,7 @@ public class JsonFilesRepositoryTestCase {
     		jsonFile.createNewFile();
     	}
     	
-    	Map<SnapshotWebPage, File> pages = new HashMap<SnapshotWebPage, File>();
+    	Map<WebPage, File> pages = new HashMap<WebPage, File>();
     	pages.put(page, jsonFile);
     	Repository testRepo = new JsonFilesRepository(pages);
     	testRepo.export();

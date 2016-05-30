@@ -22,11 +22,12 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.amihaiemil.charles;
 
 /**
  * Represents an anchor on a WebPage.
+ * 
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
@@ -34,34 +35,34 @@ public class Link {
 	/**
 	 * Text of the anchor.
 	 */
-    private String text;
-    /**
-     * Href attribute of the anchor.
-     */
-    private String href;
-    
-    public Link() {
-    	this("", "");
-    }
-    
-    public Link(String text, String href) {
-    	this.text = text;
-    	this.href = href;
-    }
-	
-    public String getText() {
+	private String text;
+	/**
+	 * Href attribute of the anchor.
+	 */
+	private String href;
+
+	public Link() {
+		this("", "");
+	}
+
+	public Link(String text, String href) {
+		this.text = text;
+		this.href = href;
+	}
+
+	public String getText() {
 		return text;
 	}
-	
-    public void setText(String text) {
+
+	public void setText(String text) {
 		this.text = text;
 	}
-	
-    public String getHref() {
+
+	public String getHref() {
 		return href;
 	}
-	
-    public void setHref(String href) {
+
+	public void setHref(String href) {
 		this.href = href;
 	}
 
@@ -69,53 +70,94 @@ public class Link {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((href == null) ? 0 : href.hashCode());
+		if (this.href == null) {
+			result = prime * result + 0;
+		} else {
+			if (this.href.contains("#")) {
+				result = new Link("", href.substring(0, href.indexOf("#")))
+						.hashCode();
+			} else {
+				if (this.href.endsWith("/")) {
+					result = prime
+							* result
+							+ this.href.substring(0, this.href.length() - 1)
+									.hashCode();
+				} else {
+					result = prime * result + this.href.hashCode();
+				}
+			}
+		}
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Link other = (Link) obj;
 		if (href == null) {
 			if (other.href != null)
 				return false;
-		} else if (!href.equals(other.href))
-			return false;
-		return true;
+		} else {
+			// get rid of any # fragment
+			if (this.href.contains("#") && other.href.contains("#")) {
+				return new Link("", this.href.substring(0, href.indexOf("#")))
+						.equals(new Link("", other.href.substring(0,
+								other.href.indexOf("#"))));
+			} else if (this.href.contains("#")) {
+				return new Link("", this.href.substring(0, href.indexOf("#")))
+						.equals(new Link("", other.href));
+			} else if (other.href.contains("#")) {
+				return new Link("", this.href).equals(new Link("", other.href
+						.substring(0, other.href.indexOf("#"))));
+			}
+
+			if (this.href.endsWith("/") && other.href.endsWith("/")) {
+				return this.href.substring(0, href.length() - 1).equals(
+						other.href.substring(0, other.href.length() - 1));
+			} else if (this.href.endsWith("/")) {
+				return this.href.substring(0, href.length() - 1).equals(
+						other.href);
+			} else if (other.href.endsWith("/")) {
+				return this.href.equals(other.href.substring(0,
+						other.href.length() - 1));
+			}
+		}
+		return this.href.equals(other.href);
 	}
 
 	public String toString() {
 		return this.href;
 	}
-	
+
 	/**
-	 * Checkes whether this link is valid (is not equivalent to its parent, has the right format
-	 * and points to a page on the same website).
+	 * Checkes whether this link is valid (is not equivalent to its parent, has
+	 * the right format and points to a page on the same website).
+	 * 
 	 * @return ture if valid, false otherwise.
 	 */
 	public boolean valid(String parentLoc) {
-		if(!parentLoc.equalsIgnoreCase(href) && 
-	       !(parentLoc + "/").equalsIgnoreCase(href) &&
-		   !(parentLoc + "/#").equalsIgnoreCase(href) &&
-		   !(parentLoc + "#").equalsIgnoreCase(href))
-		{
-			if(!this.href.startsWith("mailto")) {
-				int slashIndex = parentLoc.indexOf("/", 8);//index of the first "/" after http:// or https://
-				String domain = parentLoc;
-				if(slashIndex != -1) {
-					domain = parentLoc.substring(0, slashIndex);
-				}
-				if(this.href.startsWith(domain)) {
-					return true;
-				}
+
+		if (this.href != null && !this.href.startsWith("mailto")) {
+			int slashIndex = parentLoc.indexOf("/", 8);// index of the first "/"
+														// after http:// or
+														// https://
+			String domain = parentLoc;
+			if (slashIndex != -1) {
+				domain = parentLoc.substring(0, slashIndex);
+			}
+			if (this.href.startsWith(domain)) {
+				return true;
 			}
 		}
+
 		return false;
 	}
 }

@@ -51,6 +51,9 @@ public class LiveWebPage implements WebPage, LivePage {
     @FindBy(tagName=("body"))
     private WebElement body;
     
+    public LiveWebPage(WebDriver driver, Link l) {
+    	this(driver, new Url(l.getHref()));
+    }
     
     public LiveWebPage(WebDriver driver, Url url) {
         this.driver = driver;
