@@ -50,7 +50,7 @@ public class GraphCrawlITCase {
 	
 	@Test
 	public void crawlsAllPages() {
-		GraphCrawl graph = new GraphCrawl("http://www.yegor256.com", this.driver);
+		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver);
 		List<WebPage> pages = graph.crawl();
 		Set<WebPage> uniquePages = new HashSet<WebPage>();
 		for(WebPage p : pages) {
