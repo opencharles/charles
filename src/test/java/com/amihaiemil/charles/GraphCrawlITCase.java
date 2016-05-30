@@ -50,11 +50,10 @@ public class GraphCrawlITCase {
 	
 	@Test
 	public void crawlsAllPages() {
-		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver);
+		GraphCrawl graph = new GraphCrawl("http://www.yegor256.com", this.driver);
 		List<WebPage> pages = graph.crawl();
 		Set<WebPage> uniquePages = new HashSet<WebPage>();
 		for(WebPage p : pages) {
-			System.out.println(p.getUrl().getLoc());
 			assertTrue("Page crawled 2 times!", uniquePages.add(p));
 		}
 	}

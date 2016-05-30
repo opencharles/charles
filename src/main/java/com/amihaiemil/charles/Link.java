@@ -145,7 +145,7 @@ public class Link {
 	 */
 	public boolean valid(String parentLoc) {
 
-		if (!this.href.startsWith("mailto")) {
+		if (this.href != null && !this.href.startsWith("mailto")) {
 			int slashIndex = parentLoc.indexOf("/", 8);// index of the first "/"
 														// after http:// or
 														// https://
