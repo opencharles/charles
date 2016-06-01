@@ -23,62 +23,58 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles.sitemap;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.client.ClientProtocolException;
+import java.io.ByteArrayInputStream;
+import java.util.Set;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * sitemap.xml file located online at a given address.
+ * Unit tests for {@link SitemapXmlOnline}
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class SitemapXmlOnline implements SitemapXmlLocation {
-	private String xmlAddress;
-	private CloseableHttpClient httpClient;
+public class SitemapXmlOnlineTestCase {
 	
 	/**
-	 * Constructor.
-	 * @param address Url of the online sitemap.
+	 * Sitemap.xml can be downloaded and unmarshalled successfully.
+	 * @throws Exception - if something goes wrong.
 	 */
-	public SitemapXmlOnline(String address) {
-		this(HttpClientBuilder.create().build(), address);
-	}
-	
-	/**
-	 * Constructor.
-	 * @param address Url of the online sitemap.
-	 * @param httpClient Given closeable http client.
-	 */
-	public SitemapXmlOnline(CloseableHttpClient httpClient, String address) {
-		this.xmlAddress = address;
-		this.httpClient = httpClient;
-	}
-	
-	@Override
-	public InputStream getStream() throws IOException {
-		try {
-			CloseableHttpResponse response = httpClient.execute(new HttpGet(xmlAddress));
-			try {
-				return new ByteArrayInputStream(
-					IOUtils.toByteArray(response.getEntity().getContent())
-				);
-			} finally {
-				response.close();
-			}
-		} catch (ClientProtocolException e) {
-			throw e;
-		} finally {
-			httpClient.close();
-		}
-	}
+	@Test
+    public void getsSitemap() throws Exception {
+		String sitemapxml ="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n" +
+                "\n" +
+                "   <url>\n" +
+                "\n" +
+                "      <loc>http://www.test.com/page.html</loc>\n" +
+                "   </url>\n" +
+                "\n" +
+                "   <url>\n" +
+                "\n" +
+                "      <loc>http://www.test.com/page.html#fragment</loc>\n" +
+                "   </url>\n" +
+                "\n" +
 
+                "</urlset> ";
+		CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
+		CloseableHttpResponse response = Mockito.mock(CloseableHttpResponse.class);
+		HttpEntity entity = Mockito.mock(HttpEntity.class);
+		Mockito.when(entity.getContent()).thenReturn(new ByteArrayInputStream(sitemapxml.getBytes()));		
+		Mockito.when(response.getEntity()).thenReturn(entity);
+		
+		Mockito.when(httpClient.execute(Mockito.any(HttpGet.class))).thenReturn(response);
+
+    	SitemapXmlOnline online = new SitemapXmlOnline(httpClient, "http://testurl.com");
+    	Set<Url> urls = new SitemapXml(online.getStream()).read().getUrls();
+    	assertTrue(urls != null);
+    	assertTrue(urls.size() == 1);
+    }
 }

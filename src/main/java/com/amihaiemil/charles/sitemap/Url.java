@@ -30,8 +30,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
-import com.amihaiemil.charles.Link;
-
 /**
  * Url from sitemap.xml
  * @author Mihai Andronache (amihaiemil@gmail.com)
