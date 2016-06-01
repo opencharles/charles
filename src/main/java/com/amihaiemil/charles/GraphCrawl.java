@@ -29,10 +29,8 @@ package com.amihaiemil.charles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
-import org.eclipse.jetty.util.ArrayQueue;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -43,7 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class GraphCrawl implements WebCrawl {
+public final class GraphCrawl implements WebCrawl {
 	private WebDriver driver;
     private Link index; 
     /**
