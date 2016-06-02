@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Contains url patterns that should be ignored (not crawled).
@@ -38,6 +39,11 @@ import java.util.regex.Pattern;
  */
 public final class IgnoredPatterns {
     private List<String> patterns;
+    
+    public IgnoredPatterns() {
+    	this(new ArrayList<String>());
+    }
+    
     public IgnoredPatterns(List<String> patterns) {
     	this.patterns = new ArrayList<String>();
     	for(String pattern : patterns) {
@@ -54,16 +60,60 @@ public final class IgnoredPatterns {
     	for(String p : patterns) {
     		if(p.equalsIgnoreCase(url)) {
     			return true;
+    		}    		
+    		if(matchesAsteriskPattern(p.trim(), url)){
+    			return true;
     		}
-    		
-    		//....
-    		
-    	    Pattern pattern = Pattern.compile(p);
-    	    Matcher matcher = pattern.matcher(url);
-    	    if(matcher.matches()) {
+    	    if(matchesRegex(p.trim(), url)) {
     	    	return true;
     	    }
     	}
     	return false;
+    }
+    
+    /**
+     * Test against asterisk pattern (e.g. *.js) 
+	 * @param p pattern.
+     * @param url Tested url string.
+     * @return True if it matches.
+     */
+    private boolean matchesAsteriskPattern(String p, String url) {
+    	if(p.contains("*")) {
+    		List<Integer> partsIndexes = new ArrayList<Integer>();
+    		String[] parts = p.split("\\*");
+    		for(int i=0;i<parts.length;i++) {
+    			if(url.contains(parts[i])) {
+    				int indexOfPart = url.indexOf(parts[i]);
+    				for(Integer partIndex : partsIndexes) {
+    					if(partIndex > indexOfPart) {
+    						return false;
+    					}
+    				}
+    				partsIndexes.add(indexOfPart);
+    			} else {
+    				return false;
+    			}
+    		}
+    	} else {
+    		return false;
+    	}
+    	
+    	return true;
+    }
+    
+    /**
+     * Test against regex.
+     * @param p pattern.
+     * @param url Tested url string.
+     * @return True if it matches.
+     */
+    private boolean matchesRegex(String p, String url) {
+    	try {
+    		Pattern pattern = Pattern.compile(p);
+    		Matcher matcher = pattern.matcher(url);
+    		return matcher.matches();
+    	} catch (PatternSyntaxException ex) {
+    		return false;
+    	}
     }
 }

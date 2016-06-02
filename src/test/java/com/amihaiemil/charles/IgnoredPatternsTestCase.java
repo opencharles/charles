@@ -27,9 +27,7 @@
 package com.amihaiemil.charles;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -44,9 +42,26 @@ public class IgnoredPatternsTestCase {
 	@Test
 	public void containsPattern() {
     	IgnoredPatterns patterns = new IgnoredPatterns(
-    							       Arrays.asList("www\\.test\\.com/*/hello")
+    							       Arrays.asList(
+    							           "www.test.com/*.js",
+        							       "www.test.com/conf/* ",
+        							       "www.test.com/*/test/page*.html",
+    							           "www\\.test\\.com/[a-zA-z]+/hello\\.html",
+    							           "*.css"
+    							       )
     			                   );
+    	assertTrue(patterns.contains("www.test.com/js/hello.js"));
+    	assertTrue(patterns.contains("www.test.com/hello.js"));
+    	assertTrue(patterns.contains("www.test.com/p/test/page.html"));
+    	assertTrue(patterns.contains("www.test.com/test/page.html"));
+    	assertTrue(patterns.contains("www.test.com/test/pageTest.html"));
     	
+    	assertTrue(patterns.contains("www.test.com/conf/configpage.html"));
+    	assertTrue(patterns.contains("www.test.com/hitest/hello.html"));
+    	assertTrue(patterns.contains("www.test.com/css/main.css"));
+    	
+    	assertFalse(patterns.contains("www.test.com/test/test.html"));
+    	assertFalse(patterns.contains("www.test.com/p/page.html"));
 
     }
 }

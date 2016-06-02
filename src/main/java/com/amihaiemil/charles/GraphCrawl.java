@@ -43,12 +43,15 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public final class GraphCrawl implements WebCrawl {
 	private WebDriver driver;
-    private Link index; 
+    private Link index;
+    private IgnoredPatterns ignoredLinks;
+    
     /**
      * Constructor.
      * @param idx The index page of the site.
      */
-    public GraphCrawl(String idx, String phantomJsExecPath) {
+    public GraphCrawl(String idx, String phantomJsExecPath, IgnoredPatterns ignored) {
+    	this.ignoredLinks = ignored;
     	this.index = new Link("index", idx);
     	DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
@@ -64,7 +67,8 @@ public final class GraphCrawl implements WebCrawl {
      * @param idx The index page of the site.
      * @param drv {@link WebDriver} to use.
      */
-    public GraphCrawl(String idx, WebDriver drv) {
+    public GraphCrawl(String idx, WebDriver drv, IgnoredPatterns ignored) {
+    	this.ignoredLinks = ignored;
     	this.index = new Link("index", idx);
     	this.driver = drv;
 	}
@@ -72,6 +76,9 @@ public final class GraphCrawl implements WebCrawl {
 	@Override
 	public List<WebPage> crawl() {
 		List<WebPage> pages = new ArrayList<WebPage>();
+		if(this.ignoredLinks.contains(this.index.getHref())) {
+			return pages;
+		}
 		List<Link> toCrawl = new ArrayList<Link>();
 	    Set<Link> crawledLinks = new HashSet<Link>();
 	    crawledLinks.add(this.index);
@@ -81,6 +88,11 @@ public final class GraphCrawl implements WebCrawl {
 		toCrawl.addAll(indexSnapshot.getLinks());
 		Link link = toCrawl.remove(0);
 		while(toCrawl.size() > 0) {
+			if(this.ignoredLinks.contains(link.getHref())) {
+				link = toCrawl.remove(0);
+				continue;
+			}
+
 			boolean notCrawledAlready = crawledLinks.add(link);
 			if(notCrawledAlready) {
 				WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();

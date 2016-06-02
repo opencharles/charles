@@ -52,7 +52,8 @@ public class SitemapXmlCrawlITCase {
 
         SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
             phantomJsExecPath,
-            new SitemapXmlOnDisk("src/test/resources/testsitemap.xml")
+            new SitemapXmlOnDisk("src/test/resources/testsitemap.xml"),
+            new IgnoredPatterns()
         );
         List<WebPage> pages = sitemapXmlCrawl.crawl();
         assertTrue(pages.size() == 1);

@@ -28,6 +28,7 @@ package com.amihaiemil.charles;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,11 +51,24 @@ public class GraphCrawlITCase {
 	
 	@Test
 	public void crawlsAllPages() {
-		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver);
+		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns());
 		List<WebPage> pages = graph.crawl();
 		Set<WebPage> uniquePages = new HashSet<WebPage>();
 		for(WebPage p : pages) {
 			assertTrue("Page crawled 2 times!", uniquePages.add(p));
+		}
+	}
+	
+	@Test
+	public void crawlsAllPagesExceptIgnored() {
+		GraphCrawl graph = new GraphCrawl(
+			"http://www.amihaiemil.com",
+			this.driver,
+			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*"))//ignore all pages (posts) from April 2016
+		);
+		List<WebPage> pages = graph.crawl();
+		for(WebPage p : pages) {
+			assertTrue("Ignored page was crawled! " + p.getUrl().getLoc(), !p.getUrl().getLoc().contains("/2016/04/"));
 		}
 	}
 	
