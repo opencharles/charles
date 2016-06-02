@@ -23,40 +23,45 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
+import java.util.Arrays;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
-import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
-
 /**
- * Integration tests for {@link SitemapXmlCrawl}.
+ * Test cases for {@link IgnoredPatterns}
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class SitemapXmlCrawlITCase {
-	/**
-	 * A page's title can be retrieved.
-	 * @throws Exception - If something goes wrong.
-	 */
-    @Test
-    public void getsPageTitle() throws Exception {
-        String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
+public class IgnoredPatternsTestCase {
+    /**
+     * IgnoredPatterns can recognize a url that should be ignored.
+     */
+	@Test
+	public void containsPattern() {
+    	IgnoredPatterns patterns = new IgnoredPatterns(
+    							       Arrays.asList(
+    							           "www.test.com/*.js",
+        							       "www.test.com/conf/* ",
+        							       "www.test.com/*/test/page*.html",
+    							           "www\\.test\\.com/[a-zA-z]+/hello\\.html",
+    							           "*.css"
+    							       )
+    			                   );
+    	assertTrue(patterns.contains("www.test.com/js/hello.js"));
+    	assertTrue(patterns.contains("www.test.com/hello.js"));
+    	assertTrue(patterns.contains("www.test.com/p/test/page.html"));
+    	assertTrue(patterns.contains("www.test.com/test/page.html"));
+    	assertTrue(patterns.contains("www.test.com/test/pageTest.html"));
+    	
+    	assertTrue(patterns.contains("www.test.com/conf/configpage.html"));
+    	assertTrue(patterns.contains("www.test.com/hitest/hello.html"));
+    	assertTrue(patterns.contains("www.test.com/css/main.css"));
+    	
+    	assertFalse(patterns.contains("www.test.com/test/test.html"));
+    	assertFalse(patterns.contains("www.test.com/p/page.html"));
 
-        SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-            phantomJsExecPath,
-            new SitemapXmlOnDisk("src/test/resources/testsitemap.xml"),
-            new IgnoredPatterns()
-        );
-        List<WebPage> pages = sitemapXmlCrawl.crawl();
-        assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).getTitle().equals("EvA project"));
     }
 }

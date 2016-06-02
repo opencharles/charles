@@ -46,18 +46,20 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public class SitemapXmlCrawl implements WebCrawl {
+public final class SitemapXmlCrawl implements WebCrawl {
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
 
 
     private WebDriver driver;
     private Set<Url> urlset;
+    private IgnoredPatterns ignoredLinks;
+    
     /**
      * Start a new sitemap.xml crawl using phantom js.
      * @param phantomJsExecPath Path to the phantomJS executable.
      * @param sitemapXmlPath Path to the sitemap.xml file.
      */
-    public SitemapXmlCrawl(String phantomJsExecPath, SitemapXmlLocation sitemapLoc) throws IOException {
+    public SitemapXmlCrawl(String phantomJsExecPath, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored) throws IOException {
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
@@ -71,6 +73,7 @@ public class SitemapXmlCrawl implements WebCrawl {
             this.driver.quit();
             throw ex;
         }
+        this.ignoredLinks = ignored;
     }
 
     /**
@@ -78,15 +81,19 @@ public class SitemapXmlCrawl implements WebCrawl {
      * @param drv Specified driver (e.g. chrome, firefox etc).
      * @param sitemapXmlPath Path to the sitemap.xml file.
      */
-    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc) throws IOException {
+    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored) throws IOException {
         this.driver = drv;
         this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
+        this.ignoredLinks = ignored;
     }
 
     public List<WebPage> crawl() {
         List<WebPage> pages = new ArrayList<WebPage>();
         LOG.info("Started crawling the sitemap.xml...");
         for(Url url : this.urlset) {
+        	if(this.ignoredLinks.contains(url.getLoc())) {
+        		continue;
+        	}
         	LOG.info("Crawling page " + url.getLoc() + "... ");
             pages.add(new LiveWebPage(this.driver, url).snapshot());
         	LOG.info("Done crawling page " + url.getLoc() + "!");
