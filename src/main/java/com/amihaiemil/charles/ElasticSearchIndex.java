@@ -74,6 +74,6 @@ public final class ElasticSearchIndex {
 		return type;
 	} 
     public String toString() {
-    	return this.node + ":" + this.port + "/" + this.indexName + "/" + this.type;
+    	return "http://" + this.node + ":" + this.port + "/" + this.indexName + "/" + this.type;
     }
 }

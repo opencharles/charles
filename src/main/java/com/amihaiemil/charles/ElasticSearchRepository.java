@@ -27,7 +27,6 @@
 package com.amihaiemil.charles;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepository implements Repository {
+public final class ElasticSearchRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchRepository.class);    
 
 	/**
@@ -95,16 +95,21 @@ public class ElasticSearchRepository implements Repository {
 	@Override
 	public void export() throws DataExportException {
 		LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo.toString());
-		String uri = "";
+		String uri = indexInfo.toString() + "/_bulk?pretty"; 
 		try {
             JsonObject jsonResponse = this.sendToIndex(
             						      this.makeBulkJsonStructure(docs),
             						      uri
             						  );
-            if(jsonResponse.getBoolean("errors")) {
-            	LOG.error("There were errors during indexing to " + indexInfo.toString());
+            if(jsonResponse.getBoolean("errors", Boolean.TRUE)) {
+            	LOG.error(
+            		"There were errors during indexing to "
+            		+ indexInfo.toString() +
+            		". Whole JSON response: " +
+            		jsonResponse.toString()
+            	);
             }
-            LOG.info("Bulk indexing of the " + docs.size() + " documents, finished in " + jsonResponse.getString("took") + " miliseconds!");
+            LOG.info("Bulk indexing of the " + docs.size() + " documents, finished in " + jsonResponse.getInt("took") + " miliseconds!");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
             throw new DataExportException(e.getMessage());
@@ -127,8 +132,26 @@ public class ElasticSearchRepository implements Repository {
 		CloseableHttpResponse response = null;
 		try {
 			response = httpClient.execute(request);
-			InputStream body = response.getEntity().getContent();
-			return Json.createReader(body).readObject();
+			int statuscode = response.getStatusLine().getStatusCode();
+			JsonObject jsonResp = Json.createReader(
+								  	response.getEntity().getContent()
+								  ).readObject();
+			if(statuscode != HttpStatus.SC_OK) {
+				LOG.warn(
+					"Http status response from elastic search index: " +
+					statuscode +
+					". Whole JSON response: " + 
+					jsonResp
+				);
+				if(statuscode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+					LOG.error(
+						"500 SERVER ERROR from elasticsearch /_bulk api. Whole JSON response " + 
+						jsonResp.toString()
+					);
+					throw new IOException("500 SERVER ERROR from elasticsearch /_bulk api!");
+				}
+			}
+			return jsonResp;
 		} finally {
 			IOUtils.closeQuietly(httpClient);
 			IOUtils.closeQuietly(response);
@@ -148,7 +171,7 @@ public class ElasticSearchRepository implements Repository {
 			if(id.isEmpty()) {
 			    action_and_meta_data = "{\"index\":{}}";
 			} else {
-				action_and_meta_data = "{\"index\":{\"_id\"=\"" + id + "\"}}";
+				action_and_meta_data = "{\"index\":{\"_id\":\"" + id + "\"}}";
 			}
 			sb = sb.append(action_and_meta_data).append("\n");
 			sb = sb.append(doc.toString()).append("\n");

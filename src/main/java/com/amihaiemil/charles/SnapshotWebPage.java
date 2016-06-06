@@ -34,7 +34,7 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawled web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public class SnapshotWebPage implements WebPage {
+public final class SnapshotWebPage implements WebPage {
     private Url url;
     private String title;
     private String textContent;

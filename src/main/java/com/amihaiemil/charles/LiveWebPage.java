@@ -41,7 +41,7 @@ import com.amihaiemil.charles.sitemap.Url;
  * A web page that is currently being crawled.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public class LiveWebPage implements WebPage, LivePage {
+public final class LiveWebPage implements WebPage, LivePage {
     private WebDriver driver;
     private Url url;
     

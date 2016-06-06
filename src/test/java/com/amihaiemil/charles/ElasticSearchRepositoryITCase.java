@@ -23,16 +23,35 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.amihaiemil.charles;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.Json;
 import javax.json.JsonObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
+ * Integration tests for {@link ElasticSearchRepository}
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public interface MediaTypeJson {
-	JsonObject toJsonObject() throws JsonProcessingException;
+public class ElasticSearchRepositoryITCase {
+	/**
+	 * {@link ElasticSearchRepository} can send the documents to index.
+	 */
+    @Test
+    @Ignore//until setup of a test elasticsearch instance in the CI environment
+	public void indexesDocuments() throws Exception {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
+		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
+		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, docs);
+    	elasticRepo.export();
+    }
 }
