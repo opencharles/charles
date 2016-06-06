@@ -53,7 +53,7 @@ import org.mockito.Mockito;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class ElasticSearchRepositoryTestCase {
+public class ElasticSearchRepositoryTestCase {
 	
 	
 	/**

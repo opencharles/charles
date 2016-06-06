@@ -31,7 +31,7 @@ package com.amihaiemil.charles;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class Link {
+public class Link {
 	/**
 	 * Text of the anchor.
 	 */
