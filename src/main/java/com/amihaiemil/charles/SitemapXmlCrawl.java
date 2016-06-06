@@ -46,7 +46,7 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public final class SitemapXmlCrawl implements WebCrawl {
+public class SitemapXmlCrawl implements WebCrawl {
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
 
 

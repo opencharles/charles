@@ -36,7 +36,7 @@ import java.io.InputStream;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class SitemapXmlOnDisk implements SitemapXmlLocation {
+public class SitemapXmlOnDisk implements SitemapXmlLocation {
 	/**
 	 * Path of the file on disk.
 	 */

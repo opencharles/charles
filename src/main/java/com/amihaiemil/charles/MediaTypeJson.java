@@ -25,10 +25,14 @@
 */
 package com.amihaiemil.charles;
 
+import javax.json.JsonObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 /**
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
 public interface MediaTypeJson {
-
+	JsonObject toJsonObject() throws JsonProcessingException;
 }

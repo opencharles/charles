@@ -24,42 +24,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.amihaiemil.charles.sitemap;
+package com.amihaiemil.charles;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import org.slf4j.LoggerFactory;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import org.slf4j.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Represents a sitemap.xml file.
- * @author Mihai Andronache (amihaiemil@gmail.com).
+ * Integration tests for {@link ElasticSearchRepository}
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ *
  */
-public class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
-
-    private InputStream sitemap;
-
-    public SitemapXml(InputStream is) {
-        this.sitemap = is;
-    }
-
-    /**
-     * Reads (unmarshals the sitemap.xml). <br>
-     * This method closes the InputStream!
-     * @return The unmarshaled UrlSet.
-     */
-    public UrlSet read() {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
-        }
+public class ElasticSearchRepositoryITCase {
+	/**
+	 * {@link ElasticSearchRepository} can send the documents to index.
+	 */
+    @Test
+    @Ignore//until setup of a test elasticsearch instance in the CI environment
+	public void indexesDocuments() throws Exception {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
+		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
+		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, docs);
+    	elasticRepo.export();
     }
 }

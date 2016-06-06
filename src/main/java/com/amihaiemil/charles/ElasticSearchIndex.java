@@ -31,7 +31,7 @@ package com.amihaiemil.charles;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class ElasticSearchIndex {
+public class ElasticSearchIndex {
 	/**
 	 * Host name of the elasticsearch node.
 	 */
@@ -74,6 +74,6 @@ public final class ElasticSearchIndex {
 		return type;
 	} 
     public String toString() {
-    	return this.node + ":" + this.port + "/" + this.indexName + "/" + this.type;
+    	return "http://" + this.node + ":" + this.port + "/" + this.indexName + "/" + this.type;
     }
 }
