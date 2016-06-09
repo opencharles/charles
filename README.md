@@ -1,9 +1,8 @@
-<img src="http://amihaiemil.github.io/images/logocharles.PNG" align="left" style="border-radius: 50%; width: 200px;"/>
+<img src="http://www.amihaiemil.com/images/roundcharleslogo.PNG" align="left"/>
 # charles
+
 Smart web crawler.
-
 [![Build Status](https://travis-ci.org/amihaiemil/charles.svg?branch=master)](https://travis-ci.org/amihaiemil/charles)
-
 ### v 1.0.0 (to be released)
 
 A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) . 
