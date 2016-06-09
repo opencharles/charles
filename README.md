@@ -1,3 +1,4 @@
+<img src="http://amihaiemil.github.io/images/logocharles.PNG" align="left" style="border-radius: 50%; width: 200px;"/>
 # charles
 Smart web crawler.
 
