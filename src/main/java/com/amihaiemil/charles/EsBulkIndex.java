@@ -36,7 +36,7 @@ import javax.json.JsonObject;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class EsBulkIndex implements EsIndexContent {
+public class EsBulkIndex {
 
 	/**
 	 * JSON docs to be indexed.
@@ -66,7 +66,6 @@ public class EsBulkIndex implements EsIndexContent {
 	 * @param docs The json documents to be indexed.
 	 * @return The json structure as a String.
 	 */
-	@Override
 	public String structure() {
 		StringBuilder sb = new StringBuilder();
 		for(JsonObject doc : docs) {

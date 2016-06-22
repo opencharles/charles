@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Elasticsearch repository. Documents are put into an elastic search index.
+ * Elasticsearch repository. Documents are put into an elastic search index using the _bulk API.
  * 
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
@@ -59,7 +59,7 @@ public class ElasticSearchRepository implements Repository {
 	/**
 	 * Content to be indexed.
 	 */
-	private EsIndexContent idxContent;
+	private EsBulkIndex idxContent;
 	
 	/**
 	 * HTTP client.
@@ -67,12 +67,12 @@ public class ElasticSearchRepository implements Repository {
 	private CloseableHttpClient httpClient;
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsIndexContent idxContent) {
+			EsBulkIndex idxContent) {
 		this(indexInfo, idxContent, HttpClientBuilder.create().build());
 	}
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsIndexContent idxContent, CloseableHttpClient httpClient) {
+			EsBulkIndex idxContent, CloseableHttpClient httpClient) {
 		this.indexInfo = indexInfo;
 		this.httpClient = httpClient;
 		this.idxContent = idxContent;
