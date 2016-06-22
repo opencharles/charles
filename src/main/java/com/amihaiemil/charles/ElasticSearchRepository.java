@@ -59,7 +59,7 @@ public class ElasticSearchRepository implements Repository {
 	/**
 	 * Content to be indexed.
 	 */
-	private EsBulkIndex idxContent;
+	private EsBulkContent idxContent;
 	
 	/**
 	 * HTTP client.
@@ -67,12 +67,12 @@ public class ElasticSearchRepository implements Repository {
 	private CloseableHttpClient httpClient;
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsBulkIndex idxContent) {
+			EsBulkContent idxContent) {
 		this(indexInfo, idxContent, HttpClientBuilder.create().build());
 	}
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsBulkIndex idxContent, CloseableHttpClient httpClient) {
+			EsBulkContent idxContent, CloseableHttpClient httpClient) {
 		this.indexInfo = indexInfo;
 		this.httpClient = httpClient;
 		this.idxContent = idxContent;

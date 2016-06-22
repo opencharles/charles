@@ -53,7 +53,7 @@ public class ElasticSearchRepositoryITCase {
 		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
     		indexInfo,
-    		new EsBulkIndex(docs)
+    		new EsBulkContent(docs)
     	);
     	elasticRepo.export();
     }

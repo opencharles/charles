@@ -26,76 +26,60 @@
 
 package com.amihaiemil.charles;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
 /**
- * Unit tests for {@link EsBulkIndex}
+ * Index documents in bulk.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class EsBulkIndexTestCase {
+public class EsBulkContent {
 
 	/**
-     * EsBulkIndex throws exception on empty docs list.
-     */
-	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnEmptyList() {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-        new EsBulkIndex(docs);
-    }
+	 * JSON docs to be indexed.
+	 */
+	private List<JsonObject> docs;
+	
+	public EsBulkContent(List<JsonObject> docs) {
+		if(docs == null || docs.size() == 0) {
+			throw new IllegalArgumentException("There must be at least 1 document!");
+		}
+		
+		this.docs = new ArrayList<JsonObject>();
+		for(JsonObject doc : docs) {
+			this.docs.add(doc);
+		}
+	}
 	
 	/**
-     * EsBulkIndex throws exception on null docs list.
-     */
-	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnNullList() {
-        new EsBulkIndex(null);
-    }
+	 * Size of the documents list.
+	 */
+	public int size() {
+		return this.docs.size();
+	}
 	
 	/**
-     * EsBulkIndex can return its own size.
-     */
-	@Test
-	public void returnsItsSize() {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().build());
-		assertTrue(new EsBulkIndex(docs).size() == 1);
-    }
+	 * Pepare the json structure for bulk indexing.
+	 * @param docs The json documents to be indexed.
+	 * @return The json structure as a String.
+	 */
+	public String structure() {
+		StringBuilder sb = new StringBuilder();
+		for(JsonObject doc : docs) {
+			String id = doc.getString("id", "");
+			String action_and_meta_data;
+			if(id.isEmpty()) {
+			    action_and_meta_data = "{\"index\":{}}";
+			} else {
+				action_and_meta_data = "{\"index\":{\"_id\":\"" + id + "\"}}";
+			}
+			sb = sb.append(action_and_meta_data).append("\n");
+			sb = sb.append(doc.toString()).append("\n");
+		}
+		return sb.toString();
+	}
 
-	/**
-     * EsBulkIndex can structure the bulk index json string.
-     * @throws Exception if something goes wrong.
-     */
-	@Test
-	public void structuresBulk() throws Exception {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		String expected = new String(
-			IOUtils.toByteArray(
-				new FileInputStream(
-					new File("src/test/resources/bulkIndexStructure.txt")
-				)	
-			)
-		);
-		String actual = new EsBulkIndex(docs).structure();
-		assertTrue(
-			"The 2 structures are not the same! (did you forget to add a final newline (\\n)?",
-			actual.equals(expected)
-		);
-    }
-	
 }
-
-
