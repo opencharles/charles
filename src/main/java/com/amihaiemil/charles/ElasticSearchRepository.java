@@ -27,8 +27,6 @@
 package com.amihaiemil.charles;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -59,27 +57,25 @@ public class ElasticSearchRepository implements Repository {
 	private ElasticSearchIndex indexInfo;
 
 	/**
+	 * Content to be indexed.
+	 */
+	private EsIndexContent idxContent;
+	
+	/**
 	 * HTTP client.
 	 */
 	private CloseableHttpClient httpClient;
-	/**
-	 * JSON docs to be indexed.
-	 */
-	private List<JsonObject> docs;
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			List<JsonObject> docs) {
-		this(indexInfo, docs, HttpClientBuilder.create().build());
+			EsIndexContent idxContent) {
+		this(indexInfo, idxContent, HttpClientBuilder.create().build());
 	}
 
 	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			List<JsonObject> docs, CloseableHttpClient httpClient) {
+			EsIndexContent idxContent, CloseableHttpClient httpClient) {
 		this.indexInfo = indexInfo;
-		this.docs = new ArrayList<JsonObject>();
-		for (JsonObject doc : docs) {
-			this.docs.add(doc);
-		}
 		this.httpClient = httpClient;
+		this.idxContent = idxContent;
 	}
 
 	/**
@@ -94,11 +90,11 @@ public class ElasticSearchRepository implements Repository {
 	 */
 	@Override
 	public void export() throws DataExportException {
-		LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo.toString());
+		LOG.info("Sending " + idxContent.size() + " to the elasticsearch index: " + indexInfo.toString());
 		String uri = indexInfo.toString() + "/_bulk?pretty"; 
 		try {
             JsonObject jsonResponse = this.sendToIndex(
-            						      this.makeBulkJsonStructure(docs),
+            						      this.idxContent.structure(),
             						      uri
             						  );
             if(jsonResponse.getBoolean("errors", Boolean.TRUE)) {
@@ -109,7 +105,7 @@ public class ElasticSearchRepository implements Repository {
             		jsonResponse.toString()
             	);
             }
-            LOG.info("Bulk indexing of the " + docs.size() + " documents, finished in " + jsonResponse.getInt("took") + " miliseconds!");
+            LOG.info("Bulk indexing of the " + idxContent.size() + " documents, finished in " + jsonResponse.getInt("took") + " miliseconds!");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
             throw new DataExportException(e.getMessage());
@@ -156,27 +152,6 @@ public class ElasticSearchRepository implements Repository {
 			IOUtils.closeQuietly(httpClient);
 			IOUtils.closeQuietly(response);
 		}
-	}
-	
-	/**
-	 * Pepare the json structure for bulk indexing.
-	 * @param docs The json documents to be indexed.
-	 * @return The json structure as a String.
-	 */
-	private String makeBulkJsonStructure(List<JsonObject> docs) {
-		StringBuilder sb = new StringBuilder();
-		for(JsonObject doc : docs) {
-			String id = doc.getString("id", "");
-			String action_and_meta_data;
-			if(id.isEmpty()) {
-			    action_and_meta_data = "{\"index\":{}}";
-			} else {
-				action_and_meta_data = "{\"index\":{\"_id\":\"" + id + "\"}}";
-			}
-			sb = sb.append(action_and_meta_data).append("\n");
-			sb = sb.append(doc.toString()).append("\n");
-		}
-		return sb.toString();
 	}
 
 }

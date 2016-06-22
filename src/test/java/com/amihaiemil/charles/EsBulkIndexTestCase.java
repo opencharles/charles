@@ -26,12 +26,10 @@
 
 package com.amihaiemil.charles;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,56 +37,65 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
- * Test cases for {@link ElasticSearchRepository}
+ * Unit tests for {@link EsBulkIndex}
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepositoryTestCase {
-	
+public class EsBulkIndexTestCase {
+
+	/**
+     * EsBulkIndex throws exception on empty docs list.
+     */
+	@Test(expected = IllegalArgumentException.class)
+	public void exceptionOnEmptyList() {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+        new EsBulkIndex(docs);
+    }
 	
 	/**
-	 * {@link ElasticSearchRepository} can send the given list of json docs
-	 * to the specified elastisearch index.
-	 * @throws Exception - If something goes wrong.
-	 */
+     * EsBulkIndex throws exception on null docs list.
+     */
+	@Test(expected = IllegalArgumentException.class)
+	public void exceptionOnNullList() {
+        new EsBulkIndex(null);
+    }
+	
+	/**
+     * EsBulkIndex can return its own size.
+     */
 	@Test
-    public void indexesListOfDocuments() throws Exception {
-		CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
-		CloseableHttpResponse httpResponse = Mockito.mock(CloseableHttpResponse.class);
-		HttpEntity responseContentEntity = Mockito.mock(HttpEntity.class);
-		StatusLine responseStatusLine = Mockito.mock(StatusLine.class);
-		Mockito.when(responseStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-		Mockito.when(responseContentEntity.getContent()).thenReturn(this.mockElasticIndexResponse());
-		Mockito.when(httpResponse.getEntity()).thenReturn(responseContentEntity);
-		Mockito.when(httpResponse.getStatusLine()).thenReturn(responseStatusLine);
-		
-		Mockito.when(httpClient.execute(Mockito.any(HttpPost.class))).thenReturn(httpResponse);
+	public void returnsItsSize() {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+		docs.add(Json.createObjectBuilder().build());
+		assertTrue(new EsBulkIndex(docs).size() == 1);
+    }
+
+	/**
+     * EsBulkIndex can structure the bulk index json string.
+     * @throws Exception if something goes wrong.
+     */
+	@Test
+	public void structuresBulk() throws Exception {
 		List<JsonObject> docs = new ArrayList<JsonObject>();
 		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
 		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test5", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, new EsBulkIndex(docs), httpClient);
-    	elasticRepo.export();
-    }
-	
-	public InputStream mockElasticIndexResponse() throws FileNotFoundException, IOException {
-		return new ByteArrayInputStream(
+		String expected = new String(
 			IOUtils.toByteArray(
 				new FileInputStream(
-					new File("src/test/resources/elasticIndexResponse.json")
-				)
+					new File("src/test/resources/bulkIndexStructure.txt")
+				)	
 			)
 		);
-	}
-
+		String actual = new EsBulkIndex(docs).structure();
+		assertTrue(
+			"The 2 structures are not the same! (did you forget to add a final newline (\\n)?",
+			actual.equals(expected)
+		);
+    }
+	
 }
+
+

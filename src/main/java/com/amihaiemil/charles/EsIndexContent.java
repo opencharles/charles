@@ -26,35 +26,22 @@
 
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
- * Integration tests for {@link ElasticSearchRepository}
+ * Content that should be indexed into Elasticsearch
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepositoryITCase {
+public interface EsIndexContent {
+
 	/**
-	 * {@link ElasticSearchRepository} can send the documents to index.
+	 * How many documents will be indexed?
+	 * @return int representing the number of documents.
 	 */
-    @Test
-    @Ignore//until setup of a test elasticsearch instance in the CI environment
-	public void indexesDocuments() throws Exception {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-    		indexInfo,
-    		new EsBulkIndex(docs)
-    	);
-    	elasticRepo.export();
-    }
+	int size();
+
+	/**
+	 * Json structure of documents that got to the index.
+	 * @return String representing a Json structure.
+	 */
+    String structure();
 }
