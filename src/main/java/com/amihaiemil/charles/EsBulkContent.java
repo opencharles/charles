@@ -29,32 +29,57 @@ package com.amihaiemil.charles;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
- * Integration tests for {@link ElasticSearchRepository}
+ * Index documents in bulk.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepositoryITCase {
+public class EsBulkContent {
+
 	/**
-	 * {@link ElasticSearchRepository} can send the documents to index.
+	 * JSON docs to be indexed.
 	 */
-    @Test
-    @Ignore//until setup of a test elasticsearch instance in the CI environment
-	public void indexesDocuments() throws Exception {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-    		indexInfo,
-    		new EsBulkContent(docs)
-    	);
-    	elasticRepo.export();
-    }
+	private List<JsonObject> docs;
+	
+	public EsBulkContent(List<JsonObject> docs) {
+		if(docs == null || docs.size() == 0) {
+			throw new IllegalArgumentException("There must be at least 1 document!");
+		}
+		
+		this.docs = new ArrayList<JsonObject>();
+		for(JsonObject doc : docs) {
+			this.docs.add(doc);
+		}
+	}
+	
+	/**
+	 * Size of the documents list.
+	 */
+	public int size() {
+		return this.docs.size();
+	}
+	
+	/**
+	 * Pepare the json structure for bulk indexing.
+	 * @param docs The json documents to be indexed.
+	 * @return The json structure as a String.
+	 */
+	public String structure() {
+		StringBuilder sb = new StringBuilder();
+		for(JsonObject doc : docs) {
+			String id = doc.getString("id", "");
+			String action_and_meta_data;
+			if(id.isEmpty()) {
+			    action_and_meta_data = "{\"index\":{}}";
+			} else {
+				action_and_meta_data = "{\"index\":{\"_id\":\"" + id + "\"}}";
+			}
+			sb = sb.append(action_and_meta_data).append("\n");
+			sb = sb.append(doc.toString()).append("\n");
+		}
+		return sb.toString();
+	}
+
 }

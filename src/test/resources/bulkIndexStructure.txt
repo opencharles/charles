@@ -1,0 +1,4 @@
+{"index":{"_id":"1"}}
+{"id":"1","name":"Mihai"}
+{"index":{"_id":"2"}}
+{"id":"2","name":"Emil"}

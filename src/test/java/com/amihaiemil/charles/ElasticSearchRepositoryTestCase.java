@@ -77,7 +77,7 @@ public class ElasticSearchRepositoryTestCase {
 		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
 		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
 		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test5", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, docs, httpClient);
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, new EsBulkContent(docs), httpClient);
     	elasticRepo.export();
     }
 	

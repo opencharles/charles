@@ -26,35 +26,76 @@
 
 package com.amihaiemil.charles;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.junit.Ignore;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 /**
- * Integration tests for {@link ElasticSearchRepository}
+ * Unit tests for {@link EsBulkContent}
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepositoryITCase {
+public class EsBulkContentTestCase {
+
 	/**
-	 * {@link ElasticSearchRepository} can send the documents to index.
-	 */
-    @Test
-    @Ignore//until setup of a test elasticsearch instance in the CI environment
-	public void indexesDocuments() throws Exception {
+     * EsBulkIndex throws exception on empty docs list.
+     */
+	@Test(expected = IllegalArgumentException.class)
+	public void exceptionOnEmptyList() {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+        new EsBulkContent(docs);
+    }
+	
+	/**
+     * EsBulkIndex throws exception on null docs list.
+     */
+	@Test(expected = IllegalArgumentException.class)
+	public void exceptionOnNullList() {
+        new EsBulkContent(null);
+    }
+	
+	/**
+     * EsBulkIndex can return its own size.
+     */
+	@Test
+	public void returnsItsSize() {
+		List<JsonObject> docs = new ArrayList<JsonObject>();
+		docs.add(Json.createObjectBuilder().build());
+		assertTrue(new EsBulkContent(docs).size() == 1);
+    }
+
+	/**
+     * EsBulkIndex can structure the bulk index json string.
+     * @throws Exception if something goes wrong.
+     */
+	@Test
+	public void structuresBulk() throws Exception {
 		List<JsonObject> docs = new ArrayList<JsonObject>();
 		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
 		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-    		indexInfo,
-    		new EsBulkContent(docs)
-    	);
-    	elasticRepo.export();
+		String expected = new String(
+			IOUtils.toByteArray(
+				new FileInputStream(
+					new File("src/test/resources/bulkIndexStructure.txt")
+				)	
+			)
+		);
+		String actual = new EsBulkContent(docs).structure();
+		assertTrue(
+			"The 2 structures are not the same! (did you forget to add a final newline (\\n)?",
+			actual.equals(expected)
+		);
     }
+	
 }
+
+
