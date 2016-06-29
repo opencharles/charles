@@ -5,5 +5,6 @@ jdk:
 script:
   - set -e
   - phantomjs --version
+  - elasticsearch -version
   - whereis phantomjs
   - mvn clean install -Pitcases
