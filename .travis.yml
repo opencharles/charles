@@ -5,7 +5,7 @@ jdk:
 addons:
   apt:
     sources:
-      - elasticsearch-2.3.3
+      - elasticsearch-1.7
     packages:
       - elasticsearch
 services:
