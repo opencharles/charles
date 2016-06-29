@@ -30,10 +30,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-import org.junit.Ignore;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Integration tests for {@link ElasticSearchRepository}
@@ -45,16 +52,56 @@ public class ElasticSearchRepositoryITCase {
 	 * {@link ElasticSearchRepository} can send the documents to index.
 	 */
     @Test
-    @Ignore//until setup of a test elasticsearch instance in the CI environment
 	public void indexesDocuments() throws Exception {
 		List<JsonObject> docs = new ArrayList<JsonObject>();
 		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
 		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test10", "doctype");
+		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "testindex", "doctype");
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
     		indexInfo,
     		new EsBulkContent(docs)
     	);
     	elasticRepo.export();
+    	
+    	Thread.sleep(3000);//indexed docs don't become searchable instantly
+    	
+    	JsonObject resp = this.search("*:*", indexInfo);
+    	JsonObject  hits = resp.getJsonObject("hits");
+    	assertTrue(hits.getInt("total") == 2);
+    	JsonArray results = hits.getJsonArray("hits");
+    	assertTrue(hits.getJsonArray("hits").size() == 2);
+    	boolean containsMihai = false;
+    	for(int i=0;i<results.size();i++) {
+    		if(results.getJsonObject(i).getJsonObject("_source").getString("name").equals("Mihai")) {
+    			containsMihai = true;
+    			break;
+    		}
+    	}
+    	assertTrue(containsMihai);
+    }
+    
+    /**
+     * Search the elasticsearch index to check if the index was performed.
+     * @param query search query.
+     * @param indexInfo info about the index.
+     * @return JsonObject search results
+     * @throws Exception If something goes wrong.
+     */
+    public JsonObject search(String query, ElasticSearchIndex indexInfo) throws Exception {
+    	HttpGet request = new HttpGet(indexInfo.toString() + "/_search?q=" + query);
+		request.addHeader("content-type", "application/json");
+
+		CloseableHttpResponse response = null;
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		try {
+			response = httpClient.execute(request);
+			JsonObject jsonResp = Json.createReader(
+								  	response.getEntity().getContent()
+								  ).readObject();
+			return jsonResp;
+		} finally {
+			IOUtils.closeQuietly(httpClient);
+			IOUtils.closeQuietly(response);
+		}
     }
 }
