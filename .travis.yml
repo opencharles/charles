@@ -2,9 +2,24 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk7
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.3.3
+    packages:
+      - elasticsearch
+services:
+  - elasticsearch
+
+before_install:
+  - sleep 10
+
+install: true
+
 script:
   - set -e
   - phantomjs --version
-  - elasticsearch -version
   - whereis phantomjs
+  - elasticsearch -v
+  - curl http://localhost:9200/
   - mvn clean install -Pitcases
