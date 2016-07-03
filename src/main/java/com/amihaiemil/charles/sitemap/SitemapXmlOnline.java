@@ -41,7 +41,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class SitemapXmlOnline implements SitemapXmlLocation {
+public final class SitemapXmlOnline implements SitemapXmlLocation {
 	private String xmlAddress;
 	private CloseableHttpClient httpClient;
 	

@@ -30,7 +30,7 @@ package com.amihaiemil.charles;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class DataExportException extends Exception {
+public final class DataExportException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 

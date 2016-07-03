@@ -36,7 +36,7 @@ import javax.json.JsonObject;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class EsBulkContent {
+public final class EsBulkContent {
 
 	/**
 	 * JSON docs to be indexed.

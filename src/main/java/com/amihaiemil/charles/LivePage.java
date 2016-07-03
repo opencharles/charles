@@ -29,6 +29,6 @@ package com.amihaiemil.charles;
  * Interface of a live page.
  * @author Mihai Andronache (amihaiemil@gmail.com).
  */
-public interface LivePage {
+public interface LivePage extends WebPage {
     WebPage snapshot();
 }

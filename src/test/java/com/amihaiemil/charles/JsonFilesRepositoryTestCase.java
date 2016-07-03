@@ -43,7 +43,7 @@ public class JsonFilesRepositoryTestCase {
 	
     @Test
     public void exportsPagesToFiles() throws Exception {
-    	SnapshotWebPage page = new SnapshotWebPage(Mockito.mock(LiveWebPage.class));
+    	WebPage page = new SnapshotWebPage(Mockito.mock(LivePage.class));
     	page.setTextContent("text on page");
     	page.setTitle("Title | Page");
     	

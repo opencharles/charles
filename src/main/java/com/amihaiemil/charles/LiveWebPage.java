@@ -41,7 +41,7 @@ import com.amihaiemil.charles.sitemap.Url;
  * A web page that is currently being crawled.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public class LiveWebPage implements WebPage, LivePage {
+public final class LiveWebPage implements LivePage {
     private WebDriver driver;
     private Url url;
     
@@ -50,6 +50,10 @@ public class LiveWebPage implements WebPage, LivePage {
     
     @FindBy(tagName=("body"))
     private WebElement body;
+    
+    public LiveWebPage() {
+        
+    }
     
     public LiveWebPage(WebDriver driver, Link l) {
     	this(driver, new Url(l.getHref()));

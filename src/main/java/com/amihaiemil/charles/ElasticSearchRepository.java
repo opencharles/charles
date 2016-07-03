@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchRepository implements Repository {
+public final class ElasticSearchRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchRepository.class);    
 
 	/**

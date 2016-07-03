@@ -37,7 +37,7 @@ import java.util.regex.PatternSyntaxException;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class IgnoredPatterns {
+public final class IgnoredPatterns {
     private List<String> patterns;
     
     public IgnoredPatterns() {
