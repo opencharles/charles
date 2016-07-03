@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class JsonWebPage {
+public final class JsonWebPage implements MediaTypeJson {
 	private WebPage page; 
 	public JsonWebPage(WebPage page) {
 		this.page = page;
