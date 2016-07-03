@@ -31,7 +31,7 @@ package com.amihaiemil.charles;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class ElasticSearchIndex {
+public final class ElasticSearchIndex {
 	/**
 	 * Host name of the elasticsearch node.
 	 */

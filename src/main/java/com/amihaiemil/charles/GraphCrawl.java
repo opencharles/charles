@@ -41,7 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class GraphCrawl implements WebCrawl {
+public final class GraphCrawl implements WebCrawl {
 	private WebDriver driver;
     private Link index;
     private IgnoredPatterns ignoredLinks;

@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public class JsonFilesRepository implements Repository {
+public final class JsonFilesRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);    
 	private Map<WebPage, File> exports;
 

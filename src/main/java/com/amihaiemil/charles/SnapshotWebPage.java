@@ -34,7 +34,7 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawled web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public class SnapshotWebPage implements WebPage {
+public final class SnapshotWebPage implements WebPage {
     private Url url;
     private String title;
     private String textContent;
@@ -47,7 +47,7 @@ public class SnapshotWebPage implements WebPage {
     	this.links = new HashSet<Link>();
     }
     
-    public SnapshotWebPage(LiveWebPage livePage) {
+    public SnapshotWebPage(LivePage livePage) {
         this.url = livePage.getUrl();
         this.title = livePage.getTitle();
         this.textContent = livePage.getTextContent();

@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Url {
+public final class Url {
 	/**
 	 * Default ctor.
 	 */

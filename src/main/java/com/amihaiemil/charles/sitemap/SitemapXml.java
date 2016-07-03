@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * Represents a sitemap.xml file.
  * @author Mihai Andronache (amihaiemil@gmail.com).
  */
-public class SitemapXml {
+public final class SitemapXml {
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
 
     private InputStream sitemap;
