@@ -8,7 +8,7 @@ addons:
       - elasticsearch-1.7
     packages:
       - elasticsearch
-	  - nginx
+      - nginx
       - realpath
 services:
   - elasticsearch
