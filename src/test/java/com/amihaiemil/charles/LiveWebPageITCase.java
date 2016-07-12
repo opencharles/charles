@@ -38,8 +38,6 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
  * Integration tests for {@link LiveWebPage}
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -48,6 +46,24 @@ import com.amihaiemil.charles.sitemap.Url;
 public class LiveWebPageITCase {
 	
 	private WebDriver driver;
+	
+	/**
+	 * {@link LiveWebPage} can fetch all the links from a web page when it has a CNAME url defined.
+	 */
+	@Test
+	public void retrievesLinksFromPageCname() {
+		String address = "http://amihaiemil.github.io/";
+		LiveWebPage livePage = new LiveWebPage(this.driver, address);
+		Set<Link> links = livePage.getLinks();
+		assertTrue(links.size() > 0);
+		assertTrue("Expected link not on web page!", links.contains(
+					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+				)
+		);
+		for(Link l : links) {
+			assertTrue(l.getHref().startsWith(address));
+		}
+	}
 	
 	/**
 	 * {@link LiveWebPage} can fetch all the links from a web page.

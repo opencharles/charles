@@ -50,7 +50,7 @@ public class JsonWebPageTestCase {
     	page.setUrl("http://www.amihaiemil.com");
     	JsonObject json = (new JsonWebPage(page)).toJsonObject();
     	assertTrue(json.getString("id").equals("http://www.amihaiemil.com"));
-    	assertTrue(json.getJsonObject("url") != null);
+    	assertTrue(json.getString("url") != null);
     	assertTrue(json.getString("title").equals("test page | title"));
     	assertTrue(json.getString("textContent").equals("Text content on this test web page..."));
 	}
