@@ -8,18 +8,24 @@ addons:
       - elasticsearch-1.7
     packages:
       - elasticsearch
+	  - nginx
+      - realpath
 services:
   - elasticsearch
 
 before_install:
   - sleep 10
 
-install: true
+install:
+  - travisnginx/setupnginx.sh
 
 script:
   - set -e
   - phantomjs --version
   - whereis phantomjs
   - elasticsearch -v
-  - curl http://localhost:9200/
+  - curl -i http://localhost:9200/ #elasticsearch should also be accessible without authentication on port 9200
+  - curl -i http://localhost:8080/ #port 8080 is used by nginx reverse proxy to enable basic auth for elasticsearch
+  - curl -i john:s3cr3t@localhost:8080
   - mvn clean install -Pitcases
+
