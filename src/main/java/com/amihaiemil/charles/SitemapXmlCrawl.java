@@ -95,7 +95,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
         		continue;
         	}
         	LOG.info("Crawling page " + url.getLoc() + "... ");
-            pages.add(new LiveWebPage(this.driver, url).snapshot());
+            pages.add(new LiveWebPage(this.driver, url.getLoc()).snapshot());
         	LOG.info("Done crawling page " + url.getLoc() + "!");
         }
         LOG.info("Finished crawling the sitemap.xml!");

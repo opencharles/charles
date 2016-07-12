@@ -68,7 +68,7 @@ public class GraphCrawlITCase {
 		);
 		List<WebPage> pages = graph.crawl();
 		for(WebPage p : pages) {
-			assertTrue("Ignored page was crawled! " + p.getUrl().getLoc(), !p.getUrl().getLoc().contains("/2016/04/"));
+			assertTrue("Ignored page was crawled! " + p.getUrl(), !p.getUrl().contains("/2016/04/"));
 		}
 	}
 	

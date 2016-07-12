@@ -59,7 +59,7 @@ public final class JsonWebPage implements MediaTypeJson {
 		JsonObject parsed =  reader.readObject();
 		reader.close();
 		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("id", page.getUrl().getLoc());
+		job.add("id", page.getUrl());
 		
 	    for (Entry<String, JsonValue> entry : parsed.entrySet()) {
 	        job.add(entry.getKey(), entry.getValue());

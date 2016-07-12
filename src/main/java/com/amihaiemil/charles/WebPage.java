@@ -27,15 +27,13 @@ package com.amihaiemil.charles;
 
 import java.util.Set;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
  * Interface for a web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public interface WebPage {
-    Url getUrl();
-    void setUrl(Url url);
+    String getUrl();
+    void setUrl(String url);
     String getTitle();
     void setTitle(String title);
     String getTextContent();

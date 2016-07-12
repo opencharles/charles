@@ -38,7 +38,7 @@ import java.util.Set;
 @XmlRootElement(name = "urlset", namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")
 public final class UrlSet {
 
-    public UrlSet() {
+    UrlSet() {
         this.urls = new HashSet<Url>();
     }
 

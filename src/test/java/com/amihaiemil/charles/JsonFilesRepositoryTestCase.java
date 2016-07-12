@@ -30,9 +30,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Test;
 import org.mockito.Mockito;
-import com.amihaiemil.charles.sitemap.Url;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -47,13 +48,7 @@ public class JsonFilesRepositoryTestCase {
     	page.setTextContent("text on page");
     	page.setTitle("Title | Page");
     	
-    	Url url = new Url();
-    	url.setLoc("http://amihaiemil.com");
-    	url.setChangefreq("monthly");
-    	url.setLastmod("15/03/1994");
-    	url.setPriority("0.8");
-    	
-    	page.setUrl(url);
+    	page.setUrl("http://amihaiemil.com");
     	
     	File jsonFile = new File("src/test/resources/testpageExport.json");
     	if(!jsonFile.exists()) {
