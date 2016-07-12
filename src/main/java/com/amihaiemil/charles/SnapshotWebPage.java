@@ -28,20 +28,18 @@ package com.amihaiemil.charles;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
  * Crawled web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public final class SnapshotWebPage implements WebPage {
-    private Url url;
+    private String url;
     private String title;
     private String textContent;
     private Set<Link> links;
 
     public SnapshotWebPage() {
-    	this.url = new Url();
+    	this.url = "";
     	this.title = "";
     	this.textContent = "";
     	this.links = new HashSet<Link>();
@@ -57,10 +55,10 @@ public final class SnapshotWebPage implements WebPage {
         }
     }
 
-    public Url getUrl() {
+    public String getUrl() {
         return this.url;
     }
-	public void setUrl(Url url) {
+	public void setUrl(String url) {
 		this.url = url;		
 	}
 

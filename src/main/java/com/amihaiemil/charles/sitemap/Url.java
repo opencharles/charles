@@ -39,14 +39,14 @@ public final class Url {
 	/**
 	 * Default ctor.
 	 */
-	public Url() {
+	Url() {
 		this("", "", "", "");
 	}
 	/**
 	 * Constructor which only takes the location.
 	 * @param loc Address of the page:<br> e.g. http://www.amihaiemil.com
 	 */
-	public Url(String loc) {
+	Url(String loc) {
 		this(loc, "", "", "");
 	}
 	/**
@@ -57,7 +57,7 @@ public final class Url {
 	 * @param priority Priority.
 	 * @see http://www.sitemaps.org/protocol.html
 	 */
-	public Url(String loc, String changeFreq, String lastmod, String priority) {
+	Url(String loc, String changeFreq, String lastmod, String priority) {
 		this.loc = loc;
 		this.changefreq = changeFreq;
 		this.lastmod = lastmod;

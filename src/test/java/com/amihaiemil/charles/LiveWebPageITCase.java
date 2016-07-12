@@ -38,8 +38,6 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
  * Integration tests for {@link LiveWebPage}
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -50,12 +48,27 @@ public class LiveWebPageITCase {
 	private WebDriver driver;
 	
 	/**
+	 * {@link LiveWebPage} can fetch all the links from a web page when it has a CNAME url defined.
+	 */
+	@Test
+	public void retrievesLinksFromPageCname() {
+		String address = "http://amihaiemil.github.io/";
+		LiveWebPage livePage = new LiveWebPage(this.driver, address);
+		Set<Link> links = livePage.getLinks();
+		assertTrue(links.size() > 0);
+		assertTrue("Expected link not on web page!", links.contains(
+					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+				)
+		);
+	}
+	
+	/**
 	 * {@link LiveWebPage} can fetch all the links from a web page.
 	 */
 	@Test
 	public void retrievesLinksFromPage() {
 		String address = "http://www.amihaiemil.com/";
-		LiveWebPage livePage = new LiveWebPage(this.driver, new Url(address));
+		LiveWebPage livePage = new LiveWebPage(this.driver, address);
 		Set<Link> links = livePage.getLinks();
 		assertTrue(links.size() > 0);
 		assertTrue("Expected link not on web page!", links.contains(
@@ -72,7 +85,7 @@ public class LiveWebPageITCase {
 	 */
 	@Test
 	public void retrievesTextFromPage() {
-		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html"));
+		LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html");
 		String textContent = livePage.getTextContent();
 		assertTrue(textContent.contains("In his book Burke also describes HATEOAS"));
 		assertTrue(textContent.contains("\"lastmodified\": \"15/03/2016\""));
@@ -84,7 +97,7 @@ public class LiveWebPageITCase {
 	 */
 	@Test
 	public void snapshotsSelf() {
-		LiveWebPage livePage = new LiveWebPage(this.driver, new Url("http://www.amihaiemil.com"));
+		LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com");
 		WebPage snapshot = livePage.snapshot();
 		assertTrue(snapshot.getTitle().equals("amihaiemil.com | Programming blog"));
 		assertTrue(snapshot.getLinks().size() > 0);

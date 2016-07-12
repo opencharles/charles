@@ -35,15 +35,12 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
-import com.amihaiemil.charles.sitemap.Url;
-
 /**
  * A web page that is currently being crawled.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public final class LiveWebPage implements LivePage {
     private WebDriver driver;
-    private Url url;
     
     @FindBys(@FindBy(tagName=("a")))
     private List<WebElement> anchors;
@@ -52,20 +49,19 @@ public final class LiveWebPage implements LivePage {
     private WebElement body;
     
     public LiveWebPage(WebDriver driver, Link l) {
-    	this(driver, new Url(l.getHref()));
+    	this(driver, l.getHref());
     }
     
-    public LiveWebPage(WebDriver driver, Url url) {
+    public LiveWebPage(WebDriver driver, String url) {
         this.driver = driver;
-        this.url = url;
-        driver.get(url.getLoc());
+        this.driver.get(url);
         PageFactory.initElements(this.driver, this);
     }
     
-    public Url getUrl() {
-        return this.url;
+    public String getUrl() {
+        return this.driver.getCurrentUrl();
     }
-    public void setUrl(Url url) {
+    public void setUrl(String url) {
     	throw new UnsupportedOperationException("#setUrl");
 	}
     
@@ -90,7 +86,7 @@ public final class LiveWebPage implements LivePage {
 
 	public Set<Link> getLinks() {
 		Set<Link> links = new HashSet<Link>();
-		String currentLoc = this.url.getLoc();
+		String currentLoc = this.getUrl();
 		for(WebElement a : anchors) {
 			if(a.isDisplayed()) {
 				Link l = new Link(a.getText(), a.getAttribute("href"));

@@ -26,13 +26,11 @@
 
 package com.amihaiemil.charles;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.json.JsonObject;
 
 import org.junit.Test;
-
-import com.amihaiemil.charles.sitemap.Url;
-
-import static org.junit.Assert.*;
 
 /**
  * Test cases for {@link JsonWebPage}
@@ -49,10 +47,10 @@ public class JsonWebPageTestCase {
     	WebPage page = new SnapshotWebPage();
     	page.setTitle("test page | title");
     	page.setTextContent("Text content on this test web page...");
-    	page.setUrl(new Url("http://www.amihaiemil.com"));
+    	page.setUrl("http://www.amihaiemil.com");
     	JsonObject json = (new JsonWebPage(page)).toJsonObject();
     	assertTrue(json.getString("id").equals("http://www.amihaiemil.com"));
-    	assertTrue(json.getJsonObject("url") != null);
+    	assertTrue(json.getString("url") != null);
     	assertTrue(json.getString("title").equals("test page | title"));
     	assertTrue(json.getString("textContent").equals("Text content on this test web page..."));
 	}

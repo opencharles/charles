@@ -67,15 +67,15 @@ public final class JsonFilesRepository implements Repository {
 			} catch (JsonGenerationException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
 			} catch (JsonMappingException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
 			} catch (IOException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl().getLoc() + " could not be exported! Check the logs for errors.");
+					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
 			}
         }
 	}

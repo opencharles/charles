@@ -1,10 +1,5 @@
 {
-  "url" : {
-    "loc" : "http://amihaiemil.com",
-    "lastmod" : "15/03/1994",
-    "changefreq" : "monthly",
-    "priority" : "0.8"
-  },
+  "url" : "http://amihaiemil.com",
   "title" : "Title | Page",
   "textContent" : "text on page",
   "links" : [ ]
