@@ -27,6 +27,8 @@
 package com.amihaiemil.charles;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -42,8 +44,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 /**
- * Elasticsearch repository. Documents are put into an elastic search index using the _bulk API.
+ * Elasticsearch repository.
+ * Documents are put into an elastic search index using the _bulk API.
  * 
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
@@ -57,44 +62,46 @@ public final class ElasticSearchRepository implements Repository {
 	private ElasticSearchIndex indexInfo;
 
 	/**
-	 * Content to be indexed.
-	 */
-	private EsBulkContent idxContent;
-	
-	/**
 	 * HTTP client.
 	 */
 	private CloseableHttpClient httpClient;
 
-	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsBulkContent idxContent) {
-		this(indexInfo, idxContent, HttpClientBuilder.create().build());
+	public ElasticSearchRepository(ElasticSearchIndex indexInfo) {
+		this(indexInfo, HttpClientBuilder.create().build());
 	}
 
-	public ElasticSearchRepository(ElasticSearchIndex indexInfo,
-			EsBulkContent idxContent, CloseableHttpClient httpClient) {
+	public ElasticSearchRepository(
+	    ElasticSearchIndex indexInfo,
+		CloseableHttpClient httpClient
+	) {
 		this.indexInfo = indexInfo;
 		this.httpClient = httpClient;
-		this.idxContent = idxContent;
 	}
 
 	/**
-	 * This will put all the specified JsonObject documents into the given
+	 * This will put all the specified WebPages into the
 	 * elastic search index. If a document already exists, it will be updated
 	 * (only if the id is specified). The indexing is done as bulk operation, to avoid
-	 * many http requests (see https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).<br>
+	 * many http requests.<br>
 	 * <br>
 	 * <b>Note:</b> The "id" String attribute is searched in each json document
 	 * and if found, it will be used for indexing. If not found, elasticsearch
 	 * will generate one automatically.
+	 * @param pages Crawled pages to be indexed
+	 * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html">
+	 * _bulk API</a>
 	 */
 	@Override
-	public void export() throws DataExportException {
-		LOG.info("Sending " + idxContent.size() + " to the elasticsearch index: " + indexInfo.toString());
+	public void export(List<WebPage> pages) throws DataExportException {
 		String uri = indexInfo.toString() + "/_bulk?pretty"; 
 		try {
+			List<JsonObject> docs = new ArrayList<JsonObject>();
+			for(WebPage page : pages){
+				docs.add(this.prepagePage(page));
+			}
+			LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo.toString());
             JsonObject jsonResponse = this.sendToIndex(
-            						      this.idxContent.structure(),
+            		                      new EsBulkContent(docs).structure(),
             						      uri
             						  );
             if(jsonResponse.getBoolean("errors", Boolean.TRUE)) {
@@ -105,7 +112,7 @@ public final class ElasticSearchRepository implements Repository {
             		jsonResponse.toString()
             	);
             }
-            LOG.info("Bulk indexing of the " + idxContent.size() + " documents, finished in " + jsonResponse.getInt("took") + " miliseconds!");
+            LOG.info("Bulk indexing of the " + docs.size() + " documents, finished in " + jsonResponse.getInt("took") + " miliseconds!");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
             throw new DataExportException(e.getMessage());
@@ -154,4 +161,18 @@ public final class ElasticSearchRepository implements Repository {
 		}
 	}
 
+    /**
+     * Converts the WebPage to a Json (with the URL is id) for the ES index.
+     * @param page WebPage to index.
+     * @return JSON which contains the id + json-formatted page
+     * @throws IOException In case there are problems when parsing the webpage
+     */
+    private JsonObject prepagePage(WebPage page) throws IOException {
+        JsonWebPage jsonPage = new JsonWebPage(page);
+        try {
+			return Json.createObjectBuilder().add("id", page.getUrl()).add("page", jsonPage.toJsonObject()).build();
+		} catch (JsonProcessingException e) {
+			throw new IOException (e);
+		}
+	}
 }

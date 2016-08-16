@@ -26,15 +26,19 @@
 
 package com.amihaiemil.charles;
 
+import java.util.List;
+
 /**
  * Repository of crawled data. 
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * 
  */
 public interface Repository {
+
 	/**
 	 * Export the pages.
+	 * @param pages Pages to export.
 	 * @throws DataExportException If something goes wrong.
 	 */
-    public void export() throws DataExportException;
+    public void export(List<WebPage> pages) throws DataExportException;
 }

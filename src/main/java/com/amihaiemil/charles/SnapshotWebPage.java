@@ -33,6 +33,7 @@ import java.util.Set;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public final class SnapshotWebPage implements WebPage {
+	private String name;
     private String url;
     private String title;
     private String textContent;
@@ -46,6 +47,7 @@ public final class SnapshotWebPage implements WebPage {
     }
     
     public SnapshotWebPage(LivePage livePage) {
+    	this.name = livePage.getName();
         this.url = livePage.getUrl();
         this.title = livePage.getTitle();
         this.textContent = livePage.getTextContent();
@@ -55,6 +57,14 @@ public final class SnapshotWebPage implements WebPage {
         }
     }
 
+    public String getName() {
+    	return this.name;
+    }
+
+    public void setName(String name) {
+		this.name = name;
+	}
+    
     public String getUrl() {
         return this.url;
     }

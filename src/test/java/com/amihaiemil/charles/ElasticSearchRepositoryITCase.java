@@ -27,6 +27,7 @@
 package com.amihaiemil.charles;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.json.Json;
@@ -48,20 +49,19 @@ import static org.junit.Assert.*;
  *
  */
 public class ElasticSearchRepositoryITCase {
+
 	/**
 	 * {@link ElasticSearchRepository} can send the documents to index.
 	 */
     @Test
 	public void indexesDocuments() throws Exception {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
+    	List<WebPage> pages = new ArrayList<WebPage>();
+		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
+		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
+    	
 		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "testindex", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-    		indexInfo,
-    		new EsBulkContent(docs)
-    	);
-    	elasticRepo.export();
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo);
+    	elasticRepo.export(pages);
     	
     	Thread.sleep(3000);//indexed docs don't become searchable instantly
     	
@@ -70,14 +70,14 @@ public class ElasticSearchRepositoryITCase {
     	assertTrue(hits.getInt("total") == 2);
     	JsonArray results = hits.getJsonArray("hits");
     	assertTrue(hits.getJsonArray("hits").size() == 2);
-    	boolean containsMihai = false;
+    	boolean containsEva = false;
     	for(int i=0;i<results.size();i++) {
-    		if(results.getJsonObject(i).getJsonObject("_source").getString("name").equals("Mihai")) {
-    			containsMihai = true;
+    		if(results.getJsonObject(i).getJsonObject("_source").getString("id").equals("http://eva.amihaiemil.com/index.html")) {
+    			containsEva = true;
     			break;
     		}
     	}
-    	assertTrue(containsMihai);
+    	assertTrue(containsEva);
     }
     
     /**
@@ -104,4 +104,19 @@ public class ElasticSearchRepositoryITCase {
 			IOUtils.closeQuietly(response);
 		}
     }
+    
+    /**
+	 * Returns a WebPage.
+	 * @param url URL of the page.
+	 * @return WebPage
+	 */
+	public WebPage webPage(String url) {
+		WebPage page = new SnapshotWebPage();
+		page.setUrl(url);
+		page.setLinks(new LinkedHashSet<Link>());
+		page.setName("indextest.html");
+		page.setTitle("Intex Test | Title");
+		page.setTextContent("Test content of this awesome test page.");
+		return page;
+	}
 }

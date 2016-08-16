@@ -57,6 +57,15 @@ public final class LiveWebPage implements LivePage {
         this.driver.get(url);
         PageFactory.initElements(this.driver, this);
     }
+
+    public String getName() {
+    	String url = this.getUrl();
+    	return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+    }
+
+    public void setName(String name) {
+		throw new UnsupportedOperationException("#setName");
+	}
     
     public String getUrl() {
         return this.driver.getCurrentUrl();
