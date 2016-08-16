@@ -52,23 +52,26 @@ public class GraphCrawlITCase {
 	
 	@Test
 	public void crawlsAllPages() {
-		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns());
-		List<WebPage> pages = graph.crawl();
+		InMemoryRepository inmr = new InMemoryRepository();
+		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
+		graph.crawl();
 		Set<WebPage> uniquePages = new HashSet<WebPage>();
-		for(WebPage p : pages) {
+		for(WebPage p : inmr.getCrawledPages()) {
 			assertTrue("Page crawled 2 times!", uniquePages.add(p));
 		}
 	}
 	
 	@Test
 	public void crawlsAllPagesExceptIgnored() {
+		InMemoryRepository inmr = new InMemoryRepository();
 		GraphCrawl graph = new GraphCrawl(
 			"http://www.amihaiemil.com",
 			this.driver,
-			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*"))//ignore all pages (posts) from April 2016
-		);
-		List<WebPage> pages = graph.crawl();
-		for(WebPage p : pages) {
+			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*")),//ignore all pages (posts) from April 2016
+		    inmr
+        );
+		graph.crawl();
+		for(WebPage p : inmr.getCrawledPages()) {
 			assertTrue("Ignored page was crawled! " + p.getUrl(), !p.getUrl().contains("/2016/04/"));
 		}
 	}
@@ -84,16 +87,18 @@ public class GraphCrawlITCase {
 	}
 	
     private WebDriver phantomJsDriver() {
-    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
-    	DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setJavascriptEnabled(true);
-        dc.setCapability(
-            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-            phantomJsExecPath
-        );
-        return new PhantomJSDriver(dc);
+    	System.setProperty("webdriver.firefox.bin", "C:\\Program Files\\Mozilla Firefox\\firefox.exe");
+    	return new FirefoxDriver();
+//    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+//        if("".equals(phantomJsExecPath)) {
+//            phantomJsExecPath = "/usr/local/bin/phantomjs";
+//        }
+//    	DesiredCapabilities dc = new DesiredCapabilities();
+//        dc.setJavascriptEnabled(true);
+//        dc.setCapability(
+//            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+//            phantomJsExecPath
+//        );
+//        return new PhantomJSDriver(dc);
     }
 }

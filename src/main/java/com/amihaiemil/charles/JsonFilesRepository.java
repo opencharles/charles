@@ -43,14 +43,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  *
  */
 public final class JsonFilesRepository implements Repository {
-
     private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);
 
     /**
      * Directory where the json files should be stored.
      */
     private String dir;
-
+    
 	/**
 	 * Constructor.
 	 * @param Directory where the json files should be stored.
@@ -75,7 +74,6 @@ public final class JsonFilesRepository implements Repository {
             		jsonFile.createNewFile();
             	} else {
             		jsonFile.delete();
-            		jsonFile.createNewFile();
             	}
 				jsonMapper.writeValue(jsonFile, page);
 			} catch (JsonGenerationException e) {

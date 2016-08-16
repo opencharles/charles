@@ -26,13 +26,15 @@
 
 package com.amihaiemil.charles;
 
-import java.util.List;
-
 /**
  * One web crawl.
  * Represents the entry point to the crawling logic.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public interface  WebCrawl {
-    List<WebPage> crawl();
+
+   /**
+     * Crawl the website.
+    */
+    void crawl();
 }
