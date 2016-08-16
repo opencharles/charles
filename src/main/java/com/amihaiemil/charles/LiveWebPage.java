@@ -28,6 +28,7 @@ package com.amihaiemil.charles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -60,6 +61,10 @@ public final class LiveWebPage implements LivePage {
 
     public String getName() {
     	String url = this.getUrl();
+    	if(url.endsWith("/")) {
+    		url = url.substring(0, url.length()-1);
+    		return url.substring(url.lastIndexOf("/") + 1);
+    	}
     	return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
     }
 
