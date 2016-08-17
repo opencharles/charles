@@ -46,7 +46,6 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-//TODO finish redesign here.
 public final class SitemapXmlCrawl implements WebCrawl {
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
 
@@ -129,7 +128,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
         this.batchSize = batch;
     }
 
-    public void crawl() {
+    public void crawl() throws DataExportException {
         List<WebPage> pages = new ArrayList<WebPage>();
         LOG.info("Started crawling the sitemap.xml...");
         for(Url url : this.urlset) {
@@ -149,6 +148,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
     	    }
         }
         LOG.info("Finished crawling the sitemap.xml!");
+        this.repo.export(pages);
         driver.quit();
     }
     

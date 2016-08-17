@@ -142,7 +142,7 @@ public final class GraphCrawl implements WebCrawl {
 	}
     
 	@Override
-	public void crawl() {
+	public void crawl() throws DataExportException {
 		List<WebPage> pages = new ArrayList<WebPage>();
 		if(!this.ignoredLinks.contains(this.index.getHref())) {
 		    List<Link> toCrawl = new ArrayList<Link>();
@@ -168,6 +168,7 @@ public final class GraphCrawl implements WebCrawl {
 			    }
 			    link = toCrawl.remove(0);
 		    }
+		    this.repo.export(pages);
 		}
 	}
 
@@ -175,15 +176,12 @@ public final class GraphCrawl implements WebCrawl {
 	 * Check if the batch size has been reached. If yes, export the pages and empty the
 	 * list for the next batch.
 	 * @param pages Pages crawled so far.
+	 * @throws DataExportException If something goes wrong during processing of crawled pages.
 	 */
-	private void checkBatchSize(List<WebPage> pages) {
+	private void checkBatchSize(List<WebPage> pages) throws DataExportException {
 	    if(pages.size() == this.batchSize) {
-		    try {
-                this.repo.export(pages);
-                pages.clear();
-		    } catch (DataExportException e) {
-                e.printStackTrace();
-            }
+            this.repo.export(pages);
+            pages.clear();
 	    }
 	}
 	

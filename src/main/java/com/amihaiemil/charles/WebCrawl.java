@@ -35,6 +35,8 @@ public interface  WebCrawl {
 
    /**
      * Crawl the website.
+     * @throws DataExportException If something goes wrong during processing of 
+     * crawled pages.
     */
-    void crawl();
+    void crawl() throws DataExportException;
 }

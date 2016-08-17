@@ -37,6 +37,7 @@ import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
  *
  */
 public class SitemapXmlCrawlITCase {
+
 	/**
 	 * A page's title can be retrieved.
 	 * @throws Exception - If something goes wrong.

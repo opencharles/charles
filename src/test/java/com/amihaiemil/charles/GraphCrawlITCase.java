@@ -49,7 +49,7 @@ public class GraphCrawlITCase {
 	private WebDriver driver;
 	
 	@Test
-	public void crawlsAllPages() {
+	public void crawlsAllPages() throws Exception {
 		InMemoryRepository inmr = new InMemoryRepository();
 		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
 		graph.crawl();
@@ -60,7 +60,7 @@ public class GraphCrawlITCase {
 	}
 	
 	@Test
-	public void crawlsAllPagesExceptIgnored() {
+	public void crawlsAllPagesExceptIgnored() throws Exception {
 		InMemoryRepository inmr = new InMemoryRepository();
 		GraphCrawl graph = new GraphCrawl(
 			"http://www.amihaiemil.com",
