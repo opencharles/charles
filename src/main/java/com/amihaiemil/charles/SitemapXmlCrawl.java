@@ -96,6 +96,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
         this.driver = drv;
         this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
         this.ignoredLinks = ignored;
+        this.repo = repo;
         this.batchSize = batch;
     }
     
@@ -125,6 +126,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
             throw ex;
         }
         this.ignoredLinks = ignored;
+        this.repo = repo;
         this.batchSize = batch;
     }
 
