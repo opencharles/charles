@@ -27,8 +27,6 @@ package com.amihaiemil.charles;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
@@ -49,14 +47,15 @@ public class SitemapXmlCrawlITCase {
         if("".equals(phantomJsExecPath)) {
             phantomJsExecPath = "/usr/local/bin/phantomjs";
         }
-
+        InMemoryRepository inmr = new InMemoryRepository();
         SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-            phantomJsExecPath,
+        	phantomJsExecPath,
             new SitemapXmlOnDisk("src/test/resources/testsitemap.xml"),
-            new IgnoredPatterns()
+            new IgnoredPatterns(),
+            inmr
         );
-        List<WebPage> pages = sitemapXmlCrawl.crawl();
-        assertTrue(pages.size() == 1);
-        assertTrue(pages.get(0).getTitle().equals("EvA project"));
+        sitemapXmlCrawl.crawl();
+        assertTrue(inmr.getCrawledPages().size() == 1);
+        assertTrue(inmr.getCrawledPages().get(0).getTitle().equals("EvA project"));
     }
 }

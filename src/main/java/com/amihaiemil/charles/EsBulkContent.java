@@ -36,14 +36,14 @@ import javax.json.JsonObject;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class EsBulkContent {
+final class EsBulkContent {
 
 	/**
 	 * JSON docs to be indexed.
 	 */
 	private List<JsonObject> docs;
 	
-	public EsBulkContent(List<JsonObject> docs) {
+	EsBulkContent(List<JsonObject> docs) {
 		if(docs == null || docs.size() == 0) {
 			throw new IllegalArgumentException("There must be at least 1 document!");
 		}

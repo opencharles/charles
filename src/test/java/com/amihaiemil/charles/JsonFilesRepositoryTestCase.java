@@ -28,8 +28,8 @@ package com.amihaiemil.charles;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -47,22 +47,22 @@ public class JsonFilesRepositoryTestCase {
     	WebPage page = new SnapshotWebPage(Mockito.mock(LivePage.class));
     	page.setTextContent("text on page");
     	page.setTitle("Title | Page");
-    	
+    	page.setName("index");
     	page.setUrl("http://amihaiemil.com");
+
     	
-    	File jsonFile = new File("src/test/resources/testpageExport.json");
-    	if(!jsonFile.exists()) {
-    		jsonFile.createNewFile();
-    	}
-    	
-    	Map<WebPage, File> pages = new HashMap<WebPage, File>();
-    	pages.put(page, jsonFile);
-    	Repository testRepo = new JsonFilesRepository(pages);
-    	testRepo.export();
-    	SnapshotWebPage readPage = (new ObjectMapper()).readValue(jsonFile, SnapshotWebPage.class);
+    	List<WebPage> pages = new ArrayList<WebPage>();
+    	pages.add(page);
+    	Repository testRepo = new JsonFilesRepository("src/test/resources/");
+    	testRepo.export(pages);
+    	SnapshotWebPage readPage = (new ObjectMapper()).readValue(
+    	    new File("src/test/resources/index.json"),
+    	    SnapshotWebPage.class
+    	);
     	
     	assertTrue(readPage.getTitle().equals(page.getTitle()));
     	assertTrue(readPage.getTextContent().equals(page.getTextContent()));
+
     	assertTrue(readPage.getUrl().equals(page.getUrl()));
     	
     }

@@ -32,6 +32,14 @@ import java.util.Set;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public interface WebPage {
+
+	/**
+	 * Get the filename of this webpage. E.g. index.html -> index
+	 * @return String filename.
+	 */
+	String getName();
+    void setName(String name);
+
     String getUrl();
     void setUrl(String url);
     String getTitle();

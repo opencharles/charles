@@ -27,7 +27,7 @@ package com.amihaiemil.charles;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,39 +43,51 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  *
  */
 public final class JsonFilesRepository implements Repository {
-    private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);    
-	private Map<WebPage, File> exports;
+    private static final Logger LOG = LoggerFactory.getLogger(JsonFilesRepository.class);
 
+    /**
+     * Directory where the json files should be stored.
+     */
+    private String dir;
+    
 	/**
 	 * Constructor.
-	 * @param exp Map of pages to be exported.
+	 * @param Directory where the json files should be stored.
 	 */
-    public JsonFilesRepository(Map<WebPage, File> exp) {
-    	this.exports = exp;
+    public JsonFilesRepository(String dir) {
+        this.dir = dir;
+    	if(!dir.endsWith("/")) {
+    		this.dir += "/";
+    	}
     }
 
 	/**
 	 * Export.
 	 */
-	public void export() throws DataExportException {
-        for(Map.Entry<WebPage, File> exp : exports.entrySet()){
+	public void export(List<WebPage> pages) throws DataExportException {
+        for(WebPage page : pages){
         	ObjectMapper jsonMapper = new ObjectMapper();
         	jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
-
         	try {
-				jsonMapper.writeValue(exp.getValue(), exp.getKey());
+        		File jsonFile = new File(this.dir + page.getName() + ".json");
+            	if(!jsonFile.exists()) {
+            		jsonFile.createNewFile();
+            	} else {
+            		jsonFile.delete();
+            	}
+				jsonMapper.writeValue(jsonFile, page);
 			} catch (JsonGenerationException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
+					"Page with url " + page.getUrl() + " could not be exported! Check the logs for errors.");
 			} catch (JsonMappingException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
+					"Page with url " + page.getUrl() + " could not be exported! Check the logs for errors.");
 			} catch (IOException e) {
 				LOG.error(e.getMessage(), e);
 				throw new DataExportException(
-					"Page with url " + exp.getKey().getUrl() + " could not be exported! Check the logs for errors.");
+					"Page with url " + page.getUrl() + " could not be exported! Check the logs for errors.");
 			}
         }
 	}

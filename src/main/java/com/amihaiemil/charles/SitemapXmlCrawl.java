@@ -53,13 +53,65 @@ public final class SitemapXmlCrawl implements WebCrawl {
     private WebDriver driver;
     private Set<Url> urlset;
     private IgnoredPatterns ignoredLinks;
+    private Repository repo;
+    private int batchSize;
+    
+    /**
+     * Start a new sitemap.xml crawl using phantom js.
+     * @param phantomJsExecPath Path to the phantomJS executable.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     * @param sitemapXmlPath Path to the sitemap.xml file.
+     */
+    public SitemapXmlCrawl(
+        String phantomJsExecPath, SitemapXmlLocation sitemapLoc,
+        IgnoredPatterns ignored, Repository repo
+    ) throws IOException {
+        this(phantomJsExecPath, sitemapLoc, ignored, repo, 100);
+    }
+
+    /**
+     * Start a new sitemap.xml crawl using the specified driver.
+     * @param drv Specified driver (e.g. chrome, firefox etc).
+     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param ignored Patterns of the ignored pages.
+     * @param repo Repository to export the pages to.
+     */
+    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored, Repository repo) throws IOException {
+    	this(drv, sitemapLoc, ignored, repo, 100);
+    }
+
+    /**
+     * Start a new sitemap.xml crawl using the specified driver.
+     * @param drv Specified driver (e.g. chrome, firefox etc).
+     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     * @param batch Size of the batch to export.
+     */
+    public SitemapXmlCrawl(
+    	WebDriver drv, SitemapXmlLocation sitemapLoc,
+    	IgnoredPatterns ignored, Repository repo, int batch
+    ) throws IOException {
+        this.driver = drv;
+        this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
+        this.ignoredLinks = ignored;
+        this.repo = repo;
+        this.batchSize = batch;
+    }
     
     /**
      * Start a new sitemap.xml crawl using phantom js.
      * @param phantomJsExecPath Path to the phantomJS executable.
      * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     * @param batch Size of the batch to export.
      */
-    public SitemapXmlCrawl(String phantomJsExecPath, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored) throws IOException {
+    public SitemapXmlCrawl(
+        String phantomJsExecPath, SitemapXmlLocation sitemapLoc,
+    	IgnoredPatterns ignored, Repository repo, int batch
+    ) throws IOException {
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
@@ -74,20 +126,11 @@ public final class SitemapXmlCrawl implements WebCrawl {
             throw ex;
         }
         this.ignoredLinks = ignored;
+        this.repo = repo;
+        this.batchSize = batch;
     }
 
-    /**
-     * Start a new sitemap.xml crawl using the specified driver.
-     * @param drv Specified driver (e.g. chrome, firefox etc).
-     * @param sitemapXmlPath Path to the sitemap.xml file.
-     */
-    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored) throws IOException {
-        this.driver = drv;
-        this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
-        this.ignoredLinks = ignored;
-    }
-
-    public List<WebPage> crawl() {
+    public void crawl() throws DataExportException {
         List<WebPage> pages = new ArrayList<WebPage>();
         LOG.info("Started crawling the sitemap.xml...");
         for(Url url : this.urlset) {
@@ -96,11 +139,19 @@ public final class SitemapXmlCrawl implements WebCrawl {
         	}
         	LOG.info("Crawling page " + url.getLoc() + "... ");
             pages.add(new LiveWebPage(this.driver, url.getLoc()).snapshot());
-        	LOG.info("Done crawling page " + url.getLoc() + "!");
+            LOG.info("Done crawling page " + url.getLoc() + "!");
+            if(pages.size() == this.batchSize) {
+    		    try {
+                    this.repo.export(pages);
+                    pages.clear();
+    		    } catch (DataExportException e) {
+                    e.printStackTrace();
+                }
+    	    }
         }
         LOG.info("Finished crawling the sitemap.xml!");
+        this.repo.export(pages);
         driver.quit();
-        return pages;
     }
-
+    
 }

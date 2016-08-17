@@ -42,15 +42,75 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  *
  */
 public final class GraphCrawl implements WebCrawl {
+
+	/**
+	 * WebDriver.
+	 */
 	private WebDriver driver;
+
+	/**
+	 * Page to start the crawling from.
+	 */
     private Link index;
+   
+    /**
+     * Ignored pages patterns.
+     */
     private IgnoredPatterns ignoredLinks;
+    
+    /**
+     * Repo to export the pages to.
+     */
+    private Repository repo;
+    
+    /**
+     * Pages are crawled and exported in batches in order to avoid flooding
+     * the memory if there are many pages on a website. Default value is 100.
+     */
+    private int batchSize;
     
     /**
      * Constructor.
      * @param idx The index page of the site.
+     * @param phantomJsExecPath path to PhantomJS.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
      */
-    public GraphCrawl(String idx, String phantomJsExecPath, IgnoredPatterns ignored) {
+    public GraphCrawl(
+        String idx, String phantomJsExecPath,
+        IgnoredPatterns ignored, Repository repo
+    ) {
+    	this(idx, phantomJsExecPath, ignored, repo, 100);
+    }
+    
+    /**
+     * Constructor.
+     * @param idx The index page of the site.
+     * @param drv {@link WebDriver} to use.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     */
+    public GraphCrawl(
+        String idx, WebDriver drv,
+        IgnoredPatterns ignored, Repository repo
+    ) {
+    	this(idx, drv, ignored, repo, 100);
+	}
+    
+    
+    /**
+     * Constructor.
+     * @param idx The index page of the site.
+     * @param phantomJsExecPath path to PhantomJS.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     * @param batchSize Size of the export batch.
+     */
+    public GraphCrawl(
+        String idx, String phantomJsExecPath,
+        IgnoredPatterns ignored, Repository repo, int batchSize
+    ) {
+    	this.batchSize = batchSize;
     	this.ignoredLinks = ignored;
     	this.index = new Link("index", idx);
     	DesiredCapabilities dc = new DesiredCapabilities();
@@ -60,48 +120,69 @@ public final class GraphCrawl implements WebCrawl {
             phantomJsExecPath
         );
         this.driver = new PhantomJSDriver(dc);
+        this.repo = repo;
     }
-    
+
     /**
      * Constructor.
      * @param idx The index page of the site.
      * @param drv {@link WebDriver} to use.
+     * @param ignored Ignored pages patterns.
+     * @param repo Repository where the crawled pages are exported.
+     * @param batchSize Size of the export batch.
      */
-    public GraphCrawl(String idx, WebDriver drv, IgnoredPatterns ignored) {
+    public GraphCrawl(
+        String idx, WebDriver drv,
+        IgnoredPatterns ignored, Repository repo, int batchSize
+    ) {
     	this.ignoredLinks = ignored;
     	this.index = new Link("index", idx);
     	this.driver = drv;
+        this.repo = repo;
 	}
     
 	@Override
-	public List<WebPage> crawl() {
+	public void crawl() throws DataExportException {
 		List<WebPage> pages = new ArrayList<WebPage>();
-		if(this.ignoredLinks.contains(this.index.getHref())) {
-			return pages;
-		}
-		List<Link> toCrawl = new ArrayList<Link>();
-	    Set<Link> crawledLinks = new HashSet<Link>();
-	    crawledLinks.add(this.index);
+		if(!this.ignoredLinks.contains(this.index.getHref())) {
+		    List<Link> toCrawl = new ArrayList<Link>();
+	        Set<Link> crawledLinks = new HashSet<Link>();
+	        crawledLinks.add(this.index);
 	    
-		WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
-		pages.add(indexSnapshot);
-		toCrawl.addAll(indexSnapshot.getLinks());
-		Link link = toCrawl.remove(0);
-		while(toCrawl.size() > 0) {
-			if(this.ignoredLinks.contains(link.getHref())) {
-				link = toCrawl.remove(0);
-				continue;
-			}
-
-			boolean notCrawledAlready = crawledLinks.add(link);
-			if(notCrawledAlready) {
-				WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
-				pages.add(snapshotCrawled);
-				toCrawl.addAll(snapshotCrawled.getLinks());
-			}
-			link = toCrawl.remove(0);
+		    WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
+		    pages.add(indexSnapshot);
+		    this.checkBatchSize(pages);
+		    toCrawl.addAll(indexSnapshot.getLinks());
+		    Link link = toCrawl.remove(0);
+		    while(toCrawl.size() > 0) {
+			    if(this.ignoredLinks.contains(link.getHref())) {
+				    link = toCrawl.remove(0);
+				    continue;
+			    }
+			    boolean notCrawledAlready = crawledLinks.add(link);
+			    if(notCrawledAlready) {
+				    WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
+				    pages.add(snapshotCrawled);
+				    this.checkBatchSize(pages);
+				    toCrawl.addAll(snapshotCrawled.getLinks());   
+			    }
+			    link = toCrawl.remove(0);
+		    }
+		    this.repo.export(pages);
 		}
-		return pages;
 	}
 
+	/**
+	 * Check if the batch size has been reached. If yes, export the pages and empty the
+	 * list for the next batch.
+	 * @param pages Pages crawled so far.
+	 * @throws DataExportException If something goes wrong during processing of crawled pages.
+	 */
+	private void checkBatchSize(List<WebPage> pages) throws DataExportException {
+	    if(pages.size() == this.batchSize) {
+            this.repo.export(pages);
+            pages.clear();
+	    }
+	}
+	
 }

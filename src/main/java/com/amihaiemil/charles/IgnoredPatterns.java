@@ -38,19 +38,20 @@ import java.util.regex.PatternSyntaxException;
  *
  */
 public final class IgnoredPatterns {
+
     private List<String> patterns;
-    
+
     public IgnoredPatterns() {
     	this(new ArrayList<String>());
     }
-    
+
     public IgnoredPatterns(List<String> patterns) {
     	this.patterns = new ArrayList<String>();
     	for(String pattern : patterns) {
     		this.patterns.add(pattern);
     	}
     }
-    
+
     /**
      * Should the given url be ignored or not?
      * @param url Tested url.

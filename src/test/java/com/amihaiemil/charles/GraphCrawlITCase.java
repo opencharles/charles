@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -50,24 +49,27 @@ public class GraphCrawlITCase {
 	private WebDriver driver;
 	
 	@Test
-	public void crawlsAllPages() {
-		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns());
-		List<WebPage> pages = graph.crawl();
+	public void crawlsAllPages() throws Exception {
+		InMemoryRepository inmr = new InMemoryRepository();
+		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
+		graph.crawl();
 		Set<WebPage> uniquePages = new HashSet<WebPage>();
-		for(WebPage p : pages) {
+		for(WebPage p : inmr.getCrawledPages()) {
 			assertTrue("Page crawled 2 times!", uniquePages.add(p));
 		}
 	}
 	
 	@Test
-	public void crawlsAllPagesExceptIgnored() {
+	public void crawlsAllPagesExceptIgnored() throws Exception {
+		InMemoryRepository inmr = new InMemoryRepository();
 		GraphCrawl graph = new GraphCrawl(
 			"http://www.amihaiemil.com",
 			this.driver,
-			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*"))//ignore all pages (posts) from April 2016
-		);
-		List<WebPage> pages = graph.crawl();
-		for(WebPage p : pages) {
+			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*")),//ignore all pages (posts) from April 2016
+		    inmr
+        );
+		graph.crawl();
+		for(WebPage p : inmr.getCrawledPages()) {
 			assertTrue("Ignored page was crawled! " + p.getUrl(), !p.getUrl().contains("/2016/04/"));
 		}
 	}

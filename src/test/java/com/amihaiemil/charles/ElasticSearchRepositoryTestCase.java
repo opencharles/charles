@@ -33,10 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -73,12 +71,12 @@ public class ElasticSearchRepositoryTestCase {
 		Mockito.when(httpResponse.getStatusLine()).thenReturn(responseStatusLine);
 		
 		Mockito.when(httpClient.execute(Mockito.any(HttpPost.class))).thenReturn(httpResponse);
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
+		List<WebPage> pages = new ArrayList<WebPage>();
+		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
+		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
 		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test5", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, new EsBulkContent(docs), httpClient);
-    	elasticRepo.export();
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, httpClient);
+    	elasticRepo.export(pages);
     }
 	
 	public InputStream mockElasticIndexResponse() throws FileNotFoundException, IOException {
@@ -89,6 +87,21 @@ public class ElasticSearchRepositoryTestCase {
 				)
 			)
 		);
+	}
+
+	/**
+	 * Returns a WebPage.
+	 * @param url URL of the page.
+	 * @return WebPage
+	 */
+	public WebPage webPage(String url) {
+		WebPage page = new SnapshotWebPage();
+		page.setUrl(url);
+		page.setLinks(new LinkedHashSet<Link>());
+		page.setName("indextest.html");
+		page.setTitle("Intex Test | Title");
+		page.setTextContent("Test content of this awesome test page.");
+		return page;
 	}
 
 }
