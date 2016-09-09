@@ -4,6 +4,7 @@
 Smart web crawler.
 [![Build Status](https://travis-ci.org/amihaiemil/charles.svg?branch=master)](https://travis-ci.org/amihaiemil/charles)
 [![Coverage Status](https://coveralls.io/repos/github/amihaiemil/charles/badge.svg?branch=master)](https://coveralls.io/github/amihaiemil/charles?branch=master)
+
 ### v 1.0.0 (to be released)
 
 A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) . 
