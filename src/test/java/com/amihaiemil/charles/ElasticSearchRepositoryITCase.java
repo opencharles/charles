@@ -59,7 +59,7 @@ public class ElasticSearchRepositoryITCase {
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
     	
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "testindex", "doctype");
+		String indexInfo = "http://localhost:9200/testindex/doctype";
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo);
     	elasticRepo.export(pages);
     	
@@ -87,8 +87,8 @@ public class ElasticSearchRepositoryITCase {
      * @return JsonObject search results
      * @throws Exception If something goes wrong.
      */
-    public JsonObject search(String query, ElasticSearchIndex indexInfo) throws Exception {
-    	HttpGet request = new HttpGet(indexInfo.toString() + "/_search?q=" + query);
+    public JsonObject search(String query, String indexInfo) throws Exception {
+    	HttpGet request = new HttpGet(indexInfo + "/_search?q=" + query);
 		request.addHeader("content-type", "application/json");
 
 		CloseableHttpResponse response = null;
