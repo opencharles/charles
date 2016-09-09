@@ -74,8 +74,9 @@ public class ElasticSearchRepositoryTestCase {
 		List<WebPage> pages = new ArrayList<WebPage>();
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
-		ElasticSearchIndex indexInfo = new ElasticSearchIndex("localhost", 9200, "test5", "doctype");
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo, httpClient);
+    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
+    	    "http://localhost:9200/test5/doctype", httpClient
+    	);
     	elasticRepo.export(pages);
     }
 	

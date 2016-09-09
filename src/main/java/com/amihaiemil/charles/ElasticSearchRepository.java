@@ -59,22 +59,31 @@ public final class ElasticSearchRepository implements Repository {
 	/**
 	 * Index information.
 	 */
-	private ElasticSearchIndex indexInfo;
+	private String indexInfo;
 
 	/**
 	 * HTTP client.
 	 */
 	private CloseableHttpClient httpClient;
 
-	public ElasticSearchRepository(ElasticSearchIndex indexInfo) {
-		this(indexInfo, HttpClientBuilder.create().build());
+	/**
+	 * Ctor.
+	 * @param index ES index address.
+	 */
+	public ElasticSearchRepository(String index) {
+		this(index, HttpClientBuilder.create().build());
 	}
 
+	/**
+	 * Ctor
+	 * @param index Index address
+	 * @param httpClient HTTP client.
+	 */
 	public ElasticSearchRepository(
-	    ElasticSearchIndex indexInfo,
+	    String index,
 		CloseableHttpClient httpClient
 	) {
-		this.indexInfo = indexInfo;
+		this.indexInfo = index;
 		this.httpClient = httpClient;
 	}
 
@@ -93,13 +102,13 @@ public final class ElasticSearchRepository implements Repository {
 	 */
 	@Override
 	public void export(List<WebPage> pages) throws DataExportException {
-		String uri = indexInfo.toString() + "/_bulk?pretty"; 
+		String uri = indexInfo + "/_bulk?pretty"; 
 		try {
 			List<JsonObject> docs = new ArrayList<JsonObject>();
 			for(WebPage page : pages){
 				docs.add(this.prepagePage(page));
 			}
-			LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo.toString());
+			LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo);
             JsonObject jsonResponse = this.sendToIndex(
             		                      new EsBulkContent(docs).structure(),
             						      uri
@@ -107,7 +116,7 @@ public final class ElasticSearchRepository implements Repository {
             if(jsonResponse.getBoolean("errors", Boolean.TRUE)) {
             	LOG.error(
             		"There were errors during indexing to "
-            		+ indexInfo.toString() +
+            		+ indexInfo +
             		". Whole JSON response: " +
             		jsonResponse.toString()
             	);
