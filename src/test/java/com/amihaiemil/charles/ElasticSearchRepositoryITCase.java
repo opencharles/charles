@@ -59,13 +59,13 @@ public class ElasticSearchRepositoryITCase {
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
     	
-		String indexInfo = "http://localhost:9200/testindex/doctype";
+		String indexInfo = "http://localhost:9200/charlesit";
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(indexInfo);
     	elasticRepo.export(pages);
     	
     	Thread.sleep(3000);//indexed docs don't become searchable instantly
     	
-    	JsonObject resp = this.search("*:*", indexInfo);
+    	JsonObject resp = this.search("*:*", indexInfo + "/page");
     	JsonObject  hits = resp.getJsonObject("hits");
     	assertTrue(hits.getInt("total") == 2);
     	JsonArray results = hits.getJsonArray("hits");
@@ -79,7 +79,7 @@ public class ElasticSearchRepositoryITCase {
     	}
     	assertTrue(containsEva);
     }
-    
+
     /**
      * Search the elasticsearch index to check if the index was performed.
      * @param query search query.
@@ -104,7 +104,7 @@ public class ElasticSearchRepositoryITCase {
 			IOUtils.closeQuietly(response);
 		}
     }
-    
+
     /**
 	 * Returns a WebPage.
 	 * @param url URL of the page.
@@ -116,6 +116,7 @@ public class ElasticSearchRepositoryITCase {
 		page.setLinks(new LinkedHashSet<Link>());
 		page.setName("indextest.html");
 		page.setTitle("Intex Test | Title");
+		page.setCategory("page");
 		page.setTextContent("Test content of this awesome test page.");
 		return page;
 	}

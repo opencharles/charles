@@ -80,8 +80,16 @@ public class EsBulkContentTestCase {
 	@Test
 	public void structuresBulk() throws Exception {
 		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().add("id", "1").add("name", "Mihai").build());
-		docs.add(Json.createObjectBuilder().add("id", "2").add("name", "Emil").build());
+		docs.add(
+		    Json.createObjectBuilder().add("id", "1").add("category", "test")
+		    .add("page", Json.createObjectBuilder().add("content", "Mihai").build())
+		    .build()
+		);
+		docs.add(
+		    Json.createObjectBuilder().add("id", "2").add("category", "test")
+		    .add("page", Json.createObjectBuilder().add("content", "Emil").build())
+		    .build()
+		);
 		String expected = new String(
 			IOUtils.toByteArray(
 				new FileInputStream(

@@ -102,6 +102,7 @@ public class ElasticSearchRepositoryTestCase {
 		page.setName("indextest.html");
 		page.setTitle("Intex Test | Title");
 		page.setTextContent("Test content of this awesome test page.");
+	    page.setCategory("page");
 		return page;
 	}
 

@@ -72,12 +72,13 @@ final class EsBulkContent {
 			String id = doc.getString("id", "");
 			String action_and_meta_data;
 			if(id.isEmpty()) {
-			    action_and_meta_data = "{\"index\":{}}";
+			    action_and_meta_data = "{\"index\":{\"_type\":\"" + doc.getString("category") + "\"}}";
 			} else {
-				action_and_meta_data = "{\"index\":{\"_id\":\"" + id + "\"}}";
+				action_and_meta_data = "{\"index\":{\"_type\":\"" + doc.getString("category") + "\", "
+						                + "\"_id\":\"" + id + "\"}}";
 			}
 			sb = sb.append(action_and_meta_data).append("\n");
-			sb = sb.append(doc.toString()).append("\n");
+			sb = sb.append(doc.getJsonObject("page").toString()).append("\n");
 		}
 		return sb.toString();
 	}

@@ -179,7 +179,11 @@ public final class ElasticSearchRepository implements Repository {
     private JsonObject prepagePage(WebPage page) throws IOException {
         JsonWebPage jsonPage = new JsonWebPage(page);
         try {
-			return Json.createObjectBuilder().add("id", page.getUrl()).add("page", jsonPage.toJsonObject()).build();
+        	JsonObject parsed = jsonPage.toJsonObject();
+			return Json.createObjectBuilder()
+			    .add("id", page.getUrl())
+			    .add("category", parsed.getString("category"))
+			    .add("page", parsed).build();
 		} catch (JsonProcessingException e) {
 			throw new IOException (e);
 		}

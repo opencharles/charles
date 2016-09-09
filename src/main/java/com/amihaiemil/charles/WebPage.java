@@ -27,6 +27,7 @@ package com.amihaiemil.charles;
 
 import java.util.Set;
 
+
 /**
  * Interface for a web page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -42,10 +43,16 @@ public interface WebPage {
 
     String getUrl();
     void setUrl(String url);
+    
     String getTitle();
     void setTitle(String title);
+    
     String getTextContent();
     void setTextContent(String textContent);
+
+    String getCategory();
+    void setCategory(String category);
+    
     Set<Link> getLinks();
     void setLinks(Set<Link> links);
 }
