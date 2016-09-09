@@ -29,18 +29,21 @@ package com.amihaiemil.charles;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.json.Json;
 import javax.json.JsonObject;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +77,25 @@ public final class ElasticSearchRepository implements Repository {
 		this(index, HttpClientBuilder.create().build());
 	}
 
+	/**
+	 * Ctor.
+	 * @param index ES index address.
+	 * @param username Basic auth user.
+	 * @param password Basic auth pass.
+	 */
+	public ElasticSearchRepository(
+	    String index, String username, String password) {
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(
+            AuthScope.ANY,
+            new UsernamePasswordCredentials(username, password)
+        );
+        this.httpClient = HttpClients.custom()
+                .setDefaultCredentialsProvider(credsProvider).build();
+        this.indexInfo = index;
+	}
+
+	
 	/**
 	 * Ctor
 	 * @param index Index address
@@ -188,4 +210,5 @@ public final class ElasticSearchRepository implements Repository {
 			throw new IOException (e);
 		}
 	}
+
 }
