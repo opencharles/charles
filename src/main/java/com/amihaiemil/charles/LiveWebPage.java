@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,18 +41,34 @@ import org.openqa.selenium.support.PageFactory;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public final class LiveWebPage implements LivePage {
-    private WebDriver driver;
     
+	/**
+	 * Selenium web driver.
+	 */
+	private WebDriver driver;
+
+    /**
+     * Visible anchors.
+     */
     @FindBys(@FindBy(tagName=("a")))
     private List<WebElement> anchors;
-    
+
+    /**
+     * Text content from the page.
+     */
     @FindBy(tagName=("body"))
     private WebElement body;
-    
+
+    /**
+     * Page logical category. Defaults to "page"
+     */
+    @FindBy(id = "pagectg")
+    private WebElement category;
+
     public LiveWebPage(WebDriver driver, Link l) {
     	this(driver, l.getHref());
     }
-    
+
     public LiveWebPage(WebDriver driver, String url) {
         this.driver = driver;
         this.driver.get(url);
@@ -93,6 +110,17 @@ public final class LiveWebPage implements LivePage {
     	throw new UnsupportedOperationException("#setTextContent");
 	}
 
+    public String getCategory() {
+        try {
+            return this.category.getText();
+        } catch (NoSuchElementException ex) {
+            return "page";
+        }
+    }
+    
+    public void setCategory(String category) {
+    	throw new UnsupportedOperationException("#setCategory");
+	}
     public WebPage snapshot() {
         return new SnapshotWebPage(this);
     }

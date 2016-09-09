@@ -1,4 +1,4 @@
-{"index":{"_id":"1"}}
-{"id":"1","name":"Mihai"}
-{"index":{"_id":"2"}}
-{"id":"2","name":"Emil"}
+{"index":{"_type":"test", "_id":"1"}}
+{"id":"1","category":"test","name":"Mihai"}
+{"index":{"_type":"test", "_id":"2"}}
+{"id":"2","category":"test","name":"Emil"}
