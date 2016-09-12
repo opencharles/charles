@@ -37,6 +37,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -68,7 +69,7 @@ public final class ElasticSearchRepository implements Repository {
      * Regex pattern to validate index url.
      */
     private static final String ES_INDEX_PATTERN = 
-        "^(http:\\/\\/|https:\\/\\/)([a-zA-Z0-9._-]+)(:[0-9]{4,5})*\\/[a-zA-Z0-9-_.]+$";
+        "^(http:\\/\\/|https:\\/\\/)([a-zA-Z0-9._-]+)(:[0-9]{1,5})?\\/[a-zA-Z0-9-_.]+$";
     
 	/**
 	 * Index information.
@@ -99,13 +100,37 @@ public final class ElasticSearchRepository implements Repository {
 		if(!this.isIndexUrlValid(index)) {
 	        throw new IllegalArgumentException(
 	            "Wrong ES index url pattern! Expected "
-		       + "http://domain[:port]/indexname or https://domain[:port]/indexname"
+		       + "(http|https)://domain[:port]/indexname"
 	        );
 		}
+        int portColonIndex = index.indexOf(':', 7);
+        int port = -1;
+        if(portColonIndex != -1) {
+        	port = Integer.valueOf(
+        	    index.substring(
+        	        portColonIndex+1,
+        	        index.indexOf('/', portColonIndex)
+                )
+            );
+        }
+        String scheme = "http";
+        String domain;
+        int idxAfterScheme = 7;
+        if(index.startsWith("https://")) {
+            scheme = "https";
+            idxAfterScheme = 8;
+		}
+        if(portColonIndex != -1) {
+            domain = index.substring(idxAfterScheme, portColonIndex);
+        } else {
+        	domain = index.substring(idxAfterScheme, index.indexOf('/', 8));
+        }
 
+
+		HttpHost host = new HttpHost(domain, port, scheme);
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(
-            AuthScope.ANY,
+            new AuthScope(host.getHostName(), host.getPort()),
             new UsernamePasswordCredentials(username, password)
         );
         this.httpClient = HttpClients.custom()
@@ -126,7 +151,7 @@ public final class ElasticSearchRepository implements Repository {
 		if(!this.isIndexUrlValid(index)) {
 	        throw new IllegalArgumentException(
 	            "Wrong ES index url pattern! Expected "
-		       + "http://domain[:port]/indexname or https://domain[:port]/indexname"
+		       + "(http|https)://domain[:port]/indexname"
 	        );
 		}
 		this.indexInfo = index;
@@ -152,7 +177,7 @@ public final class ElasticSearchRepository implements Repository {
 		try {
 			List<JsonObject> docs = new ArrayList<JsonObject>();
 			for(WebPage page : pages){
-				docs.add(this.prepagePage(page));
+				docs.add(this.preparePage(page));
 			}
 			LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo);
             JsonObject jsonResponse = this.sendToIndex(
@@ -222,7 +247,7 @@ public final class ElasticSearchRepository implements Repository {
      * @return JSON which contains the id + json-formatted page
      * @throws IOException In case there are problems when parsing the webpage
      */
-    private JsonObject prepagePage(WebPage page) throws IOException {
+    private JsonObject preparePage(WebPage page) throws IOException {
         JsonWebPage jsonPage = new JsonWebPage(page);
         try {
         	JsonObject parsed = jsonPage.toJsonObject();

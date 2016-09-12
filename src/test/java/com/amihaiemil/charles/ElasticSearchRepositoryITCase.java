@@ -35,10 +35,16 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -49,6 +55,12 @@ import static org.junit.Assert.*;
  *
  */
 public class ElasticSearchRepositoryITCase {
+
+	/**
+	 * Test ES credentials.
+	 */
+	private static final String USER = "jeff";
+	private static final String PASS = "s3cr3t";
 
 	/**
 	 * {@link ElasticSearchRepository} can send the documents to index.
@@ -65,7 +77,7 @@ public class ElasticSearchRepositoryITCase {
     	
     	Thread.sleep(3000);//indexed docs don't become searchable instantly
     	
-    	JsonObject resp = this.search("*:*", indexInfo + "/page");
+    	JsonObject resp = this.search("*:*", indexInfo + "/page", false);
     	JsonObject  hits = resp.getJsonObject("hits");
     	assertTrue(hits.getInt("total") == 2);
     	JsonArray results = hits.getJsonArray("hits");
@@ -81,18 +93,135 @@ public class ElasticSearchRepositoryITCase {
     }
 
     /**
+	 * {@link ElasticSearchRepository} can send the documents to index 
+	 * while authenticated with basic auth.
+	 */
+    @Test
+	public void indexesDocumentsWithAuth() throws Exception {
+    	List<WebPage> pages = new ArrayList<WebPage>();
+		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
+		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
+    	
+		String indexInfo = "http://localhost:8080/charlesitauth";
+    	ElasticSearchRepository elasticRepo =
+    	    new ElasticSearchRepository(indexInfo, USER, PASS);
+    	elasticRepo.export(pages);
+    	
+    	Thread.sleep(3000);//indexed docs don't become searchable instantly
+    	
+    	JsonObject resp = this.search("*:*", indexInfo + "/page", true);
+    	JsonObject  hits = resp.getJsonObject("hits");
+    	assertTrue(hits.getInt("total") == 2);
+    	JsonArray results = hits.getJsonArray("hits");
+    	assertTrue(hits.getJsonArray("hits").size() == 2);
+    	boolean containsEva = false;
+    	for(int i=0;i<results.size();i++) {
+    		if(results.getJsonObject(i).getJsonObject("_source").getString("id").equals("http://eva.amihaiemil.com/index.html")) {
+    			containsEva = true;
+    			break;
+    		}
+    	}
+    	assertTrue(containsEva);
+    }
+    
+    /**
+     * ElasticSearchRepository validateds the given url and throws
+     * IllegalArgumentException if it's not valid.
+     */
+    @Test
+    public void validatesIndexUrl() {
+        ElasticSearchRepository esrepo = 
+            new ElasticSearchRepository("http://localhost:9200/test");
+        esrepo = 
+            new ElasticSearchRepository("https://localhost:9200/test");
+        esrepo = 
+            new ElasticSearchRepository("http://www.estest.com/test");
+        esrepo = 
+            new ElasticSearchRepository("http://elastic-idx.ro:234/test_idx");
+        esrepo = 
+            new ElasticSearchRepository("http://es.id.com:8080/test1");
+        esrepo = 
+            new ElasticSearchRepository("https://es.id.prod:9200/test2");
+        esrepo = 
+            new ElasticSearchRepository("https://esrod:19200/test2");
+
+        try {
+            esrepo = 
+                new ElasticSearchRepository("file://esrod/test2");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("https://esrod:bla/test2");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("https://esrod:123:233/test2");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("https://esrod:19200");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("esrod:19200/test2");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("https://esrod:19200/test2/asd");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+        try {
+            esrepo = 
+                new ElasticSearchRepository("bla bla 123");
+            Assert.fail("Expected IllegalArgumentException for invalid url!");
+        } catch (IllegalArgumentException es) {
+        	//ok
+        }
+
+    }
+    
+    /**
      * Search the elasticsearch index to check if the index was performed.
      * @param query search query.
-     * @param indexInfo info about the index.
+     * @param indexInfo index url.
+     * @param auth should it provide basic auth info?
      * @return JsonObject search results
      * @throws Exception If something goes wrong.
      */
-    public JsonObject search(String query, String indexInfo) throws Exception {
+    public JsonObject search(String query, String indexInfo, boolean auth) throws Exception {
     	HttpGet request = new HttpGet(indexInfo + "/_search?q=" + query);
 		request.addHeader("content-type", "application/json");
 
 		CloseableHttpResponse response = null;
-		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpClient httpClient;
+		if(!auth) {
+		    httpClient = HttpClientBuilder.create().build();
+		} else {
+		    CredentialsProvider credsProvider = new BasicCredentialsProvider();
+	        credsProvider.setCredentials(
+	            AuthScope.ANY,
+	            new UsernamePasswordCredentials(USER, PASS)
+	        );
+	        httpClient = HttpClients.custom()
+	            .setDefaultCredentialsProvider(credsProvider).build();
+		}
 		try {
 			response = httpClient.execute(request);
 			JsonObject jsonResp = Json.createReader(
