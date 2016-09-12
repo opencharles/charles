@@ -158,19 +158,19 @@ public final class ElasticSearchRepository implements Repository {
 		this.httpClient = httpClient;
 	}
 
-	/**
-	 * This will put all the specified WebPages into the
-	 * elastic search index. If a document already exists, it will be updated
-	 * (only if the id is specified). The indexing is done as bulk operation, to avoid
-	 * many http requests.<br>
-	 * <br>
-	 * <b>Note:</b> The "id" String attribute is searched in each json document
-	 * and if found, it will be used for indexing. If not found, elasticsearch
-	 * will generate one automatically.
-	 * @param pages Crawled pages to be indexed
-	 * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html">
-	 * _bulk API</a>
-	 */
+    /**
+     * This will put all the specified WebPages into the
+     * elastic search index. If a document already exists, it will be updated
+     * (only if the id is specified). The indexing is done as bulk operation, to avoid
+     * many http requests.<br>
+     * <br>
+     * <b>Note:</b> The "id" String attribute is searched in each json document
+     * and if found, it will be used for indexing. If not found, elasticsearch
+     * will generate one automatically.
+     * @param pages Crawled pages to be indexed
+     * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html">
+     * _bulk API</a>
+     */
 	@Override
 	public void export(List<WebPage> pages) throws DataExportException {
 		String uri = indexInfo + "/_bulk?pretty"; 
