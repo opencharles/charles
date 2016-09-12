@@ -29,8 +29,13 @@ package com.amihaiemil.charles;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import javax.json.Json;
 import javax.json.JsonObject;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -59,6 +64,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public final class ElasticSearchRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchRepository.class);    
 
+    /**
+     * Regex pattern to validate index url.
+     */
+    private static final String ES_INDEX_PATTERN = 
+        "^(http:\\/\\/|https:\\/\\/)([a-zA-Z0-9._-]+)(:[0-9]{4,5})*\\/[a-zA-Z0-9-_.]+$";
+    
 	/**
 	 * Index information.
 	 */
@@ -84,7 +95,14 @@ public final class ElasticSearchRepository implements Repository {
 	 * @param password Basic auth pass.
 	 */
 	public ElasticSearchRepository(
-	    String index, String username, String password) {
+	    String index, String username, String password) {		
+		if(!this.isIndexUrlValid(index)) {
+	        throw new IllegalArgumentException(
+	            "Wrong ES index url pattern! Expected "
+		       + "http://domain[:port]/indexname or https://domain[:port]/indexname"
+	        );
+		}
+
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(
             AuthScope.ANY,
@@ -105,6 +123,12 @@ public final class ElasticSearchRepository implements Repository {
 	    String index,
 		CloseableHttpClient httpClient
 	) {
+		if(!this.isIndexUrlValid(index)) {
+	        throw new IllegalArgumentException(
+	            "Wrong ES index url pattern! Expected "
+		       + "http://domain[:port]/indexname or https://domain[:port]/indexname"
+	        );
+		}
 		this.indexInfo = index;
 		this.httpClient = httpClient;
 	}
@@ -210,5 +234,22 @@ public final class ElasticSearchRepository implements Repository {
 			throw new IOException (e);
 		}
 	}
+
+    /**
+     * Checks if the index url is well formatted.
+     * It has have the following format: 
+     * http://domain[:port]/indexname or https://domain[:port]/indexnam
+     * @param url Given url
+     * @return true if valid, false if not
+     */
+    public boolean isIndexUrlValid(String url) {
+    	try {
+    		Pattern pattern = Pattern.compile(ES_INDEX_PATTERN);
+    		Matcher matcher = pattern.matcher(url);
+    		return matcher.matches();
+    	} catch (PatternSyntaxException ex) {
+    		return false;
+    	}
+    }
 
 }
