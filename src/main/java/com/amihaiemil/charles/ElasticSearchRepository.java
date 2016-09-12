@@ -29,18 +29,27 @@ package com.amihaiemil.charles;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +65,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public final class ElasticSearchRepository implements Repository {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchRepository.class);    
 
+    /**
+     * Regex pattern to validate index url.
+     */
+    private static final String ES_INDEX_PATTERN = 
+        "^(http:\\/\\/|https:\\/\\/)([a-zA-Z0-9._-]+)(:[0-9]{1,5})?\\/[a-zA-Z0-9-_.]+$";
+    
 	/**
 	 * Index information.
 	 */
@@ -75,6 +90,54 @@ public final class ElasticSearchRepository implements Repository {
 	}
 
 	/**
+	 * Ctor.
+	 * @param index ES index address.
+	 * @param username Basic auth user.
+	 * @param password Basic auth pass.
+	 */
+	public ElasticSearchRepository(
+	    String index, String username, String password) {		
+		if(!this.isIndexUrlValid(index)) {
+	        throw new IllegalArgumentException(
+	            "Wrong ES index url pattern! Expected "
+		       + "(http|https)://domain[:port]/indexname"
+	        );
+		}
+        int portColonIndex = index.indexOf(':', 7);
+        int port = -1;
+        if(portColonIndex != -1) {
+        	port = Integer.valueOf(
+        	    index.substring(
+        	        portColonIndex+1,
+        	        index.indexOf('/', portColonIndex)
+                )
+            );
+        }
+        String scheme = "http";
+        String domain;
+        int idxAfterScheme = 7;
+        if(index.startsWith("https://")) {
+            scheme = "https";
+            idxAfterScheme = 8;
+		}
+        if(portColonIndex != -1) {
+            domain = index.substring(idxAfterScheme, portColonIndex);
+        } else {
+        	domain = index.substring(idxAfterScheme, index.indexOf('/', 8));
+        }
+
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(
+            new AuthScope(new HttpHost(domain, port, scheme)),
+            new UsernamePasswordCredentials(username, password)
+        );
+        this.httpClient = HttpClients.custom()
+                .setDefaultCredentialsProvider(credsProvider).build();
+        this.indexInfo = index;
+	}
+
+	
+	/**
 	 * Ctor
 	 * @param index Index address
 	 * @param httpClient HTTP client.
@@ -83,30 +146,36 @@ public final class ElasticSearchRepository implements Repository {
 	    String index,
 		CloseableHttpClient httpClient
 	) {
+		if(!this.isIndexUrlValid(index)) {
+	        throw new IllegalArgumentException(
+	            "Wrong ES index url pattern! Expected "
+		       + "(http|https)://domain[:port]/indexname"
+	        );
+		}
 		this.indexInfo = index;
 		this.httpClient = httpClient;
 	}
 
-	/**
-	 * This will put all the specified WebPages into the
-	 * elastic search index. If a document already exists, it will be updated
-	 * (only if the id is specified). The indexing is done as bulk operation, to avoid
-	 * many http requests.<br>
-	 * <br>
-	 * <b>Note:</b> The "id" String attribute is searched in each json document
-	 * and if found, it will be used for indexing. If not found, elasticsearch
-	 * will generate one automatically.
-	 * @param pages Crawled pages to be indexed
-	 * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html">
-	 * _bulk API</a>
-	 */
+    /**
+     * This will put all the specified WebPages into the
+     * elastic search index. If a document already exists, it will be updated
+     * (only if the id is specified). The indexing is done as bulk operation, to avoid
+     * many http requests.<br>
+     * <br>
+     * <b>Note:</b> The "id" String attribute is searched in each json document
+     * and if found, it will be used for indexing. If not found, elasticsearch
+     * will generate one automatically.
+     * @param pages Crawled pages to be indexed
+     * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html">
+     * _bulk API</a>
+     */
 	@Override
 	public void export(List<WebPage> pages) throws DataExportException {
 		String uri = indexInfo + "/_bulk?pretty"; 
 		try {
 			List<JsonObject> docs = new ArrayList<JsonObject>();
 			for(WebPage page : pages){
-				docs.add(this.prepagePage(page));
+				docs.add(this.preparePage(page));
 			}
 			LOG.info("Sending " + docs.size() + " to the elasticsearch index: " + indexInfo);
             JsonObject jsonResponse = this.sendToIndex(
@@ -176,7 +245,7 @@ public final class ElasticSearchRepository implements Repository {
      * @return JSON which contains the id + json-formatted page
      * @throws IOException In case there are problems when parsing the webpage
      */
-    private JsonObject prepagePage(WebPage page) throws IOException {
+    private JsonObject preparePage(WebPage page) throws IOException {
         JsonWebPage jsonPage = new JsonWebPage(page);
         try {
         	JsonObject parsed = jsonPage.toJsonObject();
@@ -188,4 +257,22 @@ public final class ElasticSearchRepository implements Repository {
 			throw new IOException (e);
 		}
 	}
+
+    /**
+     * Checks if the index url is well formatted.
+     * It has have the following format: 
+     * http://domain[:port]/indexname or https://domain[:port]/indexnam
+     * @param url Given url
+     * @return true if valid, false if not
+     */
+    public boolean isIndexUrlValid(String url) {
+    	try {
+    		Pattern pattern = Pattern.compile(ES_INDEX_PATTERN);
+    		Matcher matcher = pattern.matcher(url);
+    		return matcher.matches();
+    	} catch (PatternSyntaxException ex) {
+    		return false;
+    	}
+    }
+
 }
