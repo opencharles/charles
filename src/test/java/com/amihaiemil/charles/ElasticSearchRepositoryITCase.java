@@ -93,8 +93,8 @@ public class ElasticSearchRepositoryITCase {
     }
 
     /**
-	 * {@link ElasticSearchRepository} can send the documents to index 
-	 * while authenticated with basic auth.
+     * {@link ElasticSearchRepository} can send the documents to index 
+     * while authenticated with basic auth.
 	 */
     @Test
 	public void indexesDocumentsWithAuth() throws Exception {

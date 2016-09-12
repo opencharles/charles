@@ -130,7 +130,7 @@ public final class ElasticSearchRepository implements Repository {
 		HttpHost host = new HttpHost(domain, port, scheme);
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(
-            new AuthScope(host.getHostName(), host.getPort()),
+            new AuthScope(host, null, host.getSchemeName()),
             new UsernamePasswordCredentials(username, password)
         );
         this.httpClient = HttpClients.custom()
