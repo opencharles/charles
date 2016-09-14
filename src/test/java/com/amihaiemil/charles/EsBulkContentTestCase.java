@@ -98,6 +98,7 @@ public class EsBulkContentTestCase {
 			)
 		);
 		String actual = new EsBulkContent(docs).structure();
+		
 		assertTrue(
 			"The 2 structures are not the same! (did you forget to add a final newline (\\n)?",
 			actual.equals(expected)
