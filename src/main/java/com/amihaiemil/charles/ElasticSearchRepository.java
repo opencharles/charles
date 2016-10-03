@@ -27,16 +27,12 @@
 package com.amihaiemil.charles;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.json.JsonObject;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -97,25 +93,12 @@ public final class ElasticSearchRepository implements Repository {
 		this.post = new ApacheRequest(index + "/_bulk?pretty")
             .header("content-type", "application/json");
 		if(username != null && password != null) {
-            try {
-				this.post.header(
-				    "Authorization",
-//				    String.format(
-//				        "Basic %s",
-//				        DatatypeConverter.printBase64Binary(
-				            String.format(
-				                "%s:%s",
-				                URLEncoder.encode(username, "UTF-8"),
-				                URLEncoder.encode(password, "UTF-8")
-				            ).getBytes(Charset.forName("UTF-8"))
-//				        )
-//				    )
-				);
-			} catch (UnsupportedEncodingException e) {
-				throw new IllegalArgumentException(
-				    "Username and password cannot be UTF-8 encoded", e
-				);
-			}
+		    this.post.header(
+			    "Authorization",
+				String.format(
+				    "%s:%s", username, password
+				)
+		    );
 		}
 	}
 
