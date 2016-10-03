@@ -26,8 +26,6 @@
 
 package com.amihaiemil.charles;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -57,14 +55,13 @@ public class ElasticSearchRepositoryTestCase {
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
     	
-		int port = this.port();
     	MkContainer server = new MkGrizzlyContainer()
             .next(new MkAnswer.Simple("{\"response\":\"ok\", \"errors\":false, \"took\":1}"))
             .next(new MkAnswer.Simple(200))
-            .start(port);
+            .start(9201);
     	
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-            "http://localhost:" + port + "/test5"
+            "http://localhost:9201/test5"
         );
     	try {
     	    elasticRepo.export(pages);
@@ -73,15 +70,6 @@ public class ElasticSearchRepositoryTestCase {
     	}
     }
 
-	/**
-     * Find a free port.
-     * @return A free port.
-     * @throws IOException If something goes wrong.
-     */
-    private int port() throws IOException {
-        return new ServerSocket(0).getLocalPort();
-    }
-	
 	/**
 	 * Returns a WebPage.
 	 * @param url URL of the page.
