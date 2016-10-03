@@ -102,9 +102,9 @@ public class ElasticSearchRepositoryITCase {
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
     	
-		String indexInfo = "http://localhost:8080/charlesitauth";
+		String indexInfo = "http://"  + USER + ":" + PASS + "@localhost:8080/charlesitauth";
     	ElasticSearchRepository elasticRepo =
-    	    new ElasticSearchRepository(indexInfo, USER, PASS);
+    	    new ElasticSearchRepository(indexInfo);
     	elasticRepo.export(pages);
     	
     	Thread.sleep(3000);//indexed docs don't become searchable instantly
