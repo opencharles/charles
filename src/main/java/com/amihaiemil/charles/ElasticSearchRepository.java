@@ -90,15 +90,17 @@ public final class ElasticSearchRepository implements Repository {
 		       + "(http|https)://domain[:port]/indexname"
 	        );
 		}
-		this.post = new ApacheRequest(index + "/_bulk?pretty")
-            .header("content-type", "application/json");
 		if(username != null && password != null) {
-		    this.post.header(
-			    "Authorization",
-				String.format(
-				    "%s:%s", username, password
-				)
-		    );
+			String wCredentials;
+		    if(index.startsWith("http://")) {
+		    	wCredentials = "http://" + username + ":" + password
+		    	 + "@" + index.substring(7);
+		    } else {
+		    	wCredentials = "https://" + username + ":" + password
+				    + "@" + index.substring(8);
+		    }
+		    this.post = new ApacheRequest(wCredentials + "/_bulk?pretty")
+                .header("content-type", "application/json");
 		}
 	}
 
