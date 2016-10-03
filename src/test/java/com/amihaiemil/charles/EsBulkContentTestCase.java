@@ -31,6 +31,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.json.Json;
@@ -51,7 +52,7 @@ public class EsBulkContentTestCase {
      */
 	@Test(expected = IllegalArgumentException.class)
 	public void exceptionOnEmptyList() {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
+		List<WebPage> docs = new ArrayList<WebPage>();
         new EsBulkContent(docs);
     }
 	
@@ -64,46 +65,48 @@ public class EsBulkContentTestCase {
     }
 	
 	/**
-     * EsBulkIndex can return its own size.
-     */
+	 * EsBulkContent can create the json bulk for Elastic search _bulk api.
+	 * @throws Exception If something goes wrong.
+	 */
 	@Test
-	public void returnsItsSize() {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(Json.createObjectBuilder().build());
-		assertTrue(new EsBulkContent(docs).size() == 1);
-    }
+	public void structuresPagesCorrectly() throws Exception {
+		List<WebPage> pages = new ArrayList<WebPage>();
+		pages.add(this.mockWebPage("http://amihaiemil.com/page.html", "tech"));
+		pages.add(this.mockWebPage("http://amihaiemil.com/stuff/page.html", "mischelaneous"));
+		pages.add(this.mockWebPage("http://amihaiemil.com/stuff/more/page.html", "development"));
 
-	/**
-     * EsBulkIndex can structure the bulk index json string.
-     * @throws Exception if something goes wrong.
-     */
-	@Test
-	public void structuresBulk() throws Exception {
-		List<JsonObject> docs = new ArrayList<JsonObject>();
-		docs.add(
-		    Json.createObjectBuilder().add("id", "1").add("category", "test")
-		    .add("page", Json.createObjectBuilder().add("content", "Mihai").build())
-		    .build()
-		);
-		docs.add(
-		    Json.createObjectBuilder().add("id", "2").add("category", "test")
-		    .add("page", Json.createObjectBuilder().add("content", "Emil").build())
-		    .build()
-		);
+		String bulkStrucure = new EsBulkContent(pages).structure();
+		
 		String expected = new String(
-			IOUtils.toByteArray(
-				new FileInputStream(
-					new File("src/test/resources/bulkIndexStructure.txt")
+		    IOUtils.toByteArray(
+			    new FileInputStream(
+				    new File("src/test/resources/bulkIndexStructure.txt")
 				)	
 			)
 		);
-		String actual = new EsBulkContent(docs).structure();
-		
 		assertTrue(
 			"The 2 structures are not the same! (did you forget to add a final newline (\\n)?",
-			actual.equals(expected)
+		    expected.equals(bulkStrucure)
 		);
-    }
+	}
+	
+	/**
+	 * Mock a WebPage for test.
+	 * @param url
+	 * @param category
+	 * @return Webpage instance.
+	 */
+	private WebPage mockWebPage(String url, String category) {
+		WebPage page = new SnapshotWebPage();
+		page.setUrl(url);
+		page.setCategory(category);
+
+		page.setLinks(new HashSet<Link>());
+		page.setTextContent("text content...");
+		page.setName("page.html");
+		page.setTitle("page | title");
+		return page;
+	}
 	
 }
 

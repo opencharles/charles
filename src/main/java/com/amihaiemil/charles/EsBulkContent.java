@@ -26,10 +26,14 @@
 
 package com.amihaiemil.charles;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Index documents in bulk.
@@ -39,36 +43,32 @@ import javax.json.JsonObject;
 final class EsBulkContent {
 
 	/**
-	 * JSON docs to be indexed.
+	 * WebPages that go to the ES _bulk API,
 	 */
-	private List<JsonObject> docs;
-	
-	EsBulkContent(List<JsonObject> docs) {
-		if(docs == null || docs.size() == 0) {
-			throw new IllegalArgumentException("There must be at least 1 document!");
-		}
-		
-		this.docs = new ArrayList<JsonObject>();
-		for(JsonObject doc : docs) {
-			this.docs.add(doc);
-		}
-	}
-	
+	private List<WebPage> pages;
+
 	/**
-	 * Size of the documents list.
+	 * Ctor.
+	 * @param index Index where the pages will be stored.
+	 * @param pages Given web pages.
 	 */
-	public int size() {
-		return this.docs.size();
+	public EsBulkContent(List<WebPage> pages) {
+		if(pages == null || pages.size() == 0) {
+			throw new IllegalArgumentException("There must be at least 1 page!");
+		}
+		this.pages = pages;
 	}
-	
+
 	/**
 	 * Pepare the json structure for bulk indexing.
 	 * @param docs The json documents to be indexed.
 	 * @return The json structure as a String.
+	 * @throws IOException If something goes wrong while parsing.
 	 */
-	public String structure() {
+	public String structure() throws IOException {
 		StringBuilder sb = new StringBuilder();
-		for(JsonObject doc : docs) {
+		for(WebPage page : pages) {
+            JsonObject doc = this.preparePage(page);
 			String id = doc.getString("id", "");
 			String action_and_meta_data;
 			if(id.isEmpty()) {
@@ -81,6 +81,21 @@ final class EsBulkContent {
 			sb = sb.append(doc.getJsonObject("page").toString()).append("\n");
 		}
 		return sb.toString();
+	}
+
+	/**
+     * Converts the WebPage to a Json (with the URL as id) for the ES index.
+     * @param page WebPage to index.
+     * @return JSON which contains the id + json-formatted page
+     * @throws IOException In case there are problems when parsing the webpage
+     */
+    private JsonObject preparePage(WebPage page) throws IOException {
+        JsonWebPage jsonPage = new JsonWebPage(page);
+        JsonObject parsed = jsonPage.toJsonObject();
+		return Json.createObjectBuilder()
+	        .add("id", page.getUrl())
+		    .add("category", parsed.getString("category"))
+			.add("page", parsed).build();
 	}
 
 }
