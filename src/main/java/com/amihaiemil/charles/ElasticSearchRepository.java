@@ -100,16 +100,16 @@ public final class ElasticSearchRepository implements Repository {
             try {
 				this.post.header(
 				    "Authorization",
-				    String.format(
-				        "Basic %s",
-				        DatatypeConverter.printBase64Binary(
+//				    String.format(
+//				        "Basic %s",
+//				        DatatypeConverter.printBase64Binary(
 				            String.format(
 				                "%s:%s",
 				                URLEncoder.encode(username, "UTF-8"),
 				                URLEncoder.encode(password, "UTF-8")
 				            ).getBytes(Charset.forName("UTF-8"))
-				        )
-				    )
+//				        )
+//				    )
 				);
 			} catch (UnsupportedEncodingException e) {
 				throw new IllegalArgumentException(
