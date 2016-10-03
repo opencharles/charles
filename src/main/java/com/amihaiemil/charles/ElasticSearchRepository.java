@@ -101,6 +101,9 @@ public final class ElasticSearchRepository implements Repository {
 		    }
 		    this.post = new ApacheRequest(wCredentials + "/_bulk?pretty")
                 .header("content-type", "application/json");
+		} else {
+			this.post = new ApacheRequest(index + "/_bulk?pretty")
+            .header("content-type", "application/json");
 		}
 	}
 
