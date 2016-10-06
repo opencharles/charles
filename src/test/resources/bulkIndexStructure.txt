@@ -1,4 +1,6 @@
-{"index":{"_type":"test", "_id":"1"}}
-{"content":"Mihai"}
-{"index":{"_type":"test", "_id":"2"}}
-{"content":"Emil"}
+{"index":{"_type":"tech", "_id":"http://amihaiemil.com/page.html"}}
+{"id":"http://amihaiemil.com/page.html","name":"page.html","url":"http://amihaiemil.com/page.html","title":"page | title","textContent":"text content...","category":"tech","links":[]}
+{"index":{"_type":"mischelaneous", "_id":"http://amihaiemil.com/stuff/page.html"}}
+{"id":"http://amihaiemil.com/stuff/page.html","name":"page.html","url":"http://amihaiemil.com/stuff/page.html","title":"page | title","textContent":"text content...","category":"mischelaneous","links":[]}
+{"index":{"_type":"development", "_id":"http://amihaiemil.com/stuff/more/page.html"}}
+{"id":"http://amihaiemil.com/stuff/more/page.html","name":"page.html","url":"http://amihaiemil.com/stuff/more/page.html","title":"page | title","textContent":"text content...","category":"development","links":[]}

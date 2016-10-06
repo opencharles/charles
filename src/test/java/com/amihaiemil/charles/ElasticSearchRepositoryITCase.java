@@ -205,7 +205,7 @@ public class ElasticSearchRepositoryITCase {
      * @return JsonObject search results
      * @throws Exception If something goes wrong.
      */
-    public JsonObject search(String query, String indexInfo, boolean auth) throws Exception {
+    private JsonObject search(String query, String indexInfo, boolean auth) throws Exception {
     	HttpGet request = new HttpGet(indexInfo + "/_search?q=" + query);
 		request.addHeader("content-type", "application/json");
 
@@ -239,7 +239,7 @@ public class ElasticSearchRepositoryITCase {
 	 * @param url URL of the page.
 	 * @return WebPage
 	 */
-	public WebPage webPage(String url) {
+	private WebPage webPage(String url) {
 		WebPage page = new SnapshotWebPage();
 		page.setUrl(url);
 		page.setLinks(new LinkedHashSet<Link>());

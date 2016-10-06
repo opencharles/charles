@@ -26,25 +26,15 @@
 
 package com.amihaiemil.charles;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
-import org.mockito.Mockito;
+
+import com.jcabi.http.mock.MkAnswer;
+import com.jcabi.http.mock.MkContainer;
+import com.jcabi.http.mock.MkGrizzlyContainer;
 
 /**
  * Test cases for {@link ElasticSearchRepository}
@@ -61,41 +51,31 @@ public class ElasticSearchRepositoryTestCase {
 	 */
 	@Test
     public void indexesListOfDocuments() throws Exception {
-		CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
-		CloseableHttpResponse httpResponse = Mockito.mock(CloseableHttpResponse.class);
-		HttpEntity responseContentEntity = Mockito.mock(HttpEntity.class);
-		StatusLine responseStatusLine = Mockito.mock(StatusLine.class);
-		Mockito.when(responseStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
-		Mockito.when(responseContentEntity.getContent()).thenReturn(this.mockElasticIndexResponse());
-		Mockito.when(httpResponse.getEntity()).thenReturn(responseContentEntity);
-		Mockito.when(httpResponse.getStatusLine()).thenReturn(responseStatusLine);
-		
-		Mockito.when(httpClient.execute(Mockito.any(HttpPost.class))).thenReturn(httpResponse);
 		List<WebPage> pages = new ArrayList<WebPage>();
 		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
 		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
+    	
+    	MkContainer server = new MkGrizzlyContainer()
+            .next(new MkAnswer.Simple("{\"response\":\"ok\", \"errors\":false, \"took\":1}"))
+            .next(new MkAnswer.Simple(200))
+            .start(9201);
+    	
     	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-    	    "http://localhost:9200/test5", httpClient
-    	);
-    	elasticRepo.export(pages);
+            "http://localhost:9201/test5"
+        );
+    	try {
+    	    elasticRepo.export(pages);
+    	} finally {
+    		server.close();
+    	}
     }
-	
-	public InputStream mockElasticIndexResponse() throws FileNotFoundException, IOException {
-		return new ByteArrayInputStream(
-			IOUtils.toByteArray(
-				new FileInputStream(
-					new File("src/test/resources/elasticIndexResponse.json")
-				)
-			)
-		);
-	}
 
 	/**
 	 * Returns a WebPage.
 	 * @param url URL of the page.
 	 * @return WebPage
 	 */
-	public WebPage webPage(String url) {
+	private WebPage webPage(String url) {
 		WebPage page = new SnapshotWebPage();
 		page.setUrl(url);
 		page.setLinks(new LinkedHashSet<Link>());
