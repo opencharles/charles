@@ -86,6 +86,28 @@ public final class RetriableCrawlTestCase {
         rc.crawl();
         Mockito.verify(mc, Mockito.times(5)).crawl();
     }
+    
+    /**
+     * RetriableCrawl fails with RE the first time, then throws DataExportException
+     * the second time (thus not retrying the 3rd time) 
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void crawlThrowsDeeSecondTime() throws Exception {
+        WebCrawl mc = Mockito.mock(WebCrawl.class);
+        Mockito
+            .doThrow(new RuntimeException("Test runtime exception 1"))
+            .doThrow(new DataExportException("Test dee exception 2"))
+            .doNothing()
+            .when(mc).crawl();
+        RetriableCrawl rc = new RetriableCrawl(mc);
+        try {
+            rc.crawl();
+        } catch (DataExportException ex) {
+            assertTrue(ex.getMessage().equals("Test dee exception 2"));
+            Mockito.verify(mc, Mockito.times(2)).crawl();
+        }
+    }
 
     /**
      * RetriableCrawl fails after all retrials
