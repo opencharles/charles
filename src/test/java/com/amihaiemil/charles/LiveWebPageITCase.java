@@ -34,6 +34,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -128,18 +129,20 @@ public class LiveWebPageITCase {
 	}
 	
     private WebDriver phantomJsDriver() {
-    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
-
-    	DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setJavascriptEnabled(true);
-        dc.setCapability(
-            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-            phantomJsExecPath
-        );
-        return new PhantomJSDriver(dc);
+//    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+//        if("".equals(phantomJsExecPath)) {
+//            phantomJsExecPath = "/usr/local/bin/phantomjs";
+//        }
+//
+//    	DesiredCapabilities dc = new DesiredCapabilities();
+//        dc.setJavascriptEnabled(true);
+//        dc.setCapability(
+//            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+//            phantomJsExecPath
+//        );
+//        return new PhantomJSDriver(dc);
+    	System.setProperty("webdriver.firefox.bin", "C:\\Program Files\\Mozilla Firefox\\firefox.exe");
+    	return new FirefoxDriver();
     }
 
 }

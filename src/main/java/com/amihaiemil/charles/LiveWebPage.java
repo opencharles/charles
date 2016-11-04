@@ -32,6 +32,7 @@ import java.util.Set;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
@@ -51,18 +52,21 @@ public final class LiveWebPage implements LivePage {
      * Visible anchors.
      */
     @FindBys(@FindBy(tagName=("a")))
+    @CacheLookup
     private List<WebElement> anchors;
 
     /**
      * Text content from the page.
      */
     @FindBy(tagName=("body"))
+    @CacheLookup
     private WebElement body;
 
     /**
      * Page logical category. Defaults to "page"
      */
     @FindBy(id = "pagectg")
+    @CacheLookup
     private WebElement category;
 
     public LiveWebPage(WebDriver driver, Link l) {
@@ -142,4 +146,5 @@ public final class LiveWebPage implements LivePage {
 	public void setLinks(Set<Link> links) {
 		throw new UnsupportedOperationException("#setLinks");	
 	}
+
 }

@@ -32,57 +32,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Crawl the website as a graph (tree) starting from the index page.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  *
  */
-public final class GraphCrawl implements WebCrawl {
-
-	/**
-	 * WebDriver.
-	 */
-	private WebDriver driver;
+public final class GraphCrawl extends AbstractWebCrawl {
 
 	/**
 	 * Page to start the crawling from.
 	 */
     private Link index;
-   
-    /**
-     * Ignored pages patterns.
-     */
-    private IgnoredPatterns ignoredLinks;
-    
-    /**
-     * Repo to export the pages to.
-     */
-    private Repository repo;
-    
-    /**
-     * Pages are crawled and exported in batches in order to avoid flooding
-     * the memory if there are many pages on a website. Default value is 100.
-     */
-    private int batchSize;
-    
-    /**
-     * Constructor.
-     * @param idx The index page of the site.
-     * @param phantomJsExecPath path to PhantomJS.
-     * @param ignored Ignored pages patterns.
-     * @param repo Repository where the crawled pages are exported.
-     */
-    public GraphCrawl(
-        String idx, String phantomJsExecPath,
-        IgnoredPatterns ignored, Repository repo
-    ) {
-    	this(idx, phantomJsExecPath, ignored, repo, 100);
-    }
-    
+
     /**
      * Constructor.
      * @param idx The index page of the site.
@@ -96,32 +58,6 @@ public final class GraphCrawl implements WebCrawl {
     ) {
     	this(idx, drv, ignored, repo, 100);
 	}
-    
-    
-    /**
-     * Constructor.
-     * @param idx The index page of the site.
-     * @param phantomJsExecPath path to PhantomJS.
-     * @param ignored Ignored pages patterns.
-     * @param repo Repository where the crawled pages are exported.
-     * @param batchSize Size of the export batch.
-     */
-    public GraphCrawl(
-        String idx, String phantomJsExecPath,
-        IgnoredPatterns ignored, Repository repo, int batchSize
-    ) {
-    	this.batchSize = batchSize;
-    	this.ignoredLinks = ignored;
-    	this.index = new Link("index", idx);
-    	DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setJavascriptEnabled(true);
-        dc.setCapability(
-            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-            phantomJsExecPath
-        );
-        this.driver = new PhantomJSDriver(dc);
-        this.repo = repo;
-    }
 
     /**
      * Constructor.
@@ -135,12 +71,10 @@ public final class GraphCrawl implements WebCrawl {
         String idx, WebDriver drv,
         IgnoredPatterns ignored, Repository repo, int batchSize
     ) {
-    	this.ignoredLinks = ignored;
-    	this.index = new Link("index", idx);
-    	this.driver = drv;
-        this.repo = repo;
+        super(drv, ignored, repo, batchSize);
+        this.index = new Link("index", idx);
 	}
-    
+
 	@Override
 	public void crawl() throws DataExportException {
 		List<WebPage> pages = new ArrayList<WebPage>();
@@ -169,6 +103,7 @@ public final class GraphCrawl implements WebCrawl {
 			    link = toCrawl.remove(0);
 		    }
 		    this.repo.export(pages);
+		    this.driver.quit();
 		}
 	}
 

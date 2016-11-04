@@ -27,7 +27,13 @@ package com.amihaiemil.charles;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
 
@@ -37,19 +43,19 @@ import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
  *
  */
 public class SitemapXmlCrawlITCase {
+	
+	private WebDriver driver;
+	
 	/**
 	 * A page's title can be retrieved.
 	 * @throws Exception - If something goes wrong.
 	 */
     @Test
     public void getsPageTitle() throws Exception {
-        String phantomJsExecPath = System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
+
         InMemoryRepository inmr = new InMemoryRepository();
         SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
-        	phantomJsExecPath,
+        	this.driver,
             new SitemapXmlOnDisk("src/test/resources/testsitemap.xml"),
             new IgnoredPatterns(),
             inmr
@@ -57,5 +63,29 @@ public class SitemapXmlCrawlITCase {
         sitemapXmlCrawl.crawl();
         assertTrue(inmr.getCrawledPages().size() == 1);
         assertTrue(inmr.getCrawledPages().get(0).getTitle().equals("EvA project"));
+    }
+
+    @Before
+	public void initDriver() {
+		this.driver = this.phantomJsDriver();
+	}
+
+	@After
+	public void quitDriver() {
+		this.driver.quit();
+	}
+
+    private WebDriver phantomJsDriver() {
+    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+        if("".equals(phantomJsExecPath)) {
+            phantomJsExecPath = "/usr/local/bin/phantomjs";
+        }
+    	DesiredCapabilities dc = new DesiredCapabilities();
+        dc.setJavascriptEnabled(true);
+        dc.setCapability(
+            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+            phantomJsExecPath
+        );
+        return new PhantomJSDriver(dc);
     }
 }

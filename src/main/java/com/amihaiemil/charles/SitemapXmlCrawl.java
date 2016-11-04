@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,29 +43,9 @@ import com.amihaiemil.charles.sitemap.Url;
  * Crawl a website based on the given sitemap xml.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
-public final class SitemapXmlCrawl implements WebCrawl {
+public final class SitemapXmlCrawl extends AbstractWebCrawl {
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
-
-
-    private WebDriver driver;
     private Set<Url> urlset;
-    private IgnoredPatterns ignoredLinks;
-    private Repository repo;
-    private int batchSize;
-    
-    /**
-     * Start a new sitemap.xml crawl using phantom js.
-     * @param phantomJsExecPath Path to the phantomJS executable.
-     * @param ignored Ignored pages patterns.
-     * @param repo Repository where the crawled pages are exported.
-     * @param sitemapXmlPath Path to the sitemap.xml file.
-     */
-    public SitemapXmlCrawl(
-        String phantomJsExecPath, SitemapXmlLocation sitemapLoc,
-        IgnoredPatterns ignored, Repository repo
-    ) throws IOException {
-        this(phantomJsExecPath, sitemapLoc, ignored, repo, 100);
-    }
 
     /**
      * Start a new sitemap.xml crawl using the specified driver.
@@ -93,41 +70,8 @@ public final class SitemapXmlCrawl implements WebCrawl {
     	WebDriver drv, SitemapXmlLocation sitemapLoc,
     	IgnoredPatterns ignored, Repository repo, int batch
     ) throws IOException {
-        this.driver = drv;
+    	super(drv, ignored, repo, batch);
         this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
-        this.ignoredLinks = ignored;
-        this.repo = repo;
-        this.batchSize = batch;
-    }
-    
-    /**
-     * Start a new sitemap.xml crawl using phantom js.
-     * @param phantomJsExecPath Path to the phantomJS executable.
-     * @param sitemapXmlPath Path to the sitemap.xml file.
-     * @param ignored Ignored pages patterns.
-     * @param repo Repository where the crawled pages are exported.
-     * @param batch Size of the batch to export.
-     */
-    public SitemapXmlCrawl(
-        String phantomJsExecPath, SitemapXmlLocation sitemapLoc,
-    	IgnoredPatterns ignored, Repository repo, int batch
-    ) throws IOException {
-        DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setJavascriptEnabled(true);
-        dc.setCapability(
-            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-            phantomJsExecPath
-        );
-        this.driver = new PhantomJSDriver(dc);
-        try {
-            this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
-        } catch (IOException ex) {
-            this.driver.quit();
-            throw ex;
-        }
-        this.ignoredLinks = ignored;
-        this.repo = repo;
-        this.batchSize = batch;
     }
 
     public void crawl() throws DataExportException {
@@ -151,7 +95,7 @@ public final class SitemapXmlCrawl implements WebCrawl {
         }
         LOG.info("Finished crawling the sitemap.xml!");
         this.repo.export(pages);
-        driver.quit();
+        this.driver.quit();
     }
     
 }
