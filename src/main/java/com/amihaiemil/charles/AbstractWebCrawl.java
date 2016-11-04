@@ -23,67 +23,53 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.amihaiemil.charles;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.jcabi.http.mock.MkAnswer;
-import com.jcabi.http.mock.MkContainer;
-import com.jcabi.http.mock.MkGrizzlyContainer;
+import org.openqa.selenium.WebDriver;
 
 /**
- * Test cases for {@link ElasticSearchRepository}
+ * An abstract webcrawl - contains the webdriver and other common data of each crawl.
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ * @version $Id$
+ * @since 1.0.0
  *
  */
-public class ElasticSearchRepositoryTestCase {
-	
-	
+public abstract class AbstractWebCrawl implements WebCrawl {
+
 	/**
-	 * {@link ElasticSearchRepository} can send the given list of json docs
-	 * to the specified elastisearch index.
-	 * @throws Exception - If something goes wrong.
+	 * WebDriver.
 	 */
-	@Test
-    public void indexesListOfDocuments() throws Exception {
-		List<WebPage> pages = new ArrayList<WebPage>();
-		pages.add(this.webPage("http://www.amihaiemil.com/index.html"));
-		pages.add(this.webPage("http://eva.amihaiemil.com/index.html"));
-    	
-    	MkContainer server = new MkGrizzlyContainer()
-            .next(new MkAnswer.Simple("{\"response\":\"ok\", \"errors\":false, \"took\":1}"))
-            .next(new MkAnswer.Simple(200))
-            .start(9201);
-    	
-    	ElasticSearchRepository elasticRepo = new ElasticSearchRepository(
-            "http://localhost:9201/test5"
-        );
-    	try {
-    	    elasticRepo.export(pages);
-    	} finally {
-    		server.close();
-    	}
+	protected WebDriver driver;
+
+	/**
+     * Ignored pages patterns.
+     */
+	protected IgnoredPatterns ignoredLinks;
+
+    /**
+     * Repo to export the pages to.
+     */
+	protected Repository repo;
+
+    /**
+     * Pages are crawled and exported in batches in order to avoid flooding
+     * the memory if there are many pages on a website. Default value is 100.
+     */
+	protected int batchSize;
+
+    /**
+     * Ctor.
+     * @param webd Selenium WebDriver.
+     * @param igp Ignored patterns.
+     * @param repo Repository to export the crawled pages into.
+     * @param batch Size of a crawl batch.
+     */
+    public AbstractWebCrawl(WebDriver webd, IgnoredPatterns igp, Repository repo, int batch) {
+    	this.driver = webd;
+    	this.ignoredLinks = igp;
+    	this.repo = repo;
+    	this.batchSize = batch;
     }
 
-	/**
-	 * Returns a WebPage.
-	 * @param url URL of the page.
-	 * @return WebPage
-	 */
-	private WebPage webPage(String url) {
-		WebPage page = new SnapshotWebPage();
-		page.setUrl(url);
-		page.setLinks(new LinkedHashSet<Link>());
-		page.setName("indextest.html");
-		page.setTitle("Intex Test | Title");
-		page.setTextContent("Test content of this awesome test page.");
-	    page.setCategory("page");
-		return page;
-	}
-
+    public abstract void crawl() throws DataExportException;
 }

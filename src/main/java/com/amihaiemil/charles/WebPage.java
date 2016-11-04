@@ -39,20 +39,70 @@ public interface WebPage {
 	 * @return String filename.
 	 */
 	String getName();
+	
+	/**
+	 * Set the name of this webpage.
+	 * @param name Given name.
+	 */
     void setName(String name);
-
+    
+    /**
+     * Page's url.
+     * @return String url. e.g. http://charles.amihaiemil.com/index.html
+     */
     String getUrl();
+    
+    /**
+     * Set url.
+     * @param url
+     */
     void setUrl(String url);
     
+    /**
+     * Get the title of the page.
+     * @return String title.
+     */
     String getTitle();
+    
+    /**
+     * Set the page title.
+     * @param title
+     */
     void setTitle(String title);
     
+    /**
+     * Get all the text content of the page.
+     * @return
+     */
     String getTextContent();
+    
+    /**
+     * Set the text content.
+     * @param textContent
+     */
     void setTextContent(String textContent);
 
+    /**
+     * Get the page's category (text of an element with id = "pagectg")
+     * @return
+     */
     String getCategory();
+    
+    /**
+     * Set the page's category.
+     * @param category
+     */
     void setCategory(String category);
     
+    /**
+     * Fetch all the anchors (links) from the page.
+     * @return
+     */
     Set<Link> getLinks();
+    
+    /**
+     * Set the anchors on a page.
+     * @param links
+     */
     void setLinks(Set<Link> links);
 }
