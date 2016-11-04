@@ -19,11 +19,11 @@ More options for crawling:
 ### Under the hood
 
 Charles is powered by [Selenium WebDriver](http://www.seleniumhq.org/projects/webdriver/).
-Any Selenium WebDriver implementation can be used to build a ``WebCrawl``
+Any WebDriver implementation can be used to build a ``WebCrawl``
 Examples:
-    - [PhantomJsDriver](http://phantomjs.org/) through [GhostDriver](https://github.com/detro/ghostdriver).
-    - FirefoxDriver
-    - ChromeDriver etc
+  - [PhantomJsDriver](https://github.com/detro/ghostdriver)
+  - FirefoxDriver
+  - ChromeDriver etc
 
 ### How to contribute
 
