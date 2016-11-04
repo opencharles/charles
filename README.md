@@ -9,15 +9,21 @@ Smart web crawler.
 
 A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) . 
 
-2 options for crawling: 
+More options for crawling: 
 
 1) crawl the links from a ``sitemap.xml``
 
 2) crawl the website as a graph starting from a given url (the index)
 
+3) crawl with retrial if any ``RuntimeException`` happens etc
 ### Under the hood
 
-Charles is powered by [Selenium WebDriver 2.41](http://www.seleniumhq.org/projects/webdriver/) and [PhantomJS](http://phantomjs.org/) through [GhostDriver](https://github.com/detro/ghostdriver). Crawling with other, graphical, drivers like ChromeDriver and FirefoxDriver will also be implemented.
+Charles is powered by [Selenium WebDriver](http://www.seleniumhq.org/projects/webdriver/).
+Any WebDriver implementation can be used to build a ``WebCrawl``
+Examples:
+  - [PhantomJsDriver](https://github.com/detro/ghostdriver)
+  - FirefoxDriver
+  - ChromeDriver etc
 
 ### How to contribute
 
