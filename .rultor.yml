@@ -6,7 +6,7 @@ env:
   MAVEN_OPTS: "-XX:MaxPermSize=256m -Xmx1g"
 install: |-
   chmod +x ./install_phantomjs.sh
-  ./install_phantomjs.sh
+  sudo ./install_phantomjs.sh
 merge:
   script: |-
     mvn clean install -Pitcases
