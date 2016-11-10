@@ -1,0 +1,15 @@
+architect:
+  - amihaiemil
+env:
+  MAVEN_OPTS: "-XX:MaxPermSize=256m -Xmx1g"
+merge:
+  script: |-
+    mvn clean install
+deploy:
+  script:
+   - echo "Any deployment script here..."
+release:
+  script: |-
+    mvn versions:set "-DnewVersion=${tag}" -e
+    git commit -am "${tag}"
+    mvn clean deploy --settings ../settings.xml
