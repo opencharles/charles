@@ -13,8 +13,12 @@ merge:
 deploy:
   script:
    - echo "Any deployment script here..."
+decrypt:
+  settings.xml: "repo/sonatype/settings.xml.asc"
+  pubring.gpg: "repo/sonatype/pubring.gpg.asc"
+  secring.gpg: "repo/sonatype/secring.gpg.asc"
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -e
     git commit -am "${tag}"
-    mvn clean deploy --settings ../settings.xml
+    mvn clean deploy -Prelease --settings ../settings.xml
