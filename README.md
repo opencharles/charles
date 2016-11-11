@@ -2,7 +2,7 @@
 # charles
 
 Smart web crawler.
-[![Build Status](https://travis-ci.org/amihaiemil/charles.svg?branch=master)](https://travis-ci.org/amihaiemil/charles)
+[![Build Status](https://travis-ci.org/opencharles/charles.svg?branch=master)](https://travis-ci.org/opencharles/charles)
 [![Coverage Status](https://coveralls.io/repos/github/amihaiemil/charles/badge.svg?branch=master&service=github)](https://coveralls.io/github/amihaiemil/charles?branch=master)
 
 ### v 1.0.0 (to be released)
