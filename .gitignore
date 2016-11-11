@@ -6,3 +6,6 @@ target/
 /bin/
 /.classpath
 /.project
+*/settings.xml
+*/pubring.gpg
+*/secring.gpg
