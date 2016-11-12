@@ -5,7 +5,7 @@
 
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
@@ -142,27 +142,6 @@
 					<failOnServiceError>false</failOnServiceError>
 				</configuration>
 			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-assembly-plugin</artifactId>
-			    <version>2.6</version>
-			    <configuration>
-				 <finalName>charles-${project.version}</finalName>
-				 <descriptorRefs>
-				     <descriptorRef>jar-with-dependencies</descriptorRef>
-				 </descriptorRefs>
-			    </configuration>
-			    <executions>
-			    <execution>
-			        <id>make-assembly</id>
-			        <!-- bind to the packaging phase -->
-			        <phase>package</phase>
-			        <goals>
-			            <goal>single</goal>
-			        </goals>
-			    </execution>
-	         	    </executions>
-			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -186,6 +165,34 @@
 				</plugins>
 			</build>
 		</profile>
+                <profile>
+                    <id>deps</id>
+                    <build>
+                    <plugins>
+                    <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-assembly-plugin</artifactId>
+			    <version>2.6</version>
+			    <configuration>
+				 <finalName>charles-${project.version}</finalName>
+				 <descriptorRefs>
+				     <descriptorRef>jar-with-dependencies</descriptorRef>
+				 </descriptorRefs>
+			    </configuration>
+			    <executions>
+			    <execution>
+			        <id>make-assembly</id>
+			        <!-- bind to the packaging phase -->
+			        <phase>package</phase>
+			        <goals>
+			            <goal>single</goal>
+			        </goals>
+			    </execution>
+	         	    </executions>
+	            </plugin>
+                    </plugins>
+                    </build>
+                </profile>
 		<profile>
 			<id>release</id>
 			<build>
