@@ -14,11 +14,11 @@ deploy:
   script:
    - echo "Any deployment script here..."
 decrypt:
-  settings.xml: "repo/settings.xml.asc"
-  pubring.gpg: "repo/pubring.gpg.asc"
-  secring.gpg: "repo/secring.gpg.asc"
+  settings.xml: "repo/rcfg/settings.xml.asc"
+  pubring.gpg: "repo/rcfg/pubring.gpg.asc"
+  secring.gpg: "repo/rcfg/secring.gpg.asc"
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -e
     git commit -am "${tag}"
-    mvn clean deploy -Prelease --settings ../settings.xml
+    mvn clean deploy -Prelease --settings /home/r/settings.xml
