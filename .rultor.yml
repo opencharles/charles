@@ -14,9 +14,9 @@ deploy:
   script:
    - echo "Any deployment script here..."
 decrypt:
-  settings.xml: "repo/sonatype/settings.xml.asc"
-  pubring.gpg: "repo/sonatype/pubring.gpg.asc"
-  secring.gpg: "repo/sonatype/secring.gpg.asc"
+  settings.xml: "repo/settings.xml.asc"
+  pubring.gpg: "repo/pubring.gpg.asc"
+  secring.gpg: "repo/secring.gpg.asc"
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -e
