@@ -19,6 +19,5 @@ decrypt:
   secring.gpg: "repo/rcfg/secring.gpg.asc"
 release:
   script: |-
-    mvn versions:set "-DnewVersion=${tag}" -e
-    git commit -am "${tag}"
-    mvn clean deploy -Prelease --settings /home/r/settings.xml
+  chmod +x ./rrv.sh
+  sudo ./rrv.sh
