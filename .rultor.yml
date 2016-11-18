@@ -20,4 +20,4 @@ decrypt:
 release:
   script: |-
     chmod +x ./rrv.sh
-    ./rrv.sh
+    echo "yes" | ./rrv.sh
