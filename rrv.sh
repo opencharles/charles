@@ -47,9 +47,8 @@ echo $NEXT_VERSION
 
 sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 
-ssh-keyscan github.com >> ~/.ssh/known_hosts
 git commit -am "${tag}"
 git checkout master
 git merge __rultor
-git push -q origin master
+env GIT_SSL_NO_VERIFY=true git push -q origin master
 git checkout __rultor
