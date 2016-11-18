@@ -50,3 +50,6 @@ echo $NEXT_VERSION
 
 sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 git commit -am "${tag}"
+git checkout master
+git merge __rultor
+git push
