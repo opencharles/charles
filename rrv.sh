@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 #
 # Rultor release versioning shell script for Maven projects.
 # This script is supposed to be run at the end rultor’s release process.
