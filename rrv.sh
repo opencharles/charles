@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Rultor release versioning shell script for Maven projects.
 # This script is supposed to be run at the end rultor’s release process.
 #
@@ -20,6 +20,7 @@
 #     3) tag == ‘major’, then:
 #         released version will be 2.0.0
 #         next version will be 2.0.1-SNAPSHOT
+#
 #
 #
 
