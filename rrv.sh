@@ -46,6 +46,8 @@ echo "NEXT VERSION IS"
 echo $NEXT_VERSION
 
 sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
+
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 git commit -am "${tag}"
 git checkout master
 git merge __rultor
