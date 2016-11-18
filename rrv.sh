@@ -22,6 +22,7 @@
 #         released version will be 2.0.0
 #         next version will be 2.0.1-SNAPSHOT
 #
+#
 
 CURRENT_VERSION=$(grep -o '[0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT' -m 1 pom.xml)
 NUMBERS=($(echo $CURRENT_VERSION | grep -o -E '[0-9]+'))
