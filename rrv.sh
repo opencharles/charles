@@ -49,5 +49,5 @@ sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 git commit -am "${tag}"
 git checkout master
 git merge __rultor
-git push origin master
+git push -q origin master
 git checkout __rultor
