@@ -24,7 +24,7 @@ script:
   - set -e
   - phantomjs --version
   - whereis phantomjs
-  - xmllint --xpath '//project/version/text()' pom.xml
+  - xmllint --xpath '/project/version/text()' pom.xml
   - elasticsearch -v
   - curl -i http://localhost:9200/ #elasticsearch should also be accessible without authentication on port 9200
   - curl -i http://localhost:8080/ #port 8080 is used by nginx reverse proxy to enable basic auth for elasticsearch
