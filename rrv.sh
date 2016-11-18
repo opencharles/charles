@@ -50,3 +50,4 @@ git commit -am "${tag}"
 git checkout master
 git merge __rultor
 git push origin master
+git checkout __rultor
