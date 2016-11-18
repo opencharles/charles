@@ -46,50 +46,76 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  *
  */
 public class GraphCrawlITCase {
-	private WebDriver driver;
-	
-	@Test
-	public void crawlsAllPages() throws Exception {
-		InMemoryRepository inmr = new InMemoryRepository();
-		GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
-		graph.crawl();
-		Set<WebPage> uniquePages = new HashSet<WebPage>();
-		for(WebPage p : inmr.getCrawledPages()) {
-			assertTrue("Page crawled 2 times!", uniquePages.add(p));
-		}
-	}
-	
-	@Test
-	public void crawlsAllPagesExceptIgnored() throws Exception {
-		InMemoryRepository inmr = new InMemoryRepository();
-		GraphCrawl graph = new GraphCrawl(
-			"http://www.amihaiemil.com",
-			this.driver,
-			new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*")),//ignore all pages (posts) from April 2016
-		    inmr
+    private WebDriver driver;
+    
+    /**
+     * Crawls the site as a graph, visiting all the linked pages.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void crawlsAllPages() throws Exception {
+        InMemoryRepository inmr = new InMemoryRepository();
+        GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
+        graph.crawl();
+        Set<WebPage> uniquePages = new HashSet<WebPage>();
+        for(WebPage p : inmr.getCrawledPages()) {
+            assertTrue("Page crawled 2 times!", uniquePages.add(p));
+        }
+    }
+    
+    /**
+     * Crawls the website as a graph.
+     * The index page does not have any links to other pages on the site.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void crawlsWithNoMoreLinks() throws Exception {
+        InMemoryRepository inmr = new InMemoryRepository();
+        GraphCrawl graph = new GraphCrawl("http://eva.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
+        graph.crawl();
+        assertTrue(inmr.getCrawledPages().size() == 1);
+        WebPage index = inmr.getCrawledPages().get(0);
+        assertTrue(index.getTextContent().contains("changing and combining the existing ones until finally, a solution is chosen to be the answer"));
+        assertTrue(index.getName().equals("index"));
+        assertTrue(index.getTitle().equals("EvA project"));
+        
+    }
+    
+    /**
+     * Graph crawls all the links except the ignored ones.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void crawlsAllPagesExceptIgnored() throws Exception {
+        InMemoryRepository inmr = new InMemoryRepository();
+        GraphCrawl graph = new GraphCrawl(
+            "http://www.amihaiemil.com",
+            this.driver,
+            new IgnoredPatterns(Arrays.asList("http://www.amihaiemil.com/*/2016/04/*")),//ignore all pages (posts) from April 2016
+            inmr
         );
-		graph.crawl();
-		for(WebPage p : inmr.getCrawledPages()) {
-			assertTrue("Ignored page was crawled! " + p.getUrl(), !p.getUrl().contains("/2016/04/"));
-		}
-	}
-	
-	@Before
-	public void initDriver() {
-		this.driver = this.phantomJsDriver();
-	}
-	
-	@After
-	public void quitDriver() {
-		this.driver.quit();
-	}
-	
+        graph.crawl();
+        for(WebPage p : inmr.getCrawledPages()) {
+            assertTrue("Ignored page was crawled! " + p.getUrl(), !p.getUrl().contains("/2016/04/"));
+        }
+    }
+    
+    @Before
+    public void initDriver() {
+        this.driver = this.phantomJsDriver();
+    }
+    
+    @After
+    public void quitDriver() {
+        this.driver.quit();
+    }
+    
     private WebDriver phantomJsDriver() {
-    	String phantomJsExecPath =  System.getProperty("phantomjsExec");
+        String phantomJsExecPath =  System.getProperty("phantomjsExec");
         if("".equals(phantomJsExecPath)) {
             phantomJsExecPath = "/usr/local/bin/phantomjs";
         }
-    	DesiredCapabilities dc = new DesiredCapabilities();
+        DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
             PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
