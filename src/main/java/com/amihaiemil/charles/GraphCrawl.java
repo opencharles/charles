@@ -77,30 +77,35 @@ public final class GraphCrawl extends AbstractWebCrawl {
 
 	@Override
 	public void crawl() throws DataExportException {
-		List<WebPage> pages = new ArrayList<WebPage>();
 		if(!this.ignoredLinks.contains(this.index.getHref())) {
-		    List<Link> toCrawl = new ArrayList<Link>();
+			List<WebPage> pages = new ArrayList<WebPage>();
+			WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
+		    pages.add(indexSnapshot);
+		    
 	        Set<Link> crawledLinks = new HashSet<Link>();
 	        crawledLinks.add(this.index);
 	    
-		    WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
-		    pages.add(indexSnapshot);
-		    this.checkBatchSize(pages);
+	        List<Link> toCrawl = new ArrayList<Link>();
 		    toCrawl.addAll(indexSnapshot.getLinks());
-		    Link link = toCrawl.remove(0);
-		    while(toCrawl.size() > 0) {
-			    if(this.ignoredLinks.contains(link.getHref())) {
-				    link = toCrawl.remove(0);
-				    continue;
-			    }
-			    boolean notCrawledAlready = crawledLinks.add(link);
-			    if(notCrawledAlready) {
-				    WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
-				    pages.add(snapshotCrawled);
-				    this.checkBatchSize(pages);
-				    toCrawl.addAll(snapshotCrawled.getLinks());   
-			    }
-			    link = toCrawl.remove(0);
+		    
+		    this.checkBatchSize(pages);
+		    
+		    if(toCrawl.size() > 0) {
+		        Link link = toCrawl.remove(0);
+		        while(toCrawl.size() > 0) {
+			        if(this.ignoredLinks.contains(link.getHref())) {
+				        link = toCrawl.remove(0);
+				        continue;
+			        }
+			        boolean notCrawledAlready = crawledLinks.add(link);
+			        if(notCrawledAlready) {
+				        WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
+				        pages.add(snapshotCrawled);
+				        this.checkBatchSize(pages);
+				        toCrawl.addAll(snapshotCrawled.getLinks());   
+			        }
+			        link = toCrawl.remove(0);
+		        }
 		    }
 		    this.repo.export(pages);
 		    this.driver.quit();
