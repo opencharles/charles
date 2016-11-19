@@ -1,5 +1,5 @@
-﻿# Rultor release versioning shell script for Maven projects.
-# This script is supposed to be run at the end rultor’s release process.
+﻿#!/bin/bash
+# Rultor release versioning script for Maven projects.
 #
 # It looks for the project’s version, which MUST respect the pattern 
 # [0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT and BE THE FIRST MATCH in pom.xml
@@ -50,5 +50,4 @@ sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 git commit -am "${tag}"
 git checkout master
 git merge __rultor
-env GIT_SSL_NO_VERIFY=true git push -q origin master
 git checkout __rultor
