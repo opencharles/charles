@@ -22,22 +22,12 @@
 
 CURRENT_VERSION=$(grep -o '[0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT' -m 1 pom.xml)
 
-NUMBERS=($(echo $CURRENT_VERSION | grep -o -E '[0-9]+'))
+NUMBERS=($(echo $tag | grep -o -E '[0-9]+'))
 
 echo "CURRENT VERSION IS"
 echo $CURRENT_VERSION
 
-#minor release concerns the second digit
-if [ "$tag" == minor* ]; then
-    tag=${NUMBERS[0]}'.'$((${NUMBERS[1]}+1))'.0'
-    NEXT_VERSION=${NUMBERS[0]}'.'$((${NUMBERS[1]}+1))'.1-SNAPSHOT'
-elif [ "$tag" == major* ]; then
-    tag=$((${NUMBERS[0]}+1))'.0.0'
-    NEXT_VERSION=$((${NUMBERS[0]}+1))'.0.1-SNAPSHOT'
-else #By default it's a release with bug-fixes (third digit)
-    tag=${NUMBERS[0]}'.'${NUMBERS[1]}'.'${NUMBERS[2]}
-    NEXT_VERSION=${NUMBERS[0]}'.'${NUMBERS[1]}'.'$((${NUMBERS[2]}+1))'-SNAPSHOT'
-fi
+NEXT_VERSION=${NUMBERS[0]}'.'${NUMBERS[1]}'.'$((${NUMBERS[2]}+1))'-SNAPSHOT'
 
 echo "RELEASE VERSION IS"
 echo $tag
