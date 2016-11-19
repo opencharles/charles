@@ -4,21 +4,15 @@
 # It looks for the project’s version, which MUST respect the pattern 
 # [0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT and BE THE FIRST MATCH in pom.xml
 #
-# What it does: depending on ${tag} variable provided by rultor, it
-# increments one of the digits and commits the change, as follows:
-#   Suppose the current version in pom.xml is 1.2.3-SNAPSHOT
+# What it does: updates the pom.xml version of the project according to
+# the variable ${tag} provided to rultor. Specifically, it increments the 
+# 3rd digit and adds '-SNAPSHOT' to it.
 #
-#     1) if tag == ‘bugfixes’ (or any string besides 'minor' and 'major'), then:
-#         released version will be 1.2.3
-#         next version will be 1.2.4-SNAPSHOT
-#
-#     2) tag == ‘minor’, then:
-#         released version will be 1.3.0
-#         next version will be 1.3.1-SNAPSHOT
-#
-#     3) tag == ‘major’, then:
-#         released version will be 2.0.0
-#         next version will be 2.0.1-SNAPSHOT
+# IMPORTANT:
+#     the given tag has to contain 3 numbers separated by dots!
+#     
+#     e.g. tag = 1.0.1 or tag = 3.2.53 will result in new versions of 1.0.2-SNAPSHOT
+#     or 3.2.54-SNAPSHOT
 
 CURRENT_VERSION=$(grep -o '[0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT' -m 1 pom.xml)
 
