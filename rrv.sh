@@ -29,9 +29,14 @@ echo $tag
 echo "NEXT VERSION IS"
 echo $NEXT_VERSION
 
-sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 
+sed -i "s/${CURRENT_VERSION}/${tag}/" pom.xml
 git commit -am "${tag}"
+mvn clean deploy -Prelease --settings /home/r/settings.xml
+
+sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
+git commit -am "${NEXT_VERSION}"
+
 git checkout master
 git merge __rultor
 git checkout __rultor
