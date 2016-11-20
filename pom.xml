@@ -5,9 +5,9 @@
 
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<properties>
+        <version>1.0.1-SNAPSHOT</version><!--rrv-sed-flag-->
+        <packaging>jar</packaging>
+        <properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

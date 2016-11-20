@@ -29,14 +29,14 @@ echo $tag
 echo "NEXT VERSION IS"
 echo $NEXT_VERSION
 
-
-sed -i "s/${CURRENT_VERSION}/${tag}/" pom.xml
-git commit -am "${tag}"
+#Right after the project's <version> tag there has to be the comment <!--rrv-sed-flag--> which simplifies the sed regex bellow. 
+#If the flag comment wouldn't be there, we'd have to write a more complicated regex to catch the artifactif from a row up.
+#This is because only a regex for version tag would change all the matching version tags in the file.
+sed -i -e "s/<version>${CURRENT_VERSION}<\/version><\!--rrv-sed-flag-->/<version>${NEXT_VERSION}<\/version><\!--rrv-sed-flag-->/" pom.xml
 mvn clean deploy -Prelease --settings /home/r/settings.xml
+sed -i "s/<version>${tag}<\/version><\!--rrv-sed-flag-->/<version>${NEXT_VERSION}<\/version><\!--rrv-sed-flag-->/" pom.xml
 
-sed -i "s/${CURRENT_VERSION}/${NEXT_VERSION}/" pom.xml
 git commit -am "${NEXT_VERSION}"
-
 git checkout master
 git merge __rultor
 git checkout __rultor
