@@ -5,8 +5,6 @@ Smart web crawler.
 [![Build Status](https://travis-ci.org/opencharles/charles.svg?branch=master)](https://travis-ci.org/opencharles/charles)
 [![Coverage Status](https://coveralls.io/repos/github/opencharles/charles/badge.svg?branch=master&service=github)](https://coveralls.io/github/opencharles/charles?branch=master)
 
-### v 1.0.0
-
 A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) .
 
 More options for crawling: 
