@@ -23,10 +23,10 @@ Get it using Maven:
 <dependency>
     <groupId>com.amihaiemil.web</groupId>
     <artifactId>charles</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
-or [download](http://eva.amihaiemil.com/releases/charles-1.0.1-jar-with-dependencies.tar.gz) the "fat" jar containing all the dependencies.
+or [download](http://eva.amihaiemil.com/releases/charles-1.0.0-jar-with-dependencies.tar.gz) the "fat" jar containing all the dependencies.
 
 ### Under the hood
 

@@ -13,6 +13,8 @@
 #     
 #     e.g. tag = 1.0.1 or tag = 3.2.53 will result in new versions of 1.0.2-SNAPSHOT
 #     or 3.2.54-SNAPSHOT
+set -e
+set -o pipefail
 
 CURRENT_VERSION=$(grep -o '[0-9]*\.[0-9]*\.[0-9]*-SNAPSHOT' -m 1 pom.xml)
 
@@ -32,7 +34,7 @@ echo $NEXT_VERSION
 #Right after the project's <version> tag there has to be the comment <!--rrv-sed-flag--> which simplifies the sed regex bellow. 
 #If the flag comment wouldn't be there, we'd have to write a more complicated regex to catch the artifactif from a row up.
 #This is because only a regex for version tag would change all the matching version tags in the file.
-sed -i "s/<version>${CURRENT_VERSION}<\/version><\!--rrv-sed-flag-->/<version>${NEXT_VERSION}<\/version><\!--rrv-sed-flag-->/" pom.xml
+sed -i "s/<version>${CURRENT_VERSION}<\/version><\!--rrv-sed-flag-->/<version>${tag}<\/version><\!--rrv-sed-flag-->/" pom.xml
 mvn clean deploy -Prelease --settings /home/r/settings.xml
 sed -i "s/<version>${tag}<\/version><\!--rrv-sed-flag-->/<version>${NEXT_VERSION}<\/version><\!--rrv-sed-flag-->/" pom.xml
 sed -i "s/<version>.*<\/version>/<version>${tag}<\/version>/" README.md
