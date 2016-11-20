@@ -5,7 +5,7 @@
 
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
-        <version>1.0.1-SNAPSHOT</version><!--rrv-sed-flag-->
+        <version>1.0.2-SNAPSHOT</version><!--rrv-sed-flag-->
         <packaging>jar</packaging>
         <properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
@@ -237,7 +237,6 @@
 						<configuration>
 							<serverId>oss.sonatype.org</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
 							<description>${project.version}</description>
 						</configuration>
 						<executions>
@@ -245,33 +244,25 @@
 								<id>deploy-to-sonatype</id>
 								<phase>deploy</phase>
 								<goals>
-									<goal>deploy</goal>
-									<goal>release</goal>
+								    <goal>deploy</goal>
+							            <goal>release</goal>
 								</goals>
 							</execution>
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>versions-maven-plugin</artifactId>
-						<version>2.1</version>
-						<configuration>
-							<generateBackupPoms>false</generateBackupPoms>
-						</configuration>
+					    <groupId>org.apache.maven.plugins</groupId>
+					    <artifactId>maven-gpg-plugin</artifactId>
+					    <version>1.5</version>
+					    <executions>
+					        <execution>
+						    <id>sign-artifacts</id>
+						    <phase>verify</phase>
+						    <goals>
+						        <goal>sign</goal>
+						    </goals>
+						</execution>
+					    </executions>
 					</plugin>
 				</plugins>
 			</build>
