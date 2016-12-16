@@ -57,7 +57,7 @@ public class LiveWebPageITCase {
 		Set<Link> links = livePage.getLinks();
 		assertTrue(links.size() > 0);
 		assertTrue("Expected link not on web page!", links.contains(
-					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+					new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
 				)
 		);
 	}
@@ -72,7 +72,7 @@ public class LiveWebPageITCase {
 		Set<Link> links = livePage.getLinks();
 		assertTrue(links.size() > 0);
 		assertTrue("Expected link not on web page!", links.contains(
-					new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+					new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
 				)
 		);
 		for(Link l : links) {
@@ -95,7 +95,7 @@ public class LiveWebPageITCase {
 	 */
 	@Test
 	public void retrievesTextFromPage() {
-		LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html");
+		LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html");
 		String textContent = livePage.getTextContent();
 		assertTrue(textContent.contains("In his book Burke also describes HATEOAS"));
 		assertTrue(textContent.contains("\"lastmodified\": \"15/03/2016\""));
@@ -112,7 +112,7 @@ public class LiveWebPageITCase {
 		assertTrue(snapshot.getTitle().equals("amihaiemil.com | Programming blog"));
 		assertTrue(snapshot.getLinks().size() > 0);
 		assertTrue("Expected link not on web page!", snapshot.getLinks().contains(
-				new Link("What is HATEOAS?", "http://www.amihaiemil.com/rest/2016/05/07/what-is-hateoas.html")
+				new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
 			)
 		);
 	}
