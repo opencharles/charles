@@ -38,7 +38,13 @@ sed -i "s/<version>${CURRENT_VERSION}<\/version><\!--rrv-sed-flag-->/<version>${
 mvn clean deploy -Prelease --settings /home/r/settings.xml
 sed -i "s/<version>${tag}<\/version><\!--rrv-sed-flag-->/<version>${NEXT_VERSION}<\/version><\!--rrv-sed-flag-->/" pom.xml
 sed -i "s/<version>.*<\/version>/<version>${tag}<\/version>/" README.md
-sed -i "s/charles-.*-jar-with-dependencies\.tar\.gz/charles-${tag}-jar-with-dependencies.tar.gz/" README.md
+sed -i "s/<a.*>fat<\/a>/<a href=\"https:\/\/oss\.sonatype\.org\/service\/local\/repositories\/releases\/content\/com\/amihaiemil\/web\/charles\/${tag}\/charles-${tag}-jar-with-dependencies\.jar\">fat<\/a>/" README.md
+
+git commit -am "${NEXT_VERSION}"
+git checkout master
+git merge __rultor
+git checkout __rultor
+
 
 git commit -am "${NEXT_VERSION}"
 git checkout master
