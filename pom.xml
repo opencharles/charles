@@ -5,7 +5,7 @@
 
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
-        <version>1.0.2-SNAPSHOT</version><!--rrv-sed-flag-->
+        <version>1.0.3-SNAPSHOT</version><!--rrv-sed-flag-->
         <packaging>jar</packaging>
         <properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
