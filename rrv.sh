@@ -44,9 +44,3 @@ git commit -am "${NEXT_VERSION}"
 git checkout master
 git merge __rultor
 git checkout __rultor
-
-
-git commit -am "${NEXT_VERSION}"
-git checkout master
-git merge __rultor
-git checkout __rultor
