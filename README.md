@@ -30,6 +30,7 @@ Get it using Maven:
 </dependency>
 ```
 
+or take the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/charles/1.0.1/charles-1.0.1-jar-with-dependencies.jar">fat</a> jar.
 ### Under the hood
 
 Charles is powered by [Selenium WebDriver](http://www.seleniumhq.org/projects/webdriver/).
