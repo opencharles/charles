@@ -35,7 +35,12 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Contains url patterns that should be ignored (not crawled).
  * @author Mihai Andronache (amihaiemil@gmail.com)
- *
+ * @version $Id$
+ * @since 1.0.0
+ * @todo #75:30m/DEV Currently all the WebCrawl implemnetations require
+ *  an instance of IgnoredPatterns in the ctor. They should all offer a ctor
+ *  without such a parameter (by default no patterns should be ignored, but
+ *  we don't have to make the user supply a parameter if that's the case).
  */
 public final class IgnoredPatterns {
 
