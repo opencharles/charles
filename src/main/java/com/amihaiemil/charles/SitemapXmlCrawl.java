@@ -51,6 +51,27 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
      * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param repo Repository to export the pages to.
+     */
+    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, Repository repo) throws IOException {
+    	this(drv, sitemapLoc, new IgnoredPatterns(), repo, 100);
+    }
+
+    /**
+     * Start a new sitemap.xml crawl using the specified driver.
+     * @param drv Specified driver (e.g. chrome, firefox etc).
+     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param repo Repository to export the pages to.
+     * @param batch Size of the batch to export.
+     */
+    public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, Repository repo, int batch) throws IOException {
+    	this(drv, sitemapLoc, new IgnoredPatterns(), repo, batch);
+    }
+
+    /**
+     * Start a new sitemap.xml crawl using the specified driver.
+     * @param drv Specified driver (e.g. chrome, firefox etc).
+     * @param sitemapXmlPath Path to the sitemap.xml file.
      * @param ignored Patterns of the ignored pages.
      * @param repo Repository to export the pages to.
      */

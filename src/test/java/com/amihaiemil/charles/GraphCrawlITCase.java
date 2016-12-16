@@ -53,7 +53,7 @@ public class GraphCrawlITCase {
     @Test
     public void crawlsAllPages() throws Exception {
         InMemoryRepository inmr = new InMemoryRepository();
-        GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, new IgnoredPatterns(), inmr);
+        GraphCrawl graph = new GraphCrawl("http://www.amihaiemil.com", this.driver, inmr);
         graph.crawl();
         Set<WebPage> uniquePages = new HashSet<WebPage>();
         for(WebPage p : inmr.getCrawledPages()) {
@@ -69,7 +69,7 @@ public class GraphCrawlITCase {
     @Test
     public void crawlsWithNoMoreLinks() throws Exception {
         InMemoryRepository inmr = new InMemoryRepository();
-        GraphCrawl graph = new GraphCrawl("http://eva.amihaiemil.com/index.html", this.driver, new IgnoredPatterns(), inmr);
+        GraphCrawl graph = new GraphCrawl("http://eva.amihaiemil.com/index.html", this.driver, inmr);
         graph.crawl();
         assertTrue(inmr.getCrawledPages().size() == 1);
         WebPage index = inmr.getCrawledPages().get(0);

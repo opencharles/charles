@@ -40,10 +40,31 @@ import org.openqa.selenium.WebDriver;
  */
 public final class GraphCrawl extends AbstractWebCrawl {
 
-	/**
-	 * Page to start the crawling from.
-	 */
+    /**
+     * Page to start the crawling from.
+     */
     private Link index;
+
+    /**
+     * Constructor.
+     * @param idx The index page of the site.
+     * @param drv {@link WebDriver} to use.
+     * @param repo Repository where the crawled pages are exported.
+     */
+    public GraphCrawl(String idx, WebDriver drv, Repository repo) {
+        this(idx, drv, new IgnoredPatterns(), repo, 100);
+    }
+
+    /**
+     * Constructor.
+     * @param idx The index page of the site.
+     * @param drv {@link WebDriver} to use.
+     * @param repo Repository where the crawled pages are exported.
+     * @param batchSize Size of the export batch.
+     */
+    public GraphCrawl(String idx, WebDriver drv, Repository repo, int batchSize) {
+        this(idx, drv, new IgnoredPatterns(), repo, batchSize);
+    }
 
     /**
      * Constructor.
@@ -56,8 +77,8 @@ public final class GraphCrawl extends AbstractWebCrawl {
         String idx, WebDriver drv,
         IgnoredPatterns ignored, Repository repo
     ) {
-    	this(idx, drv, ignored, repo, 100);
-	}
+        this(idx, drv, ignored, repo, 100);
+    }
 
     /**
      * Constructor.
@@ -73,56 +94,56 @@ public final class GraphCrawl extends AbstractWebCrawl {
     ) {
         super(drv, ignored, repo, batchSize);
         this.index = new Link("index", idx);
-	}
+    }
 
-	@Override
-	public void crawl() throws DataExportException {
-		if(!this.ignoredLinks.contains(this.index.getHref())) {
-			List<WebPage> pages = new ArrayList<WebPage>();
-			WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
-		    pages.add(indexSnapshot);
-		    
-	        Set<Link> crawledLinks = new HashSet<Link>();
-	        crawledLinks.add(this.index);
-	    
-	        List<Link> toCrawl = new ArrayList<Link>();
-		    toCrawl.addAll(indexSnapshot.getLinks());
-		    
-		    this.checkBatchSize(pages);
-		    
-		    if(toCrawl.size() > 0) {
-		        Link link = toCrawl.remove(0);
-		        while(toCrawl.size() > 0) {
-			        if(this.ignoredLinks.contains(link.getHref())) {
-				        link = toCrawl.remove(0);
-				        continue;
-			        }
-			        boolean notCrawledAlready = crawledLinks.add(link);
-			        if(notCrawledAlready) {
-				        WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
-				        pages.add(snapshotCrawled);
-				        this.checkBatchSize(pages);
-				        toCrawl.addAll(snapshotCrawled.getLinks());   
-			        }
-			        link = toCrawl.remove(0);
-		        }
-		    }
-		    this.repo.export(pages);
-		    this.driver.quit();
-		}
-	}
+    @Override
+    public void crawl() throws DataExportException {
+        if(!this.ignoredLinks.contains(this.index.getHref())) {
+            List<WebPage> pages = new ArrayList<WebPage>();
+            WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
+            pages.add(indexSnapshot);
+            
+            Set<Link> crawledLinks = new HashSet<Link>();
+            crawledLinks.add(this.index);
+        
+            List<Link> toCrawl = new ArrayList<Link>();
+            toCrawl.addAll(indexSnapshot.getLinks());
+            
+            this.checkBatchSize(pages);
+            
+            if(toCrawl.size() > 0) {
+                Link link = toCrawl.remove(0);
+                while(toCrawl.size() > 0) {
+                    if(this.ignoredLinks.contains(link.getHref())) {
+                        link = toCrawl.remove(0);
+                        continue;
+                    }
+                    boolean notCrawledAlready = crawledLinks.add(link);
+                    if(notCrawledAlready) {
+                        WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
+                        pages.add(snapshotCrawled);
+                        this.checkBatchSize(pages);
+                        toCrawl.addAll(snapshotCrawled.getLinks());   
+                    }
+                    link = toCrawl.remove(0);
+                }
+            }
+            this.repo.export(pages);
+            this.driver.quit();
+        }
+    }
 
-	/**
-	 * Check if the batch size has been reached. If yes, export the pages and empty the
-	 * list for the next batch.
-	 * @param pages Pages crawled so far.
-	 * @throws DataExportException If something goes wrong during processing of crawled pages.
-	 */
-	private void checkBatchSize(List<WebPage> pages) throws DataExportException {
-	    if(pages.size() == this.batchSize) {
+    /**
+     * Check if the batch size has been reached. If yes, export the pages and empty the
+     * list for the next batch.
+     * @param pages Pages crawled so far.
+     * @throws DataExportException If something goes wrong during processing of crawled pages.
+     */
+    private void checkBatchSize(List<WebPage> pages) throws DataExportException {
+        if(pages.size() == this.batchSize) {
             this.repo.export(pages);
             pages.clear();
-	    }
-	}
-	
+        }
+    }
+    
 }

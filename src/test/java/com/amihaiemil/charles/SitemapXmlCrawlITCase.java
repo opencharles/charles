@@ -57,7 +57,6 @@ public class SitemapXmlCrawlITCase {
         SitemapXmlCrawl sitemapXmlCrawl = new SitemapXmlCrawl(
         	this.driver,
             new SitemapXmlOnDisk("src/test/resources/testsitemap.xml"),
-            new IgnoredPatterns(),
             inmr
         );
         sitemapXmlCrawl.crawl();
