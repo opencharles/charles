@@ -54,7 +54,7 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
      * @param repo Repository to export the pages to.
      */
     public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, Repository repo) throws IOException {
-    	this(drv, sitemapLoc, new IgnoredPatterns(), repo, 100);
+    	this(drv, sitemapLoc, new IgnoredPatterns(), repo, 20);
     }
 
     /**
@@ -76,7 +76,7 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
      * @param repo Repository to export the pages to.
      */
     public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored, Repository repo) throws IOException {
-    	this(drv, sitemapLoc, ignored, repo, 100);
+    	this(drv, sitemapLoc, ignored, repo, 20);
     }
 
     /**

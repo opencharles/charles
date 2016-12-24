@@ -80,16 +80,6 @@ public class LiveWebPageITCase {
 		}
 	}
 	
-    /**
-     * {@link LiveWebPage} can fetch its category.
-     */
-    @Test
-    public void retrievesPageCategory() {
-        String address = "http://www.amihaiemil.com/";
-        LiveWebPage livePage = new LiveWebPage(this.driver, address);
-        assertTrue(livePage.getCategory().equals("page"));
-    }
-	
 	/**
 	 * {@link LiveWebPage} can return the visible text from the page.
 	 */

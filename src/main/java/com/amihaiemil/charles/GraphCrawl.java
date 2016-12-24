@@ -52,7 +52,7 @@ public final class GraphCrawl extends AbstractWebCrawl {
      * @param repo Repository where the crawled pages are exported.
      */
     public GraphCrawl(String idx, WebDriver drv, Repository repo) {
-        this(idx, drv, new IgnoredPatterns(), repo, 100);
+        this(idx, drv, new IgnoredPatterns(), repo, 20);
     }
 
     /**
@@ -77,7 +77,7 @@ public final class GraphCrawl extends AbstractWebCrawl {
         String idx, WebDriver drv,
         IgnoredPatterns ignored, Repository repo
     ) {
-        this(idx, drv, ignored, repo, 100);
+        this(idx, drv, ignored, repo, 20);
     }
 
     /**

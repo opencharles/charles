@@ -83,18 +83,6 @@ public interface WebPage {
     void setTextContent(String textContent);
 
     /**
-     * Get the page's category (text of an element with id = "pagectg")
-     * @return
-     */
-    String getCategory();
-    
-    /**
-     * Set the page's category.
-     * @param category
-     */
-    void setCategory(String category);
-    
-    /**
      * Fetch all the anchors (links) from the page.
      * @return
      */

@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -61,13 +60,6 @@ public final class LiveWebPage implements LivePage {
     @FindBy(tagName=("body"))
     @CacheLookup
     private WebElement body;
-
-    /**
-     * Page logical category. Defaults to "page"
-     */
-    @FindBy(id = "pagectg")
-    @CacheLookup
-    private WebElement category;
 
     public LiveWebPage(WebDriver driver, Link l) {
     	this(driver, l.getHref());
@@ -114,17 +106,6 @@ public final class LiveWebPage implements LivePage {
     	throw new UnsupportedOperationException("#setTextContent");
 	}
 
-    public String getCategory() {
-        try {
-            return this.category.getText();
-        } catch (NoSuchElementException ex) {
-            return "page";
-        }
-    }
-    
-    public void setCategory(String category) {
-    	throw new UnsupportedOperationException("#setCategory");
-	}
     public WebPage snapshot() {
         return new SnapshotWebPage(this);
     }

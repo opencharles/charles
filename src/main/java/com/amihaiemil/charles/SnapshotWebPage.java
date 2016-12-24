@@ -37,14 +37,12 @@ public final class SnapshotWebPage implements WebPage {
     private String url;
     private String title;
     private String textContent;
-    private String category;
     private Set<Link> links;
 
     public SnapshotWebPage() {
     	this.url = "";
     	this.title = "";
     	this.textContent = "";
-    	this.category = "";
     	this.links = new HashSet<Link>();
     }
     
@@ -53,7 +51,6 @@ public final class SnapshotWebPage implements WebPage {
         this.url = livePage.getUrl();
         this.title = livePage.getTitle();
         this.textContent = livePage.getTextContent();
-        this.category = livePage.getCategory();
         links = new HashSet<Link>();
         for(Link link : livePage.getLinks()) {
         	links.add(link);
@@ -124,16 +121,6 @@ public final class SnapshotWebPage implements WebPage {
 		} else if (!url.equals(other.url))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String getCategory() {
-		return this.category;
-	}
-
-	@Override
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 }
