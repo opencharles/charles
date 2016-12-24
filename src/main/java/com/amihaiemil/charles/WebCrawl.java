@@ -30,6 +30,9 @@ package com.amihaiemil.charles;
  * One web crawl.
  * Represents the entry point to the crawling logic.
  * @author Mihai Andronache (amihaiemil@gmail.com)
+ * @todo #79:30m/DEV Design and implement a way of extending crawling
+ *  logic. Users might want to fetch something else from a page besides
+ *  the raw content (e.g. page category as value of a hidden field)
  */
 public interface  WebCrawl {
 
