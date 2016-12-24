@@ -32,6 +32,9 @@ package com.amihaiemil.charles;
  * @todo #79:30m/DEV Design and implement a way of extending crawling
  *  logic. Users might want to fetch something else from a page besides
  *  the raw content (e.g. page category as value of a hidden field)
+ * @todo #80:1m/DEV Checkstyle validation was added but currently the
+ *  build fails since not all the rules are respected. Fix the violations
+ *  and enable checkstyle profile in the travis and rultor builds.
  */
 public interface  WebCrawl {
 
