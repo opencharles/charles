@@ -44,6 +44,8 @@ Since it uses a web driver to render the pages, also any dynamic content will be
 
 ### How to contribute
 
+Read this [post](http://www.amihaiemil.com/2016/12/30/becoming-a-contributor.html).
+
 1. Open an issue regarding an improvement you thought of, or a bug you noticed.
 2. If the issue is confirmed, fork the repository, do the changes on a sepparate branch and make a Pull Request.
 3. After review and acceptance, the PR is merged and closed.
