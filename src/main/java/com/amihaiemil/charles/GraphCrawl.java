@@ -98,9 +98,9 @@ public final class GraphCrawl extends AbstractWebCrawl {
 
     @Override
     public void crawl() throws DataExportException {
-        if(!this.ignoredLinks.contains(this.index.getHref())) {
+        if(!this.ignoredPatterns().contains(this.index.getHref())) {
             List<WebPage> pages = new ArrayList<WebPage>();
-            WebPage indexSnapshot =  new LiveWebPage(this.driver, this.index).snapshot();
+            WebPage indexSnapshot =  new LiveWebPage(this.driver(), this.index).snapshot();
             pages.add(indexSnapshot);
             
             Set<Link> crawledLinks = new HashSet<Link>();
@@ -114,13 +114,13 @@ public final class GraphCrawl extends AbstractWebCrawl {
             if(toCrawl.size() > 0) {
                 Link link = toCrawl.remove(0);
                 while(toCrawl.size() > 0) {
-                    if(this.ignoredLinks.contains(link.getHref())) {
+                    if(this.ignoredPatterns().contains(link.getHref())) {
                         link = toCrawl.remove(0);
                         continue;
                     }
                     boolean notCrawledAlready = crawledLinks.add(link);
                     if(notCrawledAlready) {
-                        WebPage snapshotCrawled = new LiveWebPage(this.driver, link).snapshot();
+                        WebPage snapshotCrawled = new LiveWebPage(this.driver(), link).snapshot();
                         pages.add(snapshotCrawled);
                         this.checkBatchSize(pages);
                         toCrawl.addAll(snapshotCrawled.getLinks());   
@@ -128,8 +128,8 @@ public final class GraphCrawl extends AbstractWebCrawl {
                     link = toCrawl.remove(0);
                 }
             }
-            this.repo.export(pages);
-            this.driver.quit();
+            this.repo().export(pages);
+            this.driver().quit();
         }
     }
 
@@ -140,8 +140,8 @@ public final class GraphCrawl extends AbstractWebCrawl {
      * @throws DataExportException If something goes wrong during processing of crawled pages.
      */
     private void checkBatchSize(List<WebPage> pages) throws DataExportException {
-        if(pages.size() == this.batchSize) {
-            this.repo.export(pages);
+        if(pages.size() == this.batchSize()) {
+            this.repo().export(pages);
             pages.clear();
         }
     }

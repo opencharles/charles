@@ -39,25 +39,25 @@ import java.util.List;
 * @author Mihai Andronache (amihaiemil@gmail.com)
 *
 */
-public class InMemoryRepository implements Repository {
+public final class InMemoryRepository implements Repository {
 
     /**
      * Holds all the crawled pages.
      */
-    private List<WebPage> pages = new ArrayList<WebPage>();
+    private final List<WebPage> pgs = new ArrayList<WebPage>();
 
     /**
      * Get all the pages from this Repository.
      * @return List of pages.
      */
     public List<WebPage> getCrawledPages() {
-        return this.pages;
+        return this.pgs;
     }
 
     @Override
-    public void export(List<WebPage> pages) throws DataExportException {
-        for(WebPage page : pages) {
-            this.pages.add(page);
+    public void export(final List<WebPage> pages) throws DataExportException {
+        for(final WebPage page : pages) {
+            this.pgs.add(page);
         }
     }
 }

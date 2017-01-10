@@ -46,7 +46,7 @@ public final class Link {
         this("", "");
     }
 
-    public Link(String text, String href) {
+    public Link(final String text, final String href) {
         this.text = text;
         this.href = href;
     }
@@ -55,7 +55,7 @@ public final class Link {
         return text;
     }
 
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -63,7 +63,7 @@ public final class Link {
         return href;
     }
 
-    public void setHref(String href) {
+    public void setHref(final String href) {
         this.href = href;
     }
 
@@ -75,8 +75,9 @@ public final class Link {
             result = prime * result + 0;
         } else {
             if (this.href.contains("#")) {
-                result = new Link("", href.substring(0, href.indexOf("#")))
-                        .hashCode();
+                result = new Link(
+                	         "", this.href.substring(0, this.href.indexOf("#"))
+                	     ).hashCode();
             } else {
                 if (this.href.endsWith("/")) {
                     result = prime
@@ -103,7 +104,7 @@ public final class Link {
             return false;
         }
         Link other = (Link) obj;
-        if (href == null) {
+        if (this.href == null) {
             if (other.href != null)
                 return false;
         } else {
@@ -121,7 +122,7 @@ public final class Link {
             }
 
             if (this.href.endsWith("/") && other.href.endsWith("/")) {
-                return this.href.substring(0, href.length() - 1).equals(
+                return this.href.substring(0, this.href.length() - 1).equals(
                         other.href.substring(0, other.href.length() - 1));
             } else if (this.href.endsWith("/")) {
                 return this.href.substring(0, href.length() - 1).equals(
@@ -144,7 +145,7 @@ public final class Link {
      * 
      * @return ture if valid, false otherwise.
      */
-    public boolean valid(String parentLoc) {
+    public boolean valid(final String parentLoc) {
 
         if (this.href != null && !this.href.startsWith("mailto")) {
             int slashIndex = parentLoc.indexOf("/", 8);// index of the first "/"

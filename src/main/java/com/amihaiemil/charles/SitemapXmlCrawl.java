@@ -29,11 +29,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.amihaiemil.charles.sitemap.SitemapXml;
 import com.amihaiemil.charles.sitemap.SitemapXmlLocation;
 import com.amihaiemil.charles.sitemap.Url;
@@ -98,24 +96,24 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
         List<WebPage> pages = new ArrayList<WebPage>();
         LOG.info("Started crawling the sitemap.xml...");
         for(Url url : this.urlset) {
-            if(this.ignoredLinks.contains(url.getLoc())) {
+            if(this.ignoredPatterns().contains(url.getLoc())) {
                 continue;
             }
             LOG.info("Crawling page " + url.getLoc() + "... ");
-            pages.add(new LiveWebPage(this.driver, url.getLoc()).snapshot());
+            pages.add(new LiveWebPage(this.driver(), url.getLoc()).snapshot());
             LOG.info("Done crawling page " + url.getLoc() + "!");
-            if(pages.size() == this.batchSize) {
-            try {
-                    this.repo.export(pages);
+            if(pages.size() == this.batchSize()) {
+                try {
+                    this.repo().export(pages);
                     pages.clear();
-            } catch (DataExportException e) {
+                } catch (DataExportException e) {
                     e.printStackTrace();
                 }
-        }
+            }
         }
         LOG.info("Finished crawling the sitemap.xml!");
-        this.repo.export(pages);
-        this.driver.quit();
+        this.repo().export(pages);
+        this.driver().quit();
     }
     
 }

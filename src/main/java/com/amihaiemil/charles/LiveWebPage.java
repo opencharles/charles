@@ -50,14 +50,14 @@ public final class LiveWebPage implements LivePage {
     /**
      * Visible anchors.
      */
-    @FindBys(@FindBy(tagName=("a")))
+    @FindBys(@FindBy(tagName="a"))
     @CacheLookup
     private List<WebElement> anchors;
 
     /**
      * Text content from the page.
      */
-    @FindBy(tagName=("body"))
+    @FindBy(tagName="body")
     @CacheLookup
     private WebElement body;
 

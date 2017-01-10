@@ -23,12 +23,14 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */package com.amihaiemil.charles;
+ */
+package com.amihaiemil.charles;
 
 import org.openqa.selenium.WebDriver;
 
 /**
- * An abstract webcrawl - contains the webdriver and other common data of each crawl.
+ * An abstract webcrawl - contains the webdriver and other common data of each
+ * crawl.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 1.0.0
@@ -39,23 +41,23 @@ public abstract class AbstractWebCrawl implements WebCrawl {
     /**
      * WebDriver.
      */
-    protected WebDriver driver;
+    private final WebDriver driver;
 
     /**
      * Ignored pages patterns.
      */
-    protected IgnoredPatterns ignoredLinks;
+    private final IgnoredPatterns ignoredLinks;
 
     /**
      * Repo to export the pages to.
      */
-    protected Repository repo;
+    private final Repository repo;
 
     /**
      * Pages are crawled and exported in batches in order to avoid flooding
      * the memory if there are many pages on a website. Default value is 100.
      */
-    protected int batchSize;
+    private final int batchSize;
 
     /**
      * Ctor.
@@ -63,13 +65,50 @@ public abstract class AbstractWebCrawl implements WebCrawl {
      * @param igp Ignored patterns.
      * @param repo Repository to export the crawled pages into.
      * @param batch Size of a crawl batch.
+     * @checkstyle ParameterNumber (6 lines)
      */
-    public AbstractWebCrawl(WebDriver webd, IgnoredPatterns igp, Repository repo, int batch) {
+    public AbstractWebCrawl(
+        final WebDriver webd, final IgnoredPatterns igp,
+        final Repository repo, final int batch
+    ) {
         this.driver = webd;
         this.ignoredLinks = igp;
         this.repo = repo;
         this.batchSize = batch;
     }
 
+    @Override
     public abstract void crawl() throws DataExportException;
+
+    /**
+     * Fetch the used WebSriver.
+     * @return driver Webdriver of this crawl
+     */
+    public final WebDriver driver() {
+        return this.driver;
+    }
+
+    /**
+     * Fetch the used Repository.
+     * @return repo Repository where the pages are sent
+     */
+    public final Repository repo() {
+        return this.repo;
+    }
+
+    /**
+     * Fetch the ignored links patterns.
+     * @return ignoredLinks IgnoredPatterns of this crawl
+     */
+    public final IgnoredPatterns ignoredPatterns() {
+        return this.ignoredLinks;
+    }
+    
+    /**
+     * Batch size. How many pages will be crawled at once?
+     * @return Integer batch size.
+     */
+    public final int batchSize() {
+        return this.batchSize;
+    }
 }

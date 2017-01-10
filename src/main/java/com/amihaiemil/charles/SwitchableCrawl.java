@@ -14,15 +14,17 @@
  * this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */package com.amihaiemil.charles;
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.amihaiemil.charles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +34,16 @@ import org.slf4j.LoggerFactory;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 1.0.0
+ * @checkstyle IllegalCatch (100 lines)
  *
  */
 public final class SwitchableCrawl implements WebCrawl {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(SwitchableCrawl.class);
+
+    /**
+     * Slf4J Logger.
+     */
+    private static final Logger LOG = LoggerFactory
+        .getLogger(SwitchableCrawl.class);
 
     /**
      * Initial crawl.
@@ -51,9 +58,10 @@ public final class SwitchableCrawl implements WebCrawl {
     /**
      * Ctor.
      * @param initial WebCrawl performed.
-     * @param failsafe WebCrawl performed in case the initial one fails with RuntimeException.
+     * @param failsafe WebCrawl performed in case the initial one
+     *  fails with RuntimeException.
      */
-    public SwitchableCrawl(WebCrawl initial, WebCrawl failsafe) {
+    public SwitchableCrawl(final WebCrawl initial, final WebCrawl failsafe) {
         this.initial = initial;
         this.failsafe = failsafe;
     }
@@ -62,8 +70,10 @@ public final class SwitchableCrawl implements WebCrawl {
     public void crawl() throws DataExportException {
         try {
             this.initial.crawl();
-        } catch (RuntimeException ex) {
-            LOG.error("The initial crawl failed. Running the failsafe crawl...", ex);
+        } catch (final RuntimeException ex) {
+            LOG.error(
+                "The initial crawl failed. Running the failsafe crawl...", ex
+            );
             this.failsafe.crawl();
         }
     }

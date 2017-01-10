@@ -83,16 +83,6 @@
     JavaDoc regexp checks
     -->
     <module name="RegexpSingleline">
-        <property name="format" value="\* +@return +[^A-Z]"/>
-        <property name="fileExtensions" value="java"/>
-        <property name="message" value="@return tag description should start with capital letter"/>
-    </module>
-    <module name="RegexpSingleline">
-        <property name="format" value="\* +@param +\w+ +[^A-Z]"/>
-        <property name="fileExtensions" value="java"/>
-        <property name="message" value="@param tag description should start with capital letter"/>
-    </module>
-    <module name="RegexpSingleline">
         <property name="format" value="/\*\* +[^A-Z\{]"/>
         <property name="fileExtensions" value="java"/>
         <property name="message" value="First sentence in a comment should start with a capital letter"/>
@@ -167,7 +157,6 @@
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
-        <module name="FinalLocalVariable"/>
         <module name="HiddenField">
             <property name="ignoreConstructorParameter" value="true"/>
         </module>
@@ -266,9 +255,6 @@
         </module>
         <module name="LocalVariableName">
             <property name="format" value="^(id|[A-Za-z]{3,20})$"/>
-        </module>
-        <module name="CatchParameterName">
-            <property name="format" value="^(ex|[A-Za-z]{3,20})$"/>
         </module>
         <module name="MemberName">
             <property name="format" value="^(id|[A-Za-z]{3,20})$"/>
