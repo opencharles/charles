@@ -304,7 +304,7 @@
 	<distributionManagement>
 		<repository>
 			<id>oss.sonatype.org</id>
-			<url>https://oss.sonatype.org/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
 			<id>oss.sonatype.org</id>
