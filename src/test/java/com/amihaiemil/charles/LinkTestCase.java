@@ -24,7 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */package com.amihaiemil.charles;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 /**
  * Test cases for {@link Link}
@@ -55,6 +59,17 @@ public class LinkTestCase {
         
         Link l3 = new Link("test", "https://www.amihaiemil.com/projects/2016/04/20/project-eva.html");
         assertTrue(l3.valid("https://www.amihaiemil.com"));
+    
+        Pattern pattern = Pattern.compile(
+            "(.+[^\\/])\\/([^\\/].*[^\\/])\\/{0,1}$"
+        );
+        Matcher matcher = pattern.matcher(
+            "http://www.amihaiemil.com/test/"
+        );
+        matcher.find();
+        System.out.println(matcher.groupCount());
+        System.out.println(matcher.group(2));
+            
     }
     
     /**

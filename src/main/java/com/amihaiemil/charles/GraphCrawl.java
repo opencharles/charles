@@ -100,17 +100,18 @@ public final class GraphCrawl extends AbstractWebCrawl {
     public void crawl() throws DataExportException {
         if(!this.ignoredPatterns().contains(this.index.getHref())) {
             List<WebPage> pages = new ArrayList<WebPage>();
-            WebPage indexSnapshot =  new LiveWebPage(this.driver(), this.index).snapshot();
+            this.driver().get(this.index.getHref());
+            WebPage indexSnapshot =  new LiveWebPage(this.driver()).snapshot();
             pages.add(indexSnapshot);
-            
+
             Set<Link> crawledLinks = new HashSet<Link>();
             crawledLinks.add(this.index);
-        
+
             List<Link> toCrawl = new ArrayList<Link>();
             toCrawl.addAll(indexSnapshot.getLinks());
-            
+
             this.checkBatchSize(pages);
-            
+
             if(toCrawl.size() > 0) {
                 Link link = toCrawl.remove(0);
                 while(toCrawl.size() > 0) {
@@ -120,10 +121,11 @@ public final class GraphCrawl extends AbstractWebCrawl {
                     }
                     boolean notCrawledAlready = crawledLinks.add(link);
                     if(notCrawledAlready) {
-                        WebPage snapshotCrawled = new LiveWebPage(this.driver(), link).snapshot();
+                    	this.driver().get(link.getHref());
+                        WebPage snapshotCrawled = new LiveWebPage(this.driver()).snapshot();
                         pages.add(snapshotCrawled);
                         this.checkBatchSize(pages);
-                        toCrawl.addAll(snapshotCrawled.getLinks());   
+                        toCrawl.addAll(snapshotCrawled.getLinks());
                     }
                     link = toCrawl.remove(0);
                 }
@@ -145,5 +147,5 @@ public final class GraphCrawl extends AbstractWebCrawl {
             pages.clear();
         }
     }
-    
+
 }

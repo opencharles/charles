@@ -28,12 +28,13 @@ package com.amihaiemil.charles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.CacheLookup;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
 /**
@@ -47,37 +48,22 @@ public final class LiveWebPage implements LivePage {
      */
     private WebDriver driver;
 
-    /**
-     * Visible anchors.
-     */
-    @FindBys(@FindBy(tagName="a"))
-    @CacheLookup
-    private List<WebElement> anchors;
-
-    /**
-     * Text content from the page.
-     */
-    @FindBy(tagName="body")
-    @CacheLookup
-    private WebElement body;
-
-    public LiveWebPage(WebDriver driver, Link l) {
-        this(driver, l.getHref());
-    }
-
-    public LiveWebPage(WebDriver driver, String url) {
+    public LiveWebPage(WebDriver driver) {
         this.driver = driver;
-        this.driver.get(url);
         PageFactory.initElements(this.driver, this);
     }
 
     public String getName() {
         String url = this.getUrl();
-        if(url.endsWith("/")) {
-            url = url.substring(0, url.length()-1);
-            return url.substring(url.lastIndexOf("/") + 1);
+        Pattern pattern = Pattern.compile(
+            "(.+[^\\/])\\/([^\\/].*[^\\/])\\/{0,1}$"
+        );
+        Matcher matcher = pattern.matcher(url);
+        if(matcher.find()) {
+            return matcher.group(2);
+        } else {
+            return "index";
         }
-        return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
     }
 
     public void setName(String name) {
@@ -99,7 +85,7 @@ public final class LiveWebPage implements LivePage {
     }
 
     public String getTextContent() {
-        return this.body.getText();
+        return this.driver.findElement(By.tagName("body")).getText();
     }
     
     public void setTextContent(String textContent) {
@@ -113,14 +99,21 @@ public final class LiveWebPage implements LivePage {
     public Set<Link> getLinks() {
         Set<Link> links = new HashSet<Link>();
         String currentLoc = this.getUrl();
-        for(WebElement a : anchors) {
-            if(a.isDisplayed()) {
-                Link l = new Link(a.getText(), a.getAttribute("href"));
-                if(l.valid(currentLoc)) {
-                    links.add(l);
+        List<WebElement> anchors = this.driver
+            .findElements(By.tagName("a"));
+        
+            for(WebElement a : anchors) {
+                try {
+                    Link l = new Link(a.getText(), a.getAttribute("href"));
+                    if(l.valid(currentLoc)) {
+                        links.add(l);
+                    }
+                } catch (final StaleElementReferenceException sre) {
+                    //stale link, ignore it
+                    //More here:
+                    //http://www.seleniumhq.org/exceptions/stale_element_reference.jsp
                 }
             }
-        }
         return links;
     }
 

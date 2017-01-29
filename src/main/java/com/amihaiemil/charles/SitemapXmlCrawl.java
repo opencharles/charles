@@ -29,9 +29,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.amihaiemil.charles.sitemap.SitemapXml;
 import com.amihaiemil.charles.sitemap.SitemapXmlLocation;
 import com.amihaiemil.charles.sitemap.Url;
@@ -100,7 +102,8 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
                 continue;
             }
             LOG.info("Crawling page " + url.getLoc() + "... ");
-            pages.add(new LiveWebPage(this.driver(), url.getLoc()).snapshot());
+            this.driver().get(url.getLoc());
+            pages.add(new LiveWebPage(this.driver()).snapshot());
             LOG.info("Done crawling page " + url.getLoc() + "!");
             if(pages.size() == this.batchSize()) {
                 try {

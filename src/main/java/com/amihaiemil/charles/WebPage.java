@@ -36,7 +36,7 @@ import java.util.Set;
 public interface WebPage {
 
     /**
-     * Get the filename of this webpage. E.g. index.html -> index
+     * Get the filename of this webpage. E.g. index.html
      * @return String filename.
      */
     String getName();

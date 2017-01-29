@@ -51,13 +51,14 @@ public class LiveWebPageITCase {
      */
     @Test
     public void retrievesLinksFromPageCname() {
-        String address = "http://amihaiemil.github.io/";
-        LiveWebPage livePage = new LiveWebPage(this.driver, address);
+        this.driver.get("http://amihaiemil.github.io/");
+        LiveWebPage livePage = new LiveWebPage(this.driver);
         Set<Link> links = livePage.getLinks();
         assertTrue(links.size() > 0);
-        assertTrue("Expected link not on web page!", links.contains(
-                    new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
-                )
+        assertTrue(
+            "Expected link not on web page!", links.contains(
+                new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
+            )
         );
     }
     
@@ -66,13 +67,16 @@ public class LiveWebPageITCase {
      */
     @Test
     public void retrievesLinksFromPage() {
-        String address = "http://www.amihaiemil.com/";
-        LiveWebPage livePage = new LiveWebPage(this.driver, address);
+    	String address = "http://www.amihaiemil.com/";
+        this.driver.get(address);
+        LiveWebPage livePage = new LiveWebPage(this.driver);
         Set<Link> links = livePage.getLinks();
         assertTrue(links.size() > 0);
-        assertTrue("Expected link not on web page!", links.contains(
-                    new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
-                )
+        assertTrue(
+            "Expected link not on web page!",
+            links.contains(
+                new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
+            )
         );
         for(Link l : links) {
             assertTrue(l.getHref().startsWith(address));
@@ -84,7 +88,8 @@ public class LiveWebPageITCase {
      */
     @Test
     public void retrievesTextFromPage() {
-        LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html");
+    	this.driver.get("http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html");
+        LiveWebPage livePage = new LiveWebPage(this.driver);
         String textContent = livePage.getTextContent();
         assertTrue(textContent.contains("In his book Burke also describes HATEOAS"));
         assertTrue(textContent.contains("\"lastmodified\": \"15/03/2016\""));
@@ -96,11 +101,14 @@ public class LiveWebPageITCase {
      */
     @Test
     public void snapshotsSelf() {
-        LiveWebPage livePage = new LiveWebPage(this.driver, "http://www.amihaiemil.com");
+    	this.driver.get("http://www.amihaiemil.com");
+        LiveWebPage livePage = new LiveWebPage(this.driver);
         WebPage snapshot = livePage.snapshot();
         assertTrue(snapshot.getTitle().equals("amihaiemil.com | Programming blog"));
         assertTrue(snapshot.getLinks().size() > 0);
-        assertTrue("Expected link not on web page!", snapshot.getLinks().contains(
+        assertTrue(
+            "Expected link not on web page!",
+            snapshot.getLinks().contains(
                 new Link("What is HATEOAS?", "http://www.amihaiemil.com/2016/05/07/what-is-hateoas.html")
             )
         );
