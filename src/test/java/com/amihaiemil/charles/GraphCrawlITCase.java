@@ -27,9 +27,13 @@
 package com.amihaiemil.charles;
 
 import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,12 +75,23 @@ public class GraphCrawlITCase {
         InMemoryRepository inmr = new InMemoryRepository();
         GraphCrawl graph = new GraphCrawl("http://eva.amihaiemil.com/index.html", this.driver, inmr);
         graph.crawl();
-        assertTrue(inmr.getCrawledPages().size() == 1);
+        MatcherAssert.assertThat(
+            inmr.getCrawledPages().size(), Matchers.is(1)
+        );
         WebPage index = inmr.getCrawledPages().get(0);
-        assertTrue(index.getTextContent().contains("changing and combining the existing ones until finally, a solution is chosen to be the answer"));
-        assertTrue(index.getName().equals("index"));
-        assertTrue(index.getTitle().equals("EvA project"));
         
+        MatcherAssert.assertThat(
+            index.getTextContent(),
+            Matchers.containsString("changing and combining the existing ones")
+        );        
+        MatcherAssert.assertThat(
+            index.getName(),
+            Matchers.equalTo("index.html")
+        );
+        MatcherAssert.assertThat(
+            index.getTitle(),
+            Matchers.equalTo("EvA project")
+        );
     }
     
     /**
