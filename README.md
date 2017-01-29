@@ -26,11 +26,11 @@ Get it using Maven:
 <dependency>
     <groupId>com.amihaiemil.web</groupId>
     <artifactId>charles</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
-or take the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/charles/1.1.0/charles-1.1.0-jar-with-dependencies.jar">fat</a> jar.
+or take the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/charles/1.1.1/charles-1.1.1-jar-with-dependencies.jar">fat</a> jar.
 ### Under the hood
 
 Charles is powered by [Selenium WebDriver](http://www.seleniumhq.org/projects/webdriver/).
