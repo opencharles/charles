@@ -36,7 +36,7 @@ import org.openqa.selenium.WebDriver;
  * @since 1.0.0
  *
  */
-public abstract class AbstractWebCrawl implements WebCrawl {
+abstract class AbstractWebCrawl implements WebCrawl {
 
     /**
      * WebDriver.
