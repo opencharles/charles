@@ -51,7 +51,7 @@ public class LiveWebPageITCase {
      */
     @Test
     public void retrievesLinksFromPageCname() {
-        this.driver.get("http://amihaiemil.github.io/");
+        this.driver.get("http://amihaiemil.github.io/page2/");
         LiveWebPage livePage = new LiveWebPage(this.driver);
         Set<Link> links = livePage.getLinks();
         assertTrue(links.size() > 0);
@@ -67,7 +67,7 @@ public class LiveWebPageITCase {
      */
     @Test
     public void retrievesLinksFromPage() {
-    	String address = "http://www.amihaiemil.com/";
+    	String address = "http://www.amihaiemil.com/page2/";
         this.driver.get(address);
         LiveWebPage livePage = new LiveWebPage(this.driver);
         Set<Link> links = livePage.getLinks();
@@ -101,7 +101,7 @@ public class LiveWebPageITCase {
      */
     @Test
     public void snapshotsSelf() {
-    	this.driver.get("http://www.amihaiemil.com");
+    	this.driver.get("http://www.amihaiemil.com/page2");
         LiveWebPage livePage = new LiveWebPage(this.driver);
         WebPage snapshot = livePage.snapshot();
         assertTrue(snapshot.getTitle().equals("amihaiemil.com | Programming blog"));
