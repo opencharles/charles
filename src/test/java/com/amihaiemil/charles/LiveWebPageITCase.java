@@ -79,7 +79,7 @@ public class LiveWebPageITCase {
             )
         );
         for(Link l : links) {
-            assertTrue(l.getHref().startsWith(address));
+            assertTrue(l.getHref().startsWith("http://www.amihaiemil.com"));
         }
     }
     
