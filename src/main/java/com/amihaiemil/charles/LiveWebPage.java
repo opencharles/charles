@@ -36,6 +36,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * A web page that is currently being crawled.
@@ -85,7 +87,10 @@ public final class LiveWebPage implements LivePage {
     }
 
     public String getTextContent() {
-        return this.driver.findElement(By.tagName("body")).getText();
+        WebDriverWait wait = new WebDriverWait(this.driver,2);
+        return wait
+            .until(ExpectedConditions
+            .visibilityOfElementLocated(By.tagName("body"))).getText();
     }
     
     public void setTextContent(String textContent) {
