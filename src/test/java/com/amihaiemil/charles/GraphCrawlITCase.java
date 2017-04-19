@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -116,6 +117,7 @@ public class GraphCrawlITCase {
     @Before
     public void initDriver() {
         this.driver = this.phantomJsDriver();
+        this.driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
     }
     
     @After
