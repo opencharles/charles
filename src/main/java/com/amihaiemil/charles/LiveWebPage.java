@@ -87,7 +87,7 @@ public final class LiveWebPage implements LivePage {
     }
 
     public String getTextContent() {
-        WebDriverWait wait = new WebDriverWait(this.driver,2);
+        WebDriverWait wait = new WebDriverWait(this.driver,10);
         return wait
             .until(ExpectedConditions
             .visibilityOfElementLocated(By.tagName("body"))).getText();
