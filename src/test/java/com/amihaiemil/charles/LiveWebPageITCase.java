@@ -129,7 +129,7 @@ public class LiveWebPageITCase {
     
     private WebDriver webDriver() {
         final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("/usr/bin/google-chrome");
+        chromeOptions.setBinary("/usr/bin/chromedriver");
         final DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
