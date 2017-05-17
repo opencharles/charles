@@ -38,6 +38,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -125,12 +126,13 @@ public class GraphCrawlITCase {
     
     private WebDriver webDriver() {
         final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("/usr/bin/chromedriver");
+        chromeOptions.setBinary("/usr/bin/chromium-browser");
         final DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
             ChromeOptions.CAPABILITY, chromeOptions
         );
-        return new RemoteWebDriver(dc);
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+        return new ChromeDriver(dc);
     }
 }

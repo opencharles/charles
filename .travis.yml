@@ -25,5 +25,6 @@ script:
   - whereis phantomjs
   - whereis google-chrome
   - google-chrome --version
+  - whereis chromium-browser
   - mvn clean install -Pitcases jacoco:report coveralls:report
 
