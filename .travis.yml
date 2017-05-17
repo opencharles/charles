@@ -21,13 +21,14 @@ install:
   - travisnginx/setupnginx.sh
   - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
   - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-  - sudo apt-get update && sudo apt-get install -f
-  - sudo apt-get install libappindicator1
-  - sudo apt-get install libfontconfig1=2.9.0
-  - sudo apt-get install libstdc++6=4.8.0
-  - sudo apt-get install fonts-liberation
-  - sudo apt-get install lsb-base=4.1
+  - sudo apt-get update
+  # - sudo apt-get install libappindicator1
+  # - sudo apt-get install libfontconfig1=2.9.0
+  # - sudo apt-get install libstdc++6=4.8.0
+  # - sudo apt-get install fonts-liberation
+  # - sudo apt-get install lsb-base=4.1
   - sudo apt-get install google-chrome-stable
+  - sudo apt-get install -f
 script:
   - set -e
   - phantomjs --version
