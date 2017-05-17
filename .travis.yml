@@ -7,31 +7,16 @@ dist: trusty
 addons:
   apt:
     sources:
-      - elasticsearch-1.7
       - google-chrome
     packages:
-      - elasticsearch
       - nginx
       - realpath
       - google-chrome-stable
-services:
-  - elasticsearch
-
-before_install:
-  - chmod +x travisnginx/setupnginx.sh
-  - sleep 10
-
-install:
-  - travisnginx/setupnginx.sh
 script:
   - set -e
   - phantomjs --version
   - whereis phantomjs
   - whereis google-chrome
   - google-chrome --version
-  - elasticsearch -v
-  - curl -i http://localhost:9200/ #elasticsearch should also be accessible without authentication on port 9200
-  - curl -i http://localhost:8080/ #port 8080 is used by nginx reverse proxy to enable basic auth for elasticsearch
-  - curl -i jeff:s3cr3t@localhost:8080
   - mvn clean install -Pitcases jacoco:report coveralls:report
 
