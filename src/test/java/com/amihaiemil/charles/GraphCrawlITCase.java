@@ -38,9 +38,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * Integration tests for {@link GraphCrawl}
@@ -115,7 +115,7 @@ public class GraphCrawlITCase {
     
     @Before
     public void initDriver() {
-        this.driver = this.phantomJsDriver();
+        this.driver = this.webDriver();
     }
     
     @After
@@ -123,17 +123,14 @@ public class GraphCrawlITCase {
         this.driver.quit();
     }
     
-    private WebDriver phantomJsDriver() {
-        String phantomJsExecPath =  System.getProperty("phantomjsExec");
-        if("".equals(phantomJsExecPath)) {
-            phantomJsExecPath = "/usr/local/bin/phantomjs";
-        }
-        DesiredCapabilities dc = new DesiredCapabilities();
+    private WebDriver webDriver() {
+        final ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setBinary("/usr/bin/google-chrome");
+        final DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
-            PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-            phantomJsExecPath
+            ChromeOptions.CAPABILITY, chromeOptions
         );
-        return new PhantomJSDriver(dc);
+        return new RemoteWebDriver(dc);
     }
 }
