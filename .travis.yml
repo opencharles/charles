@@ -12,6 +12,13 @@ addons:
       - nginx
       - realpath
       - google-chrome-stable
+install: # Install ChromeDriver.
+  - wget -N http://chromedriver.storage.googleapis.com/2.27/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 before-script:
   - sudo apt-get update
   - sudo apt-get install chromium-chromedriver
@@ -20,11 +27,10 @@ before-script:
   - sleep 10 # give xvfb some time to start
 script:
   - set -e
-  - phantomjs --version
-  - whereis phantomjs
   - whereis google-chrome
   - google-chrome --version
   - whereis chromium-browser
-  - whereis chromium-chromedriver
+  - chromium-browser --version
+  - whereis chromedriver
   - mvn clean install -Pitcases jacoco:report coveralls:report
 
