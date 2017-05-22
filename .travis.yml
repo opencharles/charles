@@ -20,10 +20,8 @@ install: # Install ChromeDriver.
   - sudo chmod +x /usr/local/share/chromedriver
   - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 before-script:
-  - sudo apt-get update
-  - sudo apt-get install chromium-chromedriver
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
   - sleep 10 # give xvfb some time to start
 script:
   - set -e
