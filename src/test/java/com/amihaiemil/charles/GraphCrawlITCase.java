@@ -125,7 +125,7 @@ public class GraphCrawlITCase {
     
     private WebDriver webDriver() {
         final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("/usr/bin/chromium-browser");
+        chromeOptions.setBinary("/usr/bin/google-chrome");
         final DesiredCapabilities dc = new DesiredCapabilities();
         dc.setJavascriptEnabled(true);
         dc.setCapability(
