@@ -19,7 +19,7 @@ More options for crawling:
 
 3) crawl with retrial if any ``RuntimeException`` happens etc
 
-**More details** in [this](http://www.amihaiemil.com/web/2016/12/05/project-charles.html) post.
+**More details** in [this](http://www.amihaiemil.com/2016/12/05/project-charles.html) post.
 
 ### Maven dependency
 
