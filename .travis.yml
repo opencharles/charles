@@ -30,5 +30,5 @@ script:
   - whereis chromium-browser
   - chromium-browser --version
   - whereis chromedriver
-  - mvn clean install jacoco:report coveralls:report
+  - mvn clean install -Pitcases jacoco:report coveralls:report
 
