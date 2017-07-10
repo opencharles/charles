@@ -62,4 +62,4 @@ passes before making a PR.
 
 ### Running integration tests: 
 
-In order to run the integration tests you need to have PhantomJS installed on your machine and set the JVM system property ``phantomjsExec`` to point to that location. By default the exe is looked up at ``/usr/local/bin/phantomjs`` (linux), so if it's not found the tests won't work.
+In order to run the integration tests you need to have PhantomJS installed on your machine and set the JVM system property ``phantomjsExec`` to point to that location. By default the exe is looked up at ``/usr/local/bin/phantomjs`` (linux), so if it's not found the tests won't work. test
