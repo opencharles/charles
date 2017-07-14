@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk7
+  # - oraclejdk7
   - openjdk7
 sudo: required
 dist: trusty
@@ -13,10 +13,6 @@ install: # Install ChromeDriver.
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
   - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-before-script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 10 # give xvfb some time to start
 script:
   - set -e
   - whereis google-chrome-stable

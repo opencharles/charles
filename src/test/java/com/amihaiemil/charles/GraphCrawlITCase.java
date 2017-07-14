@@ -115,11 +115,7 @@ public class GraphCrawlITCase {
     
     @Before
     public void initDriver() {
-    	try {
-            this.driver = this.webDriver();
-    	} catch (Exception ex) {
-    		ex.printStackTrace();
-    	}
+        this.driver = this.webDriver();
     }
     
     @After
