@@ -129,7 +129,7 @@ public class GraphCrawlITCase {
     
     private WebDriver webDriver() {
         final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary(System.getProperty("chrome"));
+        chromeOptions.setBinary("/usr/bin/google-chrome-stable");
         chromeOptions.addArguments("--headless");
         chromeOptions.addArguments("--disable-gpu");
         final DesiredCapabilities dc = new DesiredCapabilities();

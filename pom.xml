@@ -207,12 +207,6 @@
 								</goals>
 							</execution>
 						</executions>
-						<configuration>
-							<systemPropertyVariables>
-								<chrome>/usr/bin/google-chrome-stable</chrome>
-								<buildDirectory>${project.build.directory}</buildDirectory>
-							</systemPropertyVariables>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
