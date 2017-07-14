@@ -65,6 +65,6 @@ Google Chrome has to have a version >=59, in order to support [headless mode](ht
 ### Integration tests
 
 Integration tests are performed with Google Chrome run in headless mode.
-You also need to install [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/] in order for everything to work.
+You also need to install [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) in order for everything to work.
 
 You can skip the integration tests by omitting ``-Pitcases`` from the build command.
