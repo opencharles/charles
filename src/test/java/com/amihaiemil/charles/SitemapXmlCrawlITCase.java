@@ -75,7 +75,7 @@ public class SitemapXmlCrawlITCase {
 
     private WebDriver webDriver() {
     	final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary(System.getProperty("google.chrome"));
+        chromeOptions.setBinary(System.getProperty("chrome"));
         chromeOptions.addArguments("--headless");
         chromeOptions.addArguments("--disable-gpu");
         final DesiredCapabilities dc = new DesiredCapabilities();

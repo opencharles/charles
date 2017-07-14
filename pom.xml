@@ -5,7 +5,7 @@
 
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>charles</artifactId>
-	<version>1.1.2-SNAPSHOT</version><!--rrv-sed-flag-->
+	<version>1.1.2-SNAPSHOT</version><!--rrv-sed-flag -->
 	<packaging>jar</packaging>
 	<properties>
 		<jacksonVersion>2.7.4</jacksonVersion>
@@ -207,6 +207,11 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<systemPropertyVariables>
+								<chrome>/usr/bin/google-chrome-stable</chrome>
+							</systemPropertyVariables>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
