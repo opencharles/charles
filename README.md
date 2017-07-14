@@ -56,10 +56,15 @@ Read this [post](http://www.amihaiemil.com/2016/12/30/becoming-a-contributor.htm
 
 Make sure the maven build
 
-``$mvn clean install -Pitcases``
+``$ mvn clean install -Dgoogle.chrome={path/to/chrome} -Pitcases``
 
 passes before making a PR. 
 
-### Running integration tests: 
+Google Chrome has to have a version >=59, in order to support [headless mode](https://developers.google.com/web/updates/2017/04/headless-chrome).
 
-In order to run the integration tests you need to have PhantomJS installed on your machine and set the JVM system property ``phantomjsExec`` to point to that location. By default the exe is looked up at ``/usr/local/bin/phantomjs`` (linux), so if it's not found the tests won't work. test
+### Integration tests
+
+Integration tests are performed with Google Chrome run in headless mode.
+You also need to install [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/] in order for everything to work.
+
+You can skip the integration tests by omitting ``-Pitcases`` from the build command.
