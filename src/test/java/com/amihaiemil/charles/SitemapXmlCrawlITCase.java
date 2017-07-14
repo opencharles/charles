@@ -33,7 +33,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.amihaiemil.charles.sitemap.SitemapXmlOnDisk;
 
@@ -76,7 +75,7 @@ public class SitemapXmlCrawlITCase {
 
     private WebDriver webDriver() {
     	final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("/usr/bin/google-chrome-stable");
+        chromeOptions.setBinary(System.getProperty("google.chrome"));
         chromeOptions.addArguments("--headless");
         chromeOptions.addArguments("--disable-gpu");
         final DesiredCapabilities dc = new DesiredCapabilities();
@@ -84,7 +83,6 @@ public class SitemapXmlCrawlITCase {
         dc.setCapability(
             ChromeOptions.CAPABILITY, chromeOptions
         );
-        //System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         return new ChromeDriver(dc);
 
     }
