@@ -18,5 +18,5 @@ script:
   - whereis google-chrome-stable
   - google-chrome-stable --version
   - whereis chromedriver
-  - mvn clean install -Pitcases jacoco:report coveralls:report
+  - mvn clean install -Dgoogle.chrome=/usr/bin/google-chrome-stable -Pitcases jacoco:report coveralls:report
 
