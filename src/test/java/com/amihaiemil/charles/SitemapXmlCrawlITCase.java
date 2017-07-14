@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -83,8 +84,8 @@ public class SitemapXmlCrawlITCase {
         dc.setCapability(
             ChromeOptions.CAPABILITY, chromeOptions
         );
-        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-        return new RemoteWebDriver(dc);
+        //System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+        return new ChromeDriver(dc);
 
     }
 }
