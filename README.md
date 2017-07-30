@@ -4,13 +4,12 @@
 
 Smart web crawler.
 
-[![DevOps By Rultor.com](http://www.rultor.com/b/opencharles/charles)](http://www.rultor.com/p/opencharles/charles)
 [![Build Status](https://travis-ci.org/opencharles/charles.svg?branch=master)](https://travis-ci.org/opencharles/charles)
 [![PDD status](http://www.0pdd.com/svg?name=opencharles/charles)](http://www.0pdd.com/p?name=opencharles/charles)
 [![Coverage Status](https://coveralls.io/repos/github/opencharles/charles/badge.svg?branch=master&service=github)](https://coveralls.io/github/opencharles/charles?branch=master)
 
 [![DevOps By Rultor.com](http://www.rultor.com/b/opencharles/charles)](http://www.rultor.com/p/opencharles/charles)
-[![We recommend IntelliJ IDEA](http://www.amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
+[![We recommend IntelliJ IDEA](http://amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
 
 A smart web crawler that fetches data from a website and stores it in some way (writes it in files on the disk or POSTs it to an http endpoint etc) .
 
