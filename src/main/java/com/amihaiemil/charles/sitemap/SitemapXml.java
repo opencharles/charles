@@ -38,8 +38,10 @@ import org.slf4j.Logger;
  * @author Mihai Andronache (amihaiemil@gmail.com).
  */
 public final class SitemapXml {
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapXml.class);
 
+    /**
+     * Sitemap as InputStream.
+     */
     private InputStream sitemap;
 
     public SitemapXml(InputStream is) {
@@ -56,9 +58,8 @@ public final class SitemapXml {
             JAXBContext jaxbContext = JAXBContext.newInstance(UrlSet.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return UrlSet.class.cast(unmarshaller.unmarshal(this.sitemap));
-        } catch (JAXBException e) {
-            LOG.error("Could not read the given sitemap.xml!", e);
-            return new UrlSet();
+        } catch (JAXBException ex) {
+            throw new IllegalStateException("Could not parse sitemap.xml", ex);
         }
     }
 }
