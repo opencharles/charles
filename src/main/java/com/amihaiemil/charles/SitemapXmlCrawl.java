@@ -43,14 +43,23 @@ import com.amihaiemil.charles.sitemap.Url;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  */
 public final class SitemapXmlCrawl extends AbstractWebCrawl {
+
+    /**
+     * Class logger.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(SitemapXmlCrawl.class);
+
+    /**
+     * URLs to be crawled.
+     */
     private Set<Url> urlset;
 
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
-     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param sitemapLoc Location of the sitemap.xml file.
      * @param repo Repository to export the pages to.
+     * @throws IOException If something goes wrong.
      */
     public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, Repository repo) throws IOException {
         this(drv, sitemapLoc, new IgnoredPatterns(), repo, 20);
@@ -59,9 +68,10 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
-     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param sitemapLoc Location of the sitemap.xml file.
      * @param repo Repository to export the pages to.
      * @param batch Size of the batch to export.
+     * @throws IOException If something goes wrong.
      */
     public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, Repository repo, int batch) throws IOException {
         this(drv, sitemapLoc, new IgnoredPatterns(), repo, batch);
@@ -70,9 +80,10 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
-     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param sitemapLoc Location of the sitemap.xml file.
      * @param ignored Patterns of the ignored pages.
      * @param repo Repository to export the pages to.
+     * @throws IOException If something goes wrong.
      */
     public SitemapXmlCrawl(WebDriver drv, SitemapXmlLocation sitemapLoc, IgnoredPatterns ignored, Repository repo) throws IOException {
         this(drv, sitemapLoc, ignored, repo, 20);
@@ -81,10 +92,11 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
     /**
      * Start a new sitemap.xml crawl using the specified driver.
      * @param drv Specified driver (e.g. chrome, firefox etc).
-     * @param sitemapXmlPath Path to the sitemap.xml file.
+     * @param sitemapLoc Location of the sitemap.xml file.
      * @param ignored Ignored pages patterns.
      * @param repo Repository where the crawled pages are exported.
      * @param batch Size of the batch to export.
+     * @throws IOException If something goes wrong.
      */
     public SitemapXmlCrawl(
         WebDriver drv, SitemapXmlLocation sitemapLoc,
@@ -94,6 +106,7 @@ public final class SitemapXmlCrawl extends AbstractWebCrawl {
         this.urlset = new SitemapXml(sitemapLoc.getStream()).read().getUrls();
     }
 
+    @Override
     public void crawl() throws DataExportException {
         List<WebPage> pages = new ArrayList<WebPage>();
         LOG.info("Started crawling the sitemap.xml...");

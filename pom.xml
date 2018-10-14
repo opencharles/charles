@@ -240,6 +240,18 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<tags>
+								<tag>
+									<name>todo</name>
+									<placement>X</placement>
+								</tag>
+								<tag>
+									<name>checkstyle</name>
+									<placement>X</placement>
+								</tag>
+							</tags>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
