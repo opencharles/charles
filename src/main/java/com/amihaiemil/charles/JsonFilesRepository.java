@@ -52,7 +52,7 @@ public final class JsonFilesRepository implements Repository {
     
     /**
      * Constructor.
-     * @param Directory where the json files should be stored.
+     * @param dir Directory where the json files should be stored.
      */
     public JsonFilesRepository(String dir) {
         this.dir = dir;
@@ -63,6 +63,8 @@ public final class JsonFilesRepository implements Repository {
 
     /**
      * Export.
+     * @param pages Pages to export.
+     * @throws DataExportException If something goes wrong.
      */
     public void export(List<WebPage> pages) throws DataExportException {
         for(WebPage page : pages){
